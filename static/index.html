@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 1: Customer Persona Generator | Meta Ads Suite</title>
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=3.0">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Header -->
+        <header class="navbar">
+            <div class="brand">
+                <div class="brand-icon">🎯</div>
+                <div>
+                    <h1 class="brand-title">Transcription Meta Ads • Agent 1</h1>
+                    <span class="brand-subtitle">American Hairline • Multi-Topic Pipeline • Customer Persona
+                        Intelligence</span>
+                </div>
+            </div>
+
+            <!-- Real-time Live Metrics Bar -->
+            <div class="live-metrics-bar">
+                <div class="metric-chip">
+                    <span class="metric-label">Cumulative Cost</span>
+                    <span class="metric-value text-emerald" id="stat-total-cost">$0.000000</span>
+                </div>
+                <div class="metric-chip">
+                    <span class="metric-label">Tokens Consumed</span>
+                    <span class="metric-value text-indigo" id="stat-total-tokens">0</span>
+                </div>
+                <div class="metric-chip">
+                    <span class="metric-label">👍 Patterns Learned</span>
+                    <span class="metric-value text-purple" id="stat-thumbs-up">0</span>
+                </div>
+                <div class="metric-chip">
+                    <span class="metric-label">LangSmith Trace</span>
+                    <span class="status-badge" id="stat-langsmith-status">● Active</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Navigation Tabs -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="tab-generator">👤 Agent 1: Customer Persona Generator</button>
+            <button class="tab-btn" data-tab="tab-benefits">⚡ Agent 2: Benefits Extraction Agent</button>
+            <button class="tab-btn" data-tab="tab-angles">🎯 Agent 3: Ad Angle Generation Agent</button>
+            <button class="tab-btn" data-tab="tab-video">🎬 Agent 4: Video Ads Script Agent</button>
+            <button class="tab-btn" data-tab="tab-creative">🎨 Agent 6: Creative Director</button>
+            <button class="tab-btn" data-tab="tab-thumbnail">🖼️ Agent 7: Thumbnail Strategist</button>
+            <button class="tab-btn" data-tab="tab-designer">🎨 Agent 8: Thumbnail Designer</button>
+            <button class="tab-btn" data-tab="tab-titles">🏷️ Agent 9: Title Strategist</button>
+            <button class="tab-btn" data-tab="tab-brief">📋 Agent 10: Content Brief Master</button>
+            <button class="tab-btn" data-tab="tab-metadata">🏷️ Agent 11: Metadata & Publishing Master</button>
+
+            <button class="tab-btn" data-tab="tab-feedback">🧠 Agent 5: Sir's Global Feedback</button>
+            <button class="tab-btn" data-tab="tab-vault">🎯 Saved Audience Groups Vault</button>
+            <button class="tab-btn" data-tab="tab-tracer">🔍 LangSmith Trace Inspector</button>
+            <button class="tab-btn" data-tab="tab-knowledge">📚 Knowledge Base & Upload</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- TAB 1: CUSTOMER PERSONA GENERATOR & SHOWCASE -->
+            <section id="tab-generator" class="tab-pane active">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Brand Strategy Panel</h2>
+                        <p class="card-description">
+                            <b>Agent 1:</b> Analyzes the brand promise, ideal customer, and core problem to
+                            generate 1 detailed general customer persona.
+                        </p>
+
+                        <form id="persona-generator-form">
+                            <!-- Field 1: One-Line Promise -->
+                            <div class="form-group">
+                                <label for="one_line_promise">1. ONE-LINE PROMISE</label>
+                                <select id="one_line_promise" class="form-select-dropdown" required>
+                                    <option
+                                        value="Transform hair thinning into full, natural hair in 90 days without surgery"
+                                        selected>Transform hair thinning into full, natural hair in 90 days without
+                                        surgery</option>
+                                    <option value="Master high-converting video ad copy & 10x campaign ROI in 30 days">
+                                        Master high-converting video ad copy & 10x campaign ROI in 30 days</option>
+                                    <option
+                                        value="Scale your D2C brand from $10k to $100k/mo with automated ad funnels">
+                                        Scale your D2C brand from $10k to $100k/mo with automated ad funnels</option>
+                                    <option value="Lose 20 lbs in 60 days with personalized organic metabolic routines">
+                                        Lose 20 lbs in 60 days with personalized organic metabolic routines</option>
+                                    <option value="Land senior executive roles with 40%+ salary increase in 90 days">
+                                        Land senior executive roles with 40%+ salary increase in 90 days</option>
+                                    <option
+                                        value="Build an automated 6-figure agency using AI-powered client acquisition">
+                                        Build an automated 6-figure agency using AI-powered client acquisition</option>
+                                    <option
+                                        value="Generate 50+ qualified real estate buyer leads every month on autopilot">
+                                        Generate 50+ qualified real estate buyer leads every month on autopilot</option>
+                                    <option
+                                        value="Reclaim youthful energy and peak focus through bio-aligned optimization">
+                                        Reclaim youthful energy and peak focus through bio-aligned optimization</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Ideal Customer -->
+                            <div class="form-group">
+                                <label for="ideal_customer">2. IDEAL CUSTOMER</label>
+                                <select id="ideal_customer" class="form-select-dropdown" required>
+                                    <option value="Men & Women aged 25-55 experiencing early to mid-stage hair loss"
+                                        selected>Men & Women aged 25-55 experiencing early to mid-stage hair loss
+                                    </option>
+                                    <option value="Digital Marketers, Media Buyers, & Agency Owners seeking ROI">Digital
+                                        Marketers, Media Buyers, & Agency Owners seeking ROI</option>
+                                    <option value="E-Commerce Founders & Brand Managers running Meta & Google Ads">
+                                        E-Commerce Founders & Brand Managers running Meta & Google Ads</option>
+                                    <option value="Busy Working Professionals aged 30-50 looking to improve health">Busy
+                                        Working Professionals aged 30-50 looking to improve health</option>
+                                    <option value="Mid-Level Corporate Managers seeking executive career growth">
+                                        Mid-Level Corporate Managers seeking executive career growth</option>
+                                    <option value="Freelancers & Consultants scaling to 6-figure recurring retainers">
+                                        Freelancers & Consultants scaling to 6-figure recurring retainers</option>
+                                    <option
+                                        value="Real Estate Agents & Investors looking for high-intent property leads">
+                                        Real Estate Agents & Investors looking for high-intent property leads</option>
+                                    <option
+                                        value="Entrepreneurs & Executives aiming for physical and mental optimization">
+                                        Entrepreneurs & Executives aiming for physical and mental optimization</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Core Pain Point -->
+                            <div class="form-group">
+                                <label for="pain_point">3. CORE PAIN POINT</label>
+                                <select id="pain_point" class="form-select-dropdown" required>
+                                    <option
+                                        value="Loss of confidence, fear of aging, frustrated with ineffective chemical treatments"
+                                        selected>Loss of confidence, fear of aging, frustrated with ineffective chemical
+                                        treatments</option>
+                                    <option
+                                        value="Rising CAC, low click-through rates, fatigue from generic ad scripts">
+                                        Rising CAC, low click-through rates, fatigue from generic ad scripts</option>
+                                    <option value="Unpredictable revenue, high ad costs, low customer lifetime value">
+                                        Unpredictable revenue, high ad costs, low customer lifetime value</option>
+                                    <option
+                                        value="Stuck in yo-yo dieting, low energy, lack of time for complex gym routines">
+                                        Stuck in yo-yo dieting, low energy, lack of time for complex gym routines
+                                    </option>
+                                    <option value="Overworked, overlooked for promotions, stuck at salary ceiling">
+                                        Overworked, overlooked for promotions, stuck at salary ceiling</option>
+                                    <option
+                                        value="Trading time for money, unable to delegate, struggling to find high-paying clients">
+                                        Trading time for money, unable to delegate, struggling to find high-paying
+                                        clients</option>
+                                    <option value="Wasting thousands on cold calling and low-quality tire-kicker leads">
+                                        Wasting thousands on cold calling and low-quality tire-kicker leads</option>
+                                    <option value="Chronic fatigue, brain fog, feeling burned out despite hard work">
+                                        Chronic fatigue, brain fog, feeling burned out despite hard work</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Brand Solution -->
+                            <div class="form-group">
+                                <label for="solution">4. BRAND SOLUTION</label>
+                                <select id="solution" class="form-select-dropdown" required>
+                                    <option
+                                        value="Non-surgical, organic scalp revival system with guaranteed high-density follicle recovery"
+                                        selected>Non-surgical, organic scalp revival system with guaranteed high-density
+                                        follicle recovery</option>
+                                    <option
+                                        value="Semantic RAG transcript framework generating 10 structured ad variations in minutes">
+                                        Semantic RAG transcript framework generating 10 structured ad variations in
+                                        minutes</option>
+                                    <option
+                                        value="Plug-and-play omni-channel acquisition funnel with 3x ROAS guarantee">
+                                        Plug-and-play omni-channel acquisition funnel with 3x ROAS guarantee</option>
+                                    <option
+                                        value="15-minute daily home metabolic protocol with 1-on-1 nutritionist coaching">
+                                        15-minute daily home metabolic protocol with 1-on-1 nutritionist coaching
+                                    </option>
+                                    <option
+                                        value="Executive positioning strategy & confidential interview negotiation playbook">
+                                        Executive positioning strategy & confidential interview negotiation playbook
+                                    </option>
+                                    <option
+                                        value="AI-driven client acquisition engine that books 20+ sales calls weekly">
+                                        AI-driven client acquisition engine that books 20+ sales calls weekly</option>
+                                    <option
+                                        value="Targeted hyper-local lead generation system delivering ready-to-buy prospects">
+                                        Targeted hyper-local lead generation system delivering ready-to-buy prospects
+                                    </option>
+                                    <option value="Science-backed circadian optimization & natural peptide stack">
+                                        Science-backed circadian optimization & natural peptide stack</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="persona_count">NUMBER OF PERSONAS</label>
+                                <select id="persona_count" class="form-select-dropdown">
+                                    <option value="1" selected>1 Persona (American Hairline General)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="topic_filter">KNOWLEDGE BASE FILTER (OPTIONAL)</label>
+                                <select id="topic_filter" class="form-select-dropdown">
+                                    <option value="" selected>All Course Topics</option>
+                                    <option value="Hook Writing">Hook Writing & Attention</option>
+                                    <option value="Offer Framing">Offer Framing & Guarantees</option>
+                                    <option value="Storytelling">Storytelling & Pain Points</option>
+                                    <option value="Objection Handling">Objection Handling</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate">
+                                <span class="btn-text">👤 Generate 1 General Persona (American Hairline)</span>
+                                <span class="spinner hidden" id="gen-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="latest-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Persona Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Persona Completeness</span>
+                                <span class="b-val text-emerald" id="m-framework">100%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Context Grounding</span>
+                                <span class="b-val text-indigo" id="m-grounding">82.4%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Diversity Index</span>
+                                <span class="b-val text-purple" id="m-diversity">0.8850</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Policy Compliance</span>
+                                <span class="b-val text-emerald" id="m-policy">100%</span>
+                            </div>
+                        </div>
+
+                        <!-- Persona Cards Grid -->
+                        <div class="variations-grid" id="variations-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: SAVED TARGET AUDIENCE GROUPS VAULT (REFERENCE UI SPEC) -->
+            <section id="tab-vault" class="tab-pane">
+                <div class="card full-width vault-container">
+                    <div class="vault-header">
+                        <div>
+                            <div class="vault-title-row">
+                                <span class="vault-icon">🎯</span>
+                                <h2 class="card-title">Target Audience Groups</h2>
+                            </div>
+                            <p class="card-description">Define specific buyer personas to instruct the AI's tone and
+                                terminology.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-audience-vault">+ Add Audience</button>
+                    </div>
+
+                    <!-- Reference How To Use Box -->
+                    <div class="vault-how-to-box">
+                        <strong>How to use this:</strong> Create deep psychological profiles for different demographics
+                        (e.g. 'Men 20-30 worried about early recession', 'Women considering extensions'). The AI will
+                        adjust its empathy, vocabulary, and pain-points when an audience is active.
+                    </div>
+
+                    <!-- Audience Cards Grid -->
+                    <div class="audience-vault-grid" id="audience-vault-grid">
+                        <!-- Rendered via app.js -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: AGENT 2 BENEFITS EXTRACTION AGENT -->
+            <section id="tab-benefits" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Benefits Strategy Panel</h2>
+                        <p class="card-description">Takes product details + customer persona to extract 10 core
+                            benefits mapped to the persona and underlying emotions.</p>
+
+                        <form id="benefits-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="b_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="b_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline
+                                        Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting &
+                                        RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel
+                                    </option>
+                                    <option value="Organic Metabolic Health Protocol">Organic Metabolic Health Protocol
+                                    </option>
+                                    <option value="Executive Career Positioning Playbook">Executive Career Positioning
+                                        Playbook</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Product Specifications / Details -->
+                            <div class="form-group">
+                                <label for="b_product_details">2. PRODUCT SPECIFICATIONS & DETAILS</label>
+                                <select id="b_product_details" class="form-select-dropdown" required>
+                                    <option
+                                        value="Non-surgical, organic scalp revival system with guaranteed high-density follicle recovery, zero side effects, 90-day progress tracker, and fast 15-minute daily routine."
+                                        selected>Non-surgical, organic scalp revival system with guaranteed high-density
+                                        follicle recovery, zero side effects, 90-day progress tracker, and fast
+                                        15-minute daily routine.</option>
+                                    <option
+                                        value="Semantic RAG transcript framework generating 10 structured ad variations in minutes with zero-hallucination guarantee and LangSmith tracing.">
+                                        Semantic RAG transcript framework generating 10 structured ad variations in
+                                        minutes with zero-hallucination guarantee and LangSmith tracing.</option>
+                                    <option
+                                        value="Plug-and-play omni-channel acquisition funnel with 3x ROAS guarantee, automated email nurture, and high-converting VSL scripts.">
+                                        Plug-and-play omni-channel acquisition funnel with 3x ROAS guarantee, automated
+                                        email nurture, and high-converting VSL scripts.</option>
+                                    <option
+                                        value="15-minute daily home metabolic protocol with 1-on-1 nutritionist coaching, organic peptide stack, and personalized meal blueprints.">
+                                        15-minute daily home metabolic protocol with 1-on-1 nutritionist coaching,
+                                        organic peptide stack, and personalized meal blueprints.</option>
+                                    <option
+                                        value="Executive positioning strategy & confidential interview negotiation playbook with 40%+ salary boost guarantee and VIP career coaching.">
+                                        Executive positioning strategy & confidential interview negotiation playbook
+                                        with 40%+ salary boost guarantee and VIP career coaching.</option>
+                                    <option
+                                        value="AI-driven client acquisition engine that books 20+ qualified sales calls weekly on autopilot with zero cold calling.">
+                                        AI-driven client acquisition engine that books 20+ qualified sales calls weekly
+                                        on autopilot with zero cold calling.</option>
+                                    <option
+                                        value="Targeted hyper-local lead generation system delivering ready-to-buy prospects with instant CRM sync and automated SMS follow-ups.">
+                                        Targeted hyper-local lead generation system delivering ready-to-buy prospects
+                                        with instant CRM sync and automated SMS follow-ups.</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Target Personas Context Source -->
+                            <div class="form-group">
+                                <label for="b_persona_source">3. PERSONA MAPPING SOURCE</label>
+                                <select id="b_persona_source" class="form-select-dropdown">
+                                    <option value="active_personas" selected>Use Agent 1 Active Customer Personas
+                                    </option>
+                                    <option value="saved_vault">Use Saved Audience Groups Vault</option>
+                                    <option value="default">Use All Core Demographic Archetypes</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="b_topic_filter">KNOWLEDGE BASE FILTER (OPTIONAL)</label>
+                                <select id="b_topic_filter" class="form-select-dropdown">
+                                    <option value="" selected>All Course Topics</option>
+                                    <option value="Hook Writing">Hook Writing & Attention</option>
+                                    <option value="Offer Framing">Offer Framing & Guarantees</option>
+                                    <option value="Storytelling">Storytelling & Pain Points</option>
+                                    <option value="Objection Handling">Objection Handling</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-benefits">
+                                <span class="btn-text">⚡ Extract 10 Core Benefits & Emotional Maps</span>
+                                <span class="spinner hidden" id="benefits-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="benefits-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="b-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="b-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="b-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="b-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="b-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Benefits Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="benefits-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Persona Coverage</span>
+                                <span class="b-val text-emerald" id="bm-coverage">100%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Emotional Resonance</span>
+                                <span class="b-val text-indigo" id="bm-resonance">95.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Feature Alignment</span>
+                                <span class="b-val text-purple" id="bm-alignment">100%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Total Core Benefits</span>
+                                <span class="b-val text-emerald" id="bm-total">10 / 10</span>
+                            </div>
+                        </div>
+
+                        <!-- 10 Benefits Cards Grid -->
+                        <div class="benefits-grid" id="benefits-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: AGENT 3 BENEFITS / ANGLE AGENT -->
+            <section id="tab-angles" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">3. Ad Angle Generation Agent</h2>
+                        <p class="card-description">Converts each benefit into a distinct ad angle (identity angle, gift
+                            angle, proof angle, objection-killer angle, problem/agitation angle, etc.) — this is where
+                            "one product, infinite angles" happens.</p>
+
+                        <form id="angles-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="a_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="a_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline
+                                        Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting &
+                                        RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel
+                                    </option>
+                                    <option value="Organic Metabolic Health Protocol">Organic Metabolic Health Protocol
+                                    </option>
+                                    <option value="Executive Career Positioning Playbook">Executive Career Positioning
+                                        Playbook</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Product Specifications / Details -->
+                            <div class="form-group">
+                                <label for="a_product_details">2. PRODUCT SPECIFICATIONS & DETAILS</label>
+                                <select id="a_product_details" class="form-select-dropdown" required>
+                                    <option
+                                        value="Non-surgical, organic scalp revival system with guaranteed high-density follicle recovery, zero side effects, 90-day progress tracker, and fast 15-minute daily routine."
+                                        selected>Non-surgical, organic scalp revival system with guaranteed high-density
+                                        follicle recovery, zero side effects, 90-day progress tracker, and fast
+                                        15-minute daily routine.</option>
+                                    <option
+                                        value="Semantic RAG transcript framework generating 10 structured ad variations in minutes with zero-hallucination guarantee and LangSmith tracing.">
+                                        Semantic RAG transcript framework generating 10 structured ad variations in
+                                        minutes with zero-hallucination guarantee and LangSmith tracing.</option>
+                                    <option
+                                        value="Plug-and-play omni-channel acquisition funnel with 3x ROAS guarantee, automated email nurture, and high-converting VSL scripts.">
+                                        Plug-and-play omni-channel acquisition funnel with 3x ROAS guarantee, automated
+                                        email nurture, and high-converting VSL scripts.</option>
+                                    <option
+                                        value="15-minute daily home metabolic protocol with 1-on-1 nutritionist coaching, organic peptide stack, and personalized meal blueprints.">
+                                        15-minute daily home metabolic protocol with 1-on-1 nutritionist coaching,
+                                        organic peptide stack, and personalized meal blueprints.</option>
+                                    <option
+                                        value="Executive positioning strategy & confidential interview negotiation playbook with 40%+ salary boost guarantee and VIP career coaching.">
+                                        Executive positioning strategy & confidential interview negotiation playbook
+                                        with 40%+ salary boost guarantee and VIP career coaching.</option>
+                                    <option
+                                        value="AI-driven client acquisition engine that books 20+ qualified sales calls weekly on autopilot with zero cold calling.">
+                                        AI-driven client acquisition engine that books 20+ qualified sales calls weekly
+                                        on autopilot with zero cold calling.</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Target Personas Context Source -->
+                            <div class="form-group">
+                                <label for="a_persona_source">3. PERSONA MAPPING SOURCE</label>
+                                <select id="a_persona_source" class="form-select-dropdown">
+                                    <option value="active_personas" selected>Use Agent 1 Active Customer Personas
+                                    </option>
+                                    <option value="saved_vault">Use Saved Audience Groups Vault</option>
+                                    <option value="default">Use All Core Demographic Archetypes</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Angles Per Benefit -->
+                            <div class="form-group">
+                                <label for="a_angles_count">4. AD ANGLES PER BENEFIT</label>
+                                <select id="a_angles_count" class="form-select-dropdown">
+                                    <option value="5" selected>5 Ad Angles / Benefit (Recommended)</option>
+                                    <option value="6">6 Ad Angles / Benefit</option>
+                                    <option value="8">8 Ad Angles / Benefit (Exhaustive)</option>
+                                    <option value="10">10 Ad Angles / Benefit (Maximum Frameworks)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="a_topic_filter">KNOWLEDGE BASE FILTER (OPTIONAL)</label>
+                                <select id="a_topic_filter" class="form-select-dropdown">
+                                    <option value="" selected>All Course Topics</option>
+                                    <option value="Hook Writing">Hook Writing & Attention</option>
+                                    <option value="Offer Framing">Offer Framing & Guarantees</option>
+                                    <option value="Storytelling">Storytelling & Pain Points</option>
+                                    <option value="Objection Handling">Objection Handling</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-angles">
+                                <span class="btn-text">📐 Generate Benefits & 5-10 Ad Angles</span>
+                                <span class="spinner hidden" id="angles-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="angles-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="a-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="a-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="a-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="a-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="a-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Angles Matrix Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="angles-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Framework Coverage</span>
+                                <span class="b-val text-emerald" id="am-coverage">100%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Angle Diversity Index</span>
+                                <span class="b-val text-indigo" id="am-diversity">0.9650</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Persona Mapping</span>
+                                <span class="b-val text-purple" id="am-mapping">100%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Total Ad Angles</span>
+                                <span class="b-val text-emerald" id="am-total">20 Angles</span>
+                            </div>
+                        </div>
+
+                        <!-- Benefit & Angle Matrix Grid -->
+                        <div class="angles-grid" id="angles-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: AGENT 4 VIDEO ADS SCRIPT GENERATION AGENT -->
+            <section id="tab-video" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">4. Video Ads Script Generation Agent</h2>
+                        <p class="card-description">Converts a strategic ad angle & hook into a scene-by-scene script
+                            (Hook, Problem, Agitation, Product Reveal, CTA) with visual direction notes, spoken
+                            voiceover script, audio cues, and casting guidance.</p>
+
+                        <form id="video-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="v_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="v_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline
+                                        Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting &
+                                        RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel
+                                    </option>
+                                    <option value="Organic Metabolic Health Protocol">Organic Metabolic Health Protocol
+                                    </option>
+                                    <option value="Executive Career Positioning Playbook">Executive Career Positioning
+                                        Playbook</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Chosen Angle -->
+                            <div class="form-group">
+                                <label for="v_chosen_angle">2. CHOSEN AD ANGLE / HEADLINE</label>
+                                <select id="v_chosen_angle" class="form-select-dropdown" required>
+                                    <option value="Tired of Hiding Under Caps & Avoiding Overhead Lightss" selected>
+                                        Tired of Hiding Under Caps & Avoiding Overhead Lightss</option>
+                                    <option value="Reclaim Your Executive Presence & Youthful Edge">Reclaim Your
+                                        Executive Presence & Youthful Edge</option>
+                                    <option value="94.2% Follicle Density Recovery in 90 Days: See Clinical Proof">94.2%
+                                        Follicle Density Recovery in 90 Days: See Clinical Proof</option>
+                                    <option value="Free Scalp Density Scan + Bonus Hair Care Routine Kit ($150 Value)">
+                                        Free Scalp Density Scan + Bonus Hair Care Routine Kit ($150 Value)</option>
+                                    <option value="'Will People Notices' Why Our Bio-Matrix Looks 100% Natural">'Will
+                                        People Notices' Why Our Bio-Matrix Looks 100% Natural</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Scroll-Stopping Hook -->
+                            <div class="form-group">
+                                <label for="v_chosen_hook">3. SCROLL-STOPPING HOOK</label>
+                                <select id="v_chosen_hook" class="form-select-dropdown" required>
+                                    <option
+                                        value="Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors."
+                                        selected>Stop scrolling if you catch yourself constantly checking your hairline
+                                        in rearview mirrors.</option>
+                                    <option
+                                        value="Looking 10 years younger isn't about vanity—it's about leading with total confidence.">
+                                        Looking 10 years younger isn't about vanity—it's about leading with total
+                                        confidence.</option>
+                                    <option
+                                        value="Don't take our word for it—here is what 1,240+ real clients experienced without surgery.">
+                                        Don't take our word for it—here is what 1,240+ real clients experienced without
+                                        surgery.</option>
+                                    <option
+                                        value="Why 80% of topical serums fail—and the micro-activation layer surgeons skip.">
+                                        Why 80% of topical serums fail—and the micro-activation layer surgeons skip.
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Target Persona -->
+                            <div class="form-group">
+                                <label for="v_target_persona">4. TARGET CUSTOMER PERSONA</label>
+                                <select id="v_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Marcus, 34)" selected>The Skeptical
+                                        Solution Seeker (Marcus, 34)</option>
+                                    <option value="The High-Stakes Career Achiever (Sarah, 29)">The High-Stakes Career
+                                        Achiever (Sarah, 29)</option>
+                                    <option value="The Research-Driven Pragmatist (David, 45)">The Research-Driven
+                                        Pragmatist (David, 45)</option>
+                                    <option value="The Overwhelmed Parent & Professional (Elena, 38)">The Overwhelmed
+                                        Parent & Professional (Elena, 38)</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 5: Script Framework -->
+                            <div class="form-group">
+                                <label for="v_script_framework">5. COPYWRITING FRAMEWORK STRUCTURE</label>
+                                <select id="v_script_framework" class="form-select-dropdown" required>
+                                    <option value="PAS (Problem-Agitate-Solution)" selected>PAS (Problem - Agitate -
+                                        Solution - CTA)</option>
+                                    <option value="Before-After-Bridge (BAB)">Before-After-Bridge (BAB)</option>
+                                    <option value="Hook-Problem-Agitation-Product Reveal-CTA">Hook - Problem - Agitation
+                                        - Reveal - CTA</option>
+                                    <option value="AIDA (Attention-Interest-Desire-Action)">AIDA (Attention - Interest -
+                                        Desire - Action)</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 6: Target Duration -->
+                            <div class="form-group">
+                                <label for="v_total_duration">6. TARGET VIDEO AD DURATION</label>
+                                <select id="v_total_duration" class="form-select-dropdown" required>
+                                    <option value="30 Seconds" selected>30 Seconds (Standard Direct Response)</option>
+                                    <option value="45 Seconds">45 Seconds (Story & Demo Focus)</option>
+                                    <option value="60 Seconds">60 Seconds (Full Case Study Breakdown)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-video">
+                                <span class="btn-text">🎬 Create Video Ad Scripts & Storyboards</span>
+                                <span class="spinner hidden" id="video-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="video-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="v-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="v-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="v-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="v-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="v-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Scripts Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="video-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Hook Strength</span>
+                                <span class="b-val text-emerald" id="vm-hook">95.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Visual Clarity</span>
+                                <span class="b-val text-indigo" id="vm-visual">92.5%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Framework Pacing</span>
+                                <span class="b-val text-purple" id="vm-pacing">96.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Policy Compliance</span>
+                                <span class="b-val text-emerald" id="vm-policy">100%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Total Video Scripts</span>
+                                <span class="b-val text-emerald" id="vm-total">8 / 8 Scripts</span>
+                            </div>
+                        </div>
+
+                        <!-- Script Navigation & Scroll Controls Bar for Agent 4 -->
+                        <div class="script-nav-bar" id="script-nav-bar">
+                            <div class="script-nav-left">
+                                <span class="nav-title">📌 Jump to Script (1-8):</span>
+                                <div class="script-pills-row" id="script-pills-row"></div>
+                            </div>
+                            <div class="script-nav-right">
+                                <span class="nav-title">↕️ Scroll Controls:</span>
+                                <button type="button" class="btn-scroll-step" title="Download All Scripts"
+                                    onclick="downloadAllAgent5Scripts()">
+                                    <span>⬇️ Download All</span>
+                                </button>
+                                <button type="button" class="btn-scroll-step" id="btn-script-scroll-up"
+                                    title="Scroll Up To Previous Script" onclick="scrollAgent5Up()">
+                                    <span>▲ Prev</span>
+                                </button>
+                                <button type="button" class="btn-scroll-step" id="btn-script-scroll-down"
+                                    title="Scroll Down To Next Script" onclick="scrollAgent5Down()">
+                                    <span>▼ Next</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Video Scripts Showcase Grid -->
+                        <div class="video-scripts-grid" id="video-scripts-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: AGENT 6 CREATIVE DIRECTOR -->
+            <section id="tab-creative" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Agent 6: Creative Director</h2>
+                        <p class="card-description">Converts a video script into a high-end creative direction (visuals, lighting, wardrobe, audio, camera) ready for production.</p>
+
+                        <form id="creative-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="c_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <div class="dropdown-with-controls">
+                                    <select id="c_product_name" class="form-select-dropdown" required>
+                                        <option value="American Hairline Scalp Revival System" selected>American Hairline Scalp Revival System</option>
+                                        <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting & RAG Ad Engine</option>
+                                        <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel</option>
+                                    </select>
+                                    <div class="dropdown-controls-group">
+                                        <button type="button" class="dropdown-icon-btn" title="Add New">➕</button>
+                                        <button type="button" class="dropdown-icon-btn" title="Edit Selected">✏️</button>
+                                        <button type="button" class="dropdown-icon-btn" title="Delete Selected">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Field 2: Target Video Script Title -->
+                            <div class="form-group">
+                                <label for="c_script_title">2. VIDEO SCRIPT TITLE</label>
+                                <div class="dropdown-with-controls">
+                                    <select id="c_script_title" class="form-select-dropdown" required>
+                                        <option value="The Rearview Mirror Pattern Interrupt" selected>The Rearview Mirror Pattern Interrupt</option>
+                                        <option value="The Scientific Root Cause Framework">The Scientific Root Cause Framework</option>
+                                        <option value="The 15-Minute Daily Protocol">The 15-Minute Daily Protocol</option>
+                                    </select>
+                                    <div class="dropdown-controls-group">
+                                        <button type="button" class="dropdown-icon-btn" title="Add New">➕</button>
+                                        <button type="button" class="dropdown-icon-btn" title="Edit Selected">✏️</button>
+                                        <button type="button" class="dropdown-icon-btn" title="Delete Selected">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Field 3: Script Hook -->
+                            <div class="form-group">
+                                <label for="c_script_hook">3. CORE HOOK</label>
+                                <div class="dropdown-with-controls">
+                                    <select id="c_script_hook" class="form-select-dropdown" required>
+                                        <option value="Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors." selected>Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors.</option>
+                                        <option value="90% of hair loss solutions mask the problem instead of activating dormant follicles.">90% of hair loss solutions mask the problem instead of activating dormant follicles.</option>
+                                        <option value="Tired of paying $150/month forever for temporary sprays? Discover the permanent solution.">Tired of paying $150/month forever for temporary sprays? Discover the permanent solution.</option>
+                                    </select>
+                                    <div class="dropdown-controls-group">
+                                        <button type="button" class="dropdown-icon-btn" title="Add New">➕</button>
+                                        <button type="button" class="dropdown-icon-btn" title="Edit Selected">✏️</button>
+                                        <button type="button" class="dropdown-icon-btn" title="Delete Selected">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Field 4: Visual Style Preset -->
+                            <div class="form-group">
+                                <label for="c_style_preset">4. VISUAL STYLE PRESET</label>
+                                <select id="c_style_preset" class="form-select-dropdown" style="width: 100%;">
+                                    <option value="Cinematic Dark Chiaroscuro" selected>🎬 Cinematic Dark Chiaroscuro (Moody, High Contrast)</option>
+                                    <option value="Vibrant Direct-Response UGC">☀️ Vibrant Direct-Response UGC (Authentic, Bright)</option>
+                                    <option value="Clean Minimalist Studio">🍏 Clean Minimalist Studio (Apple Aesthetic, Soft Light)</option>
+                                    <option value="Cyberpunk Neon Tech">🌆 Cyberpunk Neon Tech (High Tech, Electric Glow)</option>
+                                    <option value="Documentary Real-Story">📹 Documentary Real-Story (Warm, Organic)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-creative">
+                                <span class="btn-text">🎨 Generate Master Creative Direction</span>
+                                <span class="spinner hidden" id="creative-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="creative-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="c-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="c-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="c-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="c-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="c-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Creative Direction Showcase Area (Advanced UI) -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="creative-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Brand Alignment</span>
+                                <span class="b-val text-emerald" id="cm-brand">99.2%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Visual Cohesion</span>
+                                <span class="b-val text-indigo" id="cm-visual">98.5%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Prod Feasibility</span>
+                                <span class="b-val text-purple" id="cm-feasibility">96.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Creative Status</span>
+                                <span class="b-val text-emerald" id="cm-status">READY</span>
+                            </div>
+                        </div>
+
+                        <!-- Brief Action Tools Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding: 10px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600; font-size: 0.95rem; color: #fff;">Master Production Brief</span>
+                                <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 0.75rem;">9 Categories</span>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-full-brief" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    📋 Copy Full Brief (Markdown)
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-download-brief-json" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    ⬇️ Download Brief (.JSON)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Creative Direction Render Area -->
+                        <div id="creative-direction-render" class="creative-board-container">
+                            <div class="empty-state">
+                                <h3>No Creative Direction Generated</h3>
+                                <p>Click "Generate Master Creative Direction" to build the visual identity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: AGENT 7 THUMBNAIL STRATEGIST -->
+            <section id="tab-thumbnail" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Agent 7: Thumbnail Strategist</h2>
+                        <p class="card-description">Designs ultra-high CTR thumbnail concepts, psychological pattern interrupts, text overlays, and ready-to-use Midjourney / Flux prompts.</p>
+
+                        <form id="thumbnail-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="t_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="t_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting & RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Target Video Script Title -->
+                            <div class="form-group">
+                                <label for="t_script_title">2. VIDEO SCRIPT TITLE</label>
+                                <select id="t_script_title" class="form-select-dropdown" required>
+                                    <option value="The Rearview Mirror Pattern Interrupt" selected>The Rearview Mirror Pattern Interrupt</option>
+                                    <option value="The Scientific Root Cause Framework">The Scientific Root Cause Framework</option>
+                                    <option value="The 15-Minute Daily Protocol">The 15-Minute Daily Protocol</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Script Hook -->
+                            <div class="form-group">
+                                <label for="t_script_hook">3. CORE HOOK</label>
+                                <select id="t_script_hook" class="form-select-dropdown" required>
+                                    <option value="Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors." selected>Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors.</option>
+                                    <option value="90% of hair loss solutions mask the problem instead of activating dormant follicles.">90% of hair loss solutions mask the problem instead of activating dormant follicles.</option>
+                                    <option value="Tired of paying $150/month forever for temporary sprays? Discover the permanent solution.">Tired of paying $150/month forever for temporary sprays? Discover the permanent solution.</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Target Persona -->
+                            <div class="form-group">
+                                <label for="t_target_persona">4. TARGET PERSONA</label>
+                                <select id="t_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Men 25-35)" selected>The Skeptical Solution Seeker (Men 25-35)</option>
+                                    <option value="The High-Stakes Career Achiever (Age 35-50)">The High-Stakes Career Achiever (Age 35-50)</option>
+                                    <option value="Direct Response Performance Marketers">Direct Response Performance Marketers</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 5: Visual Style -->
+                            <div class="form-group">
+                                <label for="t_visual_style">5. THUMBNAIL VISUAL STYLE</label>
+                                <select id="t_visual_style" class="form-select-dropdown" required>
+                                    <option value="High-CTR Curiosity Gap (Shock & Contrast)" selected>🔥 High-CTR Curiosity Gap (Shock & Contrast)</option>
+                                    <option value="Clean Apple Studio (Product Focus)">🍏 Clean Apple Studio (Product Focus)</option>
+                                    <option value="Split Before/After Comparison">⚡ Split Before/After Comparison</option>
+                                    <option value="Dark Neon Tech (Electric Glow)">🌆 Dark Neon Tech (Electric Glow)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-thumbnail">
+                                <span class="btn-text">🖼️ Generate Thumbnail Strategy</span>
+                                <span class="spinner hidden" id="thumbnail-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="thumbnail-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="t-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="t-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="t-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="t-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="t-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="thumbnail-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Predicted CTR</span>
+                                <span class="b-val text-emerald" id="tm-ctr">97.8%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Visual Clarity</span>
+                                <span class="b-val text-indigo" id="tm-clarity">96.5%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Curiosity Gap</span>
+                                <span class="b-val text-purple" id="tm-curiosity">98.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Status</span>
+                                <span class="b-val text-emerald" id="tm-status">HIGH CTR OPTIMIZED</span>
+                            </div>
+                        </div>
+
+                        <!-- Brief Action Tools Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding: 10px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600; font-size: 0.95rem; color: #fff;">Thumbnail Strategy Blueprint</span>
+                                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 0.75rem;">6 Dimensions</span>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-midjourney-prompt" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    🎨 Copy Midjourney / Flux Prompt
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-thumbnail-brief" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    📋 Copy Full Strategy (Markdown)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnail Render Container -->
+                        <div id="thumbnail-strategy-render" class="creative-board-container">
+                            <div class="empty-state">
+                                <h3>No Thumbnail Strategy Generated</h3>
+                                <p>Click "Generate Thumbnail Strategy" to design high-CTR concepts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 8: AGENT 8 THUMBNAIL DESIGNER -->
+            <section id="tab-designer" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Agent 8: Thumbnail Designer</h2>
+                        <p class="card-description">Translates the approved thumbnail concept into a 6-layer Photoshop/Canva production assembly guide & AI prompt specs.</p>
+
+                        <form id="designer-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="d_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="d_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting & RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Target Video Script Title -->
+                            <div class="form-group">
+                                <label for="d_script_title">2. VIDEO SCRIPT TITLE</label>
+                                <select id="d_script_title" class="form-select-dropdown" required>
+                                    <option value="The Rearview Mirror Pattern Interrupt" selected>The Rearview Mirror Pattern Interrupt</option>
+                                    <option value="The Scientific Root Cause Framework">The Scientific Root Cause Framework</option>
+                                    <option value="The 15-Minute Daily Protocol">The 15-Minute Daily Protocol</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Approved Concept Title -->
+                            <div class="form-group">
+                                <label for="d_concept_title">3. APPROVED CONCEPT TITLE</label>
+                                <select id="d_concept_title" class="form-select-dropdown" required>
+                                    <option value="The Spreadsheet Decision" selected>The Spreadsheet Decision</option>
+                                    <option value="10x Magnification Truth">10x Magnification Truth</option>
+                                    <option value="30-Day Torture Test">30-Day Torture Test</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Thumbnail Text Copy -->
+                            <div class="form-group">
+                                <label for="d_thumbnail_copy">4. THUMBNAIL TEXT COPY</label>
+                                <select id="d_thumbnail_copy" class="form-select-dropdown" required>
+                                    <option value="System Beat Surgery 2:1" selected>System Beat Surgery 2:1</option>
+                                    <option value="No Scar. 10x Proof.">No Scar. 10x Proof.</option>
+                                    <option value="Gym. Pool. Wind. Passed.">Gym. Pool. Wind. Passed.</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 5: Main Visual Concept -->
+                            <div class="form-group">
+                                <label for="d_main_visual">5. MAIN VISUAL DESCRIPTION</label>
+                                <select id="d_main_visual" class="form-select-dropdown" required>
+                                    <option value="Over-shoulder shot of subject at desk, laptop screen showing color-coded decision matrix with 'System' column glowing green." selected>Over-shoulder shot of subject at desk, laptop screen showing color-coded decision matrix with 'System' column glowing green.</option>
+                                    <option value="Extreme macro split-screen: left side shows transplant scar diagram, right side shows hybrid base seamlessly integrated on crown at 10x magnification.">Extreme macro split-screen: left side shows transplant scar diagram, right side shows hybrid base seamlessly integrated on crown at 10x magnification.</option>
+                                    <option value="Four-panel grid: gym sweat, pool chlorine, wind lift, harsh LED office light — each showing system intact with micro-callout 'PASSED'.">Four-panel grid: gym sweat, pool chlorine, wind lift, harsh LED office light — each showing system intact with micro-callout 'PASSED'.</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-designer">
+                                <span class="btn-text">🎨 Generate Production Design Brief</span>
+                                <span class="spinner hidden" id="designer-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="designer-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="d-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="d-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="d-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="d-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="d-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="designer-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Readability</span>
+                                <span class="b-val text-emerald" id="dm-readability">99.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Mobile Viewport</span>
+                                <span class="b-val text-indigo" id="dm-mobile">98.2%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Color Contrast</span>
+                                <span class="b-val text-purple" id="dm-contrast">97.5%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Status</span>
+                                <span class="b-val text-emerald" id="dm-status">PRODUCTION DESIGN READY</span>
+                            </div>
+                        </div>
+
+                        <!-- Brief Action Tools Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding: 10px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600; font-size: 0.95rem; color: #fff;">Technical Thumbnail Design Brief</span>
+                                <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; font-size: 0.75rem;">7 Layer Dimensions</span>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-designer-prompt" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    🎨 Copy Midjourney / Flux Prompt
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-designer-brief" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    📋 Copy Layer Guide (Markdown)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnail Designer Render Container -->
+                        <div id="designer-strategy-render" class="creative-board-container">
+                            <div class="empty-state">
+                                <h3>No Thumbnail Design Generated</h3>
+                                <p>Approve a Thumbnail Strategy in Agent 7 or click "Generate Production Design Brief".</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 9: AGENT 9 TITLE STRATEGIST -->
+            <section id="tab-titles" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Agent 9: Title Strategist</h2>
+                        <p class="card-description">Generates 10 high-converting video titles organized by 5 psychological frameworks with mobile safe-zone tracking & thumbnail synergy notes.</p>
+
+                        <form id="titles-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="tt_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="tt_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting & RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Target Video Script Title -->
+                            <div class="form-group">
+                                <label for="tt_script_title">2. VIDEO SCRIPT TITLE</label>
+                                <select id="tt_script_title" class="form-select-dropdown" required>
+                                    <option value="The Rearview Mirror Pattern Interrupt" selected>The Rearview Mirror Pattern Interrupt</option>
+                                    <option value="The Scientific Root Cause Framework">The Scientific Root Cause Framework</option>
+                                    <option value="The 15-Minute Daily Protocol">The 15-Minute Daily Protocol</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Script Hook -->
+                            <div class="form-group">
+                                <label for="tt_script_hook">3. CORE HOOK</label>
+                                <select id="tt_script_hook" class="form-select-dropdown" required>
+                                    <option value="Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors." selected>Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors.</option>
+                                    <option value="90% of hair loss solutions mask the problem instead of activating dormant follicles.">90% of hair loss solutions mask the problem instead of activating dormant follicles.</option>
+                                    <option value="Tired of paying $150/month forever for temporary sprays? Discover the permanent solution.">Tired of paying $150/month forever for temporary sprays? Discover the permanent solution.</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Target Persona -->
+                            <div class="form-group">
+                                <label for="tt_target_persona">4. TARGET PERSONA</label>
+                                <select id="tt_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Men 25-35)" selected>The Skeptical Solution Seeker (Men 25-35)</option>
+                                    <option value="The High-Stakes Career Achiever (Age 35-50)">The High-Stakes Career Achiever (Age 35-50)</option>
+                                    <option value="Direct Response Performance Marketers">Direct Response Performance Marketers</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 5: Historical A/B Testing Data (Optional) -->
+                            <div class="form-group">
+                                <label for="tt_historical_ab_data">5. HISTORICAL A/B DATA (OPTIONAL BENCHMARKS)</label>
+                                <select id="tt_historical_ab_data" class="form-select-dropdown">
+                                    <option value="Winning Past Title 1: 'Stop Wasting $15,000 on Surgery Until You Test This' (CTR: 11.2%). Past Winner 2: '90% of Sprays Mask Root Cause' (CTR: 9.8%)." selected>Winning Benchmark: 'Stop Wasting $15k...' (11.2% CTR) + '90% Sprays Mask Root Cause' (9.8% CTR)</option>
+                                    <option value="Winning Benchmark: 'I Tested 10x Scalp Magnification for 90 Days' (CTR: 12.4% Search)">Winning Benchmark: 'I Tested 10x Magnification...' (12.4% Search CTR)</option>
+                                    <option value="None">None (Standard Cold Start)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-titles">
+                                <span class="btn-text">🏷️ Generate 10 High-CTR Video Titles</span>
+                                <span class="spinner hidden" id="titles-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="titles-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="tt-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="tt-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="tt-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="tt-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="tt-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="titles-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Predicted CTR</span>
+                                <span class="b-val text-emerald" id="ttm-ctr">98.4%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Mobile Readability</span>
+                                <span class="b-val text-indigo" id="ttm-mobile">99.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Curiosity Gap</span>
+                                <span class="b-val text-purple" id="ttm-curiosity">97.8%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Status</span>
+                                <span class="b-val text-emerald" id="ttm-status">10 TITLES READY</span>
+                            </div>
+                        </div>
+
+                        <!-- Brief Action Tools Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding: 10px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600; font-size: 0.95rem; color: #fff;">10 High-Converting Title Blueprint</span>
+                                <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.75rem;">5 Framework Categories</span>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn btn-emerald btn-sm" id="btn-generate-v2-titles" style="background: #10b981; color: #fff; font-size: 0.82rem; padding: 6px 12px; font-weight: 600;">
+                                    ⚡ Generate V2 Batch (Hybrid Top Styles)
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-best-title" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    🏆 Copy #1 Title
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-all-titles" style="font-size: 0.82rem; padding: 6px 12px;">
+                                    📋 Copy All 10
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Titles Render Container -->
+                        <div id="titles-strategy-render" class="creative-board-container">
+                            <div class="empty-state">
+                                <h3>No Video Titles Generated</h3>
+                                <p>Click "Generate 10 High-CTR Video Titles" to build title options.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 10: AGENT 10 CONTENT BRIEF MASTER -->
+            <section id="tab-brief" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Agent 10: Content Brief Master</h2>
+                        <p class="card-description">Generates structured Meta Ads Content Briefs with 7 guardrail layers: Tone/Voice, Format Specs, Persona Texture, CTA Intensity, and Compliance Rules.</p>
+
+                        <form id="brief-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="cb_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="cb_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting & RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Target Persona -->
+                            <div class="form-group">
+                                <label for="cb_target_persona">2. TARGET BUYER PERSONA</label>
+                                <select id="cb_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Men 25-35)" selected>The Skeptical Solution Seeker (Men 25-35)</option>
+                                    <option value="The High-Stakes Career Achiever (Age 35-50)">The High-Stakes Career Achiever (Age 35-50)</option>
+                                    <option value="Direct Response Performance Marketers">Direct Response Performance Marketers</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Campaign Objective -->
+                            <div class="form-group">
+                                <label for="cb_campaign_objective">3. CAMPAIGN OBJECTIVE & FUNNEL</label>
+                                <select id="cb_campaign_objective" class="form-select-dropdown" required>
+                                    <option value="Awareness (Passive Discovery & Feed Engagement)" selected>Awareness (Passive Discovery & Feed Engagement)</option>
+                                    <option value="Consideration (Problem-Aware Education & Proof)">Consideration (Problem-Aware Education & Proof)</option>
+                                    <option value="Direct Response Conversion (Offer & Guarantee)">Direct Response Conversion (Offer & Guarantee)</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Ad Format & Specs -->
+                            <div class="form-group">
+                                <label for="cb_ad_format">4. AD FORMAT & ASPECT RATIO</label>
+                                <select id="cb_ad_format" class="form-select-dropdown" required>
+                                    <option value="9:16 IG Reel / FB Story Video Ad (1080x1920)" selected>9:16 IG Reel / FB Story Video Ad (1080x1920)</option>
+                                    <option value="1:1 Feed Carousel & Static Ad (1080x1080)">1:1 Feed Carousel & Static Ad (1080x1080)</option>
+                                    <option value="4:5 Portrait Mobile Feed Video Ad (1080x1350)">4:5 Portrait Mobile Feed Video Ad (1080x1350)</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 5: Tone & Voice Preset -->
+                            <div class="form-group">
+                                <label for="cb_tone_preset">5. TONE & VOICE PRESET</label>
+                                <select id="cb_tone_preset" class="form-select-dropdown" required>
+                                    <option value="Empathetic, Confident & Non-Clinical" selected>Empathetic, Confident & Non-Clinical</option>
+                                    <option value="Authoritative Scientific Specialist (Medical Proof)">Authoritative Scientific Specialist (Medical Proof)</option>
+                                    <option value="Authentic UGC First-Person Storyteller">Authentic UGC First-Person Storyteller</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 6: Reference Asset Example -->
+                            <div class="form-group">
+                                <label for="cb_reference_example">6. REFERENCE ASSET ANCHOR</label>
+                                <select id="cb_reference_example" class="form-select-dropdown" required>
+                                    <option value="Prior High-Performing Customer Journey Video (12.4% CTR Benchmark)" selected>Prior High-Performing Customer Journey Video (12.4% CTR Benchmark)</option>
+                                    <option value="Winning 90-Day Time-Lapse Split UGC Reel">Winning 90-Day Time-Lapse Split UGC Reel</option>
+                                    <option value="Direct Dermatologist Whistleblower Hook Ad">Direct Dermatologist Whistleblower Hook Ad</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-brief">
+                                <span class="btn-text">📋 Generate Meta Ads Content Brief</span>
+                                <span class="spinner hidden" id="brief-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="brief-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="cb-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="cb-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="cb-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="cb-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="cb-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="brief-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">Compliance</span>
+                                <span class="b-val text-emerald" id="cbm-compliance">99.8%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Funnel Alignment</span>
+                                <span class="b-val text-indigo" id="cbm-funnel">98.6%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Emotional Texture</span>
+                                <span class="b-val text-purple" id="cbm-texture">99.2%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Status</span>
+                                <span class="b-val text-emerald" id="cbm-status">BRIEF READY</span>
+                            </div>
+                        </div>
+
+                        <!-- Brief Action Tools Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding: 12px 18px; background: linear-gradient(90deg, rgba(16, 185, 129, 0.12), rgba(99, 102, 241, 0.12)); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-weight: 700; font-size: 0.98rem; color: #fff;">Meta Ads Content Brief & Guardrail Master</span>
+                                <span class="badge" style="background: rgba(16, 185, 129, 0.25); color: #34d399; font-size: 0.78rem; font-weight: 700;">9 Guardrail Layers</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-funnel-cb" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    🎯 Copy Funnel Stage
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-tone-cb" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    🎙️ Copy Tone Matrix
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-persona-cb" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    🧠 Copy Persona Texture
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn-copy-brief-markdown" style="font-size: 0.8rem; padding: 6px 14px; background: linear-gradient(135deg, #10b981, #6366f1); border: none;">
+                                    📋 Copy Brief (Markdown)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Brief Render Container -->
+                        <div id="brief-strategy-render" class="creative-board-container">
+                            <div class="empty-state">
+                                <h3>No Content Brief Generated</h3>
+                                <p>Click "Generate Meta Ads Content Brief" to build campaign guardrails.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 11: AGENT 11 CAMPAIGN METADATA MASTER -->
+            <section id="tab-metadata" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <h2 class="card-title">Agent 11: Metadata & Publishing Master</h2>
+                        <p class="card-description">Converts approved briefs into a complete SEO publishing package: evidence-based keywords, competitor gap analysis, retention timestamps, SRT accessibility, & brand safety audits.</p>
+
+                        <form id="metadata-generator-form">
+                            <!-- Field 1: Product Name -->
+                            <div class="form-group">
+                                <label for="cm_product_name">1. PRODUCT / SERVICE NAME</label>
+                                <select id="cm_product_name" class="form-select-dropdown" required>
+                                    <option value="American Hairline Scalp Revival System" selected>American Hairline Scalp Revival System</option>
+                                    <option value="Masterclass Copywriting & RAG Ad Engine">Masterclass Copywriting & RAG Ad Engine</option>
+                                    <option value="D2C Omni-Channel Scaling Funnel">D2C Omni-Channel Scaling Funnel</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 2: Target Video Script Title -->
+                            <div class="form-group">
+                                <label for="cm_script_title">2. VIDEO SCRIPT TITLE</label>
+                                <select id="cm_script_title" class="form-select-dropdown" required>
+                                    <option value="The Rearview Mirror Pattern Interrupt" selected>The Rearview Mirror Pattern Interrupt</option>
+                                    <option value="The Scientific Root Cause Framework">The Scientific Root Cause Framework</option>
+                                    <option value="The 15-Minute Daily Protocol">The 15-Minute Daily Protocol</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 3: Target Persona -->
+                            <div class="form-group">
+                                <label for="cm_target_persona">3. TARGET PERSONA</label>
+                                <select id="cm_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Men 25-35)" selected>The Skeptical Solution Seeker (Men 25-35)</option>
+                                    <option value="The High-Stakes Career Achiever (Age 35-50)">The High-Stakes Career Achiever (Age 35-50)</option>
+                                    <option value="Direct Response Performance Marketers">Direct Response Performance Marketers</option>
+                                </select>
+                            </div>
+
+                            <!-- Field 4: Campaign Objective -->
+                            <div class="form-group">
+                                <label for="cm_campaign_objective">4. CAMPAIGN OBJECTIVE</label>
+                                <select id="cm_campaign_objective" class="form-select-dropdown" required>
+                                    <option value="Meta & YouTube Full Campaign Launch" selected>Meta & YouTube Full Campaign Launch</option>
+                                    <option value="High-Intent Search Campaign (YouTube/Google)">High-Intent Search Campaign (YouTube/Google)</option>
+                                    <option value="Social Retargeting & Conversion Scaling">Social Retargeting & Conversion Scaling</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="btn-generate-metadata">
+                                <span class="btn-text">🏷️ Generate Full Publishing Package</span>
+                                <span class="spinner hidden" id="metadata-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Last Generation Cost Breakdown Card -->
+                        <div class="cost-summary-box hidden" id="metadata-cost-box">
+                            <div class="cost-box-header">
+                                <span>Generation Cost & Token Usage</span>
+                                <span class="badge-cost" id="cm-run-formatted-cost">$0.000000</span>
+                            </div>
+                            <div class="cost-details">
+                                <div class="cost-row">
+                                    <span>Prompt Tokens:</span>
+                                    <strong id="cm-run-prompt-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Completion Tokens:</span>
+                                    <strong id="cm-run-completion-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Total Tokens:</span>
+                                    <strong id="cm-run-total-tokens">0</strong>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Execution Latency:</span>
+                                    <strong id="cm-run-latency">0 ms</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="showcase-area">
+                        <!-- Quality & Evaluation Header Bar -->
+                        <div class="metrics-banner" id="metadata-metrics-banner">
+                            <div class="banner-stat">
+                                <span class="b-label">SEO Optimization</span>
+                                <span class="b-val text-emerald" id="cmm-seo">99.2%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Keyword Relevance</span>
+                                <span class="b-val text-indigo" id="cmm-keyword">98.8%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Brand Safety</span>
+                                <span class="b-val text-purple" id="cmm-safety">100.0%</span>
+                            </div>
+                            <div class="banner-stat">
+                                <span class="b-label">Status</span>
+                                <span class="b-val text-emerald" id="cmm-status">PUBLISHING PACKAGE READY</span>
+                            </div>
+                        </div>
+
+                        <!-- Brief Action Tools Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; padding: 12px 18px; background: linear-gradient(90deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.12)); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-weight: 700; font-size: 0.98rem; color: #fff;">Full Production Publishing Package</span>
+                                <span class="badge" style="background: rgba(99, 102, 241, 0.25); color: #a5b4fc; font-size: 0.78rem; font-weight: 700;">8 Publishing Sections</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-best-title-cm" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    🏆 Copy #1 Title
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-desc-cm" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    📝 Copy Description
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-keywords-cm" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    🔑 Copy Keywords
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn-copy-metadata-package" style="font-size: 0.8rem; padding: 6px 14px; background: linear-gradient(135deg, #6366f1, #a855f7); border: none;">
+                                    📦 Copy Package (Markdown)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Metadata Render Container -->
+                        <div id="metadata-strategy-render" class="creative-board-container">
+                            <div class="empty-state">
+                                <h3>No Publishing Package Generated</h3>
+                                <p>Click "Generate Full Publishing Package" to build metadata & SEO assets.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: LANGSMITH TRACE INSPECTOR -->
+            <section id="tab-tracer" class="tab-pane">
+                <div class="card full-width">
+                    <div class="trace-header">
+                        <div>
+                            <h2 class="card-title">LangSmith Execution Trace Inspector</h2>
+                            <p class="card-description">Hierarchical span visualizer displaying vector retrieval, prompt
+                                context injection, LLM generation tokens, and safety audit spans.</p>
+                        </div>
+                        <button class="btn btn-secondary" id="btn-refresh-traces">🔄 Refresh Traces</button>
+                    </div>
+
+                    <div class="trace-inspector-container">
+                        <!-- Trace List Sidebar -->
+                        <div class="trace-sidebar" id="trace-list">
+                            <div class="loading-text">Loading trace runs...</div>
+                        </div>
+
+                        <!-- Span Detail Viewer -->
+                        <div class="span-detail-viewer" id="span-details">
+                            <div class="empty-trace-select">Select a trace run from the left panel to inspect
+                                step-by-step execution spans.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: KNOWLEDGE BASE & UPLOAD -->
+            <section id="tab-knowledge" class="tab-pane">
+                <div class="card full-width">
+                    <h2 class="card-title">Course Transcript Knowledge Base</h2>
+                    <p class="card-description">Upload `.docx` or `.txt` course transcripts. Files are automatically
+                        chunked into 500-800 token semantic units with topic metadata and indexed into the Vector DB.
+                    </p>
+
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-icon">📄</div>
+                        <h3>Upload Course Transcript File</h3>
+                        <p>Drag and drop your <strong>.docx</strong> or <strong>.txt</strong> file here, or click to
+                            browse</p>
+                        <input type="file" id="file-input" accept=".docx,.txt" class="hidden">
+                        <button class="btn btn-secondary mt-15"
+                            onclick="document.getElementById('file-input').click()">Browse Files</button>
+                    </div>
+
+                    <div class="upload-status hidden" id="upload-status"></div>
+                </div>
+            </section>
+
+
+            <!-- TAB 5: GLOBAL MANAGER FEEDBACK -->
+            <section id="tab-feedback" class="tab-pane">
+                <div class="grid-layout">
+                    <div class="card control-panel" style="grid-column: span 12;">
+                        <h2 class="card-title">Sir's Review / Manager Feedback</h2>
+                        <p class="card-description">
+                            <b>Agent 5:</b> Paste your manager's feedback, transcribed video notes, or specific
+                            instructions here. This feedback will be <b>automatically applied</b> to all generations
+                            across Agents 1, 2, 3, and 4 without altering their configurations.
+                        </p>
+
+                        <div class="form-group" style="position: relative;">
+                            <label style="display: block; margin-bottom: 12px;">GLOBAL FEEDBACK / INSTRUCTIONS (AUDIO OR
+                                TEXT)</label>
+
+                            <!-- Advanced Drag & Drop Zone -->
+                            <div class="audio-dropzone" id="audio-dropzone">
+                                <div class="audio-icon-wrapper">🎙️</div>
+                                <h3>Drag & Drop Sir's Audio Feedback Here</h3>
+                                <p>Supports .mp3, .m4a, .wav (Auto-Transcribes via Whisper AI)</p>
+                                <input type="file" id="audio-file-input" accept=".mp3,.m4a,.wav" style="display: none;">
+
+                                <div class="upload-overlay" id="upload-overlay">
+                                    <div class="spinner"></div>
+                                    <p id="upload-status-text">Transcribing Audio (Whisper AI)...</p>
+                                </div>
+                            </div>
+
+                            <textarea id="sirs_feedback_text" class="form-textarea" rows="7"
+                                placeholder="Transcription will appear here, or you can paste Sir's text directly..."></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-top: 20px;">
+                            <button type="button" class="btn btn-primary" id="btn-apply-global-feedback"
+                                style="flex: 1; background-color: #00d26a; color: #000; font-weight: 800;">
+                                <span class="btn-text">Approve (Apply Global Feedback)</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-clear-global-feedback"
+                                style="flex: 1;">
+                                <span class="btn-text">Clear Feedback</span>
+                            </button>
+                        </div>
+
+                        <div id="feedback-status"
+                            style="margin-top: 15px; font-weight: 600; color: #00d26a; display: none;">
+                            ✓ Feedback locked in. It will now be applied to all future agent generations.
+                        </div>
+
+                        <!-- GLOBAL FEEDBACK TRACKER (BEFORE & AFTER) -->
+                        <div id="feedback-tracker-container"
+                            style="display: block; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px;">
+                            <h3
+                                style="color: #6366F1; font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                <span>🔄</span> AI Impact Analysis & Change Report
+                            </h3>
+                            <p style="color: #9CA3AF; font-size: 13px; margin-bottom: 20px;">
+                                Live tracking of how Sir's feedback is mutating Agents 1-5.
+                            </p>
+
+                            <div id="feedback-diff-report" style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="diff-card">
+                                    <div class="diff-header">
+                                        <span>Persona Target Mutation</span>
+                                        <span class="diff-agent-badge">Agent 1</span>
+                                    </div>
+                                    <div class="diff-content">
+                                        <div class="diff-before">Targeted broad audience of men experiencing hair loss,
+                                            focusing on emotional insecurities.</div>
+                                        <div class="diff-after">Targeting high-income professionals requiring <span
+                                                class="diff-highlight">premium, undetectable customization</span>.
+                                            Avoids negative framing.</div>
+                                    </div>
+                                </div>
+                                <div class="diff-card">
+                                    <div class="diff-header">
+                                        <span>Benefit Framing Adjustment</span>
+                                        <span class="diff-agent-badge">Agent 2</span>
+                                    </div>
+                                    <div class="diff-content">
+                                        <div class="diff-before">"Get your hair back and stop feeling embarrassed."
+                                        </div>
+                                        <div class="diff-after">"Experience <span class="diff-highlight">professional
+                                                fitting</span> and <span class="diff-highlight">flawless hairline
+                                                design</span> that seamlessly matches your lifestyle."</div>
+                                    </div>
+                                </div>
+                                <div class="diff-card">
+                                    <div class="diff-header">
+                                        <span>Video Script Hook Enhancement</span>
+                                        <span class="diff-agent-badge">Agent 3</span>
+                                    </div>
+                                    <div class="diff-content">
+                                        <div class="diff-before">"Are you losing hair? We can help."</div>
+                                        <div class="diff-after">"Don't let hair loss dictate your confidence. <span
+                                                class="diff-highlight">Reclaim your professional image</span> with our
+                                            undetectable hair systems."</div>
+                                    </div>
+                                </div>
+                                <div class="diff-card">
+                                    <div class="diff-header">
+                                        <span>Visual Generation Tone</span>
+                                        <span class="diff-agent-badge">Agent 4</span>
+                                    </div>
+                                    <div class="diff-content">
+                                        <div class="diff-before">Generate an image of a bald man.</div>
+                                        <div class="diff-after">Generate an image of a <span
+                                                class="diff-highlight">confident, successful executive</span> looking in
+                                            the mirror.</div>
+                                    </div>
+                                </div>
+                                <div class="diff-card">
+                                    <div class="diff-header">
+                                        <span>Video Ad Script Generator</span>
+                                        <span class="diff-agent-badge">Agent 5</span>
+                                    </div>
+                                    <div class="diff-content">
+                                        <div class="diff-before">Standard promotional video script without download
+                                            option.</div>
+                                        <div class="diff-after">Engaging video script tailored to target persona, <span
+                                                class="diff-highlight">images removed</span>, and <span
+                                                class="diff-highlight">download option added</span>.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Floating Scroll Navigation Controls -->
+    <div class="floating-scroll-controls">
+        <button id="btn-scroll-up" class="floating-scroll-btn" title="Scroll to Top (Up)">
+            <span>▲</span>
+        </button>
+        <button id="btn-scroll-down" class="floating-scroll-btn" title="Scroll to Bottom (Down)">
+            <span>▼</span>
+        </button>
+    </div>
+
+    <script src="/static/app.js?v=3.0"></script>
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+[
+  {
+    "id": 1,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Pattern Interrupt",
+    "sample_input_query": "How to write viral pattern interrupt hooks",
+    "reference_output_hook": "Stop scrolling! Most creators fail at writing hooks because they skip this 1 step."
+  },
+  {
+    "id": 2,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Pain Point & Frustration",
+    "sample_input_query": "Addressing high customer acquisition cost in ad hooks",
+    "reference_output_hook": "If your ads aren't converting, it's not your offer — it's your first 3 seconds."
+  },
+  {
+    "id": 3,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Storytelling & Case Study",
+    "sample_input_query": "10x ROI case study storytelling ad copy",
+    "reference_output_hook": "Here is how we generated 10x ROI by fixing our ad framework in 48 hours."
+  },
+  {
+    "id": 4,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Direct Benefit / Outcome First",
+    "sample_input_query": "Direct outcome framework for digital ad copy",
+    "reference_output_hook": "Want to write ads that practically print conversions? Here is the exact framework."
+  },
+  {
+    "id": 5,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Contrarian / Hot Take",
+    "sample_input_query": "Contrarian hot takes challenging industry ad copy norms",
+    "reference_output_hook": "Unpopular opinion: Traditional ad copy is dead. Here's what's working now."
+  },
+  {
+    "id": 6,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Question / Diagnostic",
+    "sample_input_query": "Diagnostic question hooks for ad campaigns",
+    "reference_output_hook": "Are you making these 3 critical mistakes in your ad campaigns?"
+  },
+  {
+    "id": 7,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "FOMO & Urgency",
+    "sample_input_query": "Urgency and pre-launch hooks",
+    "reference_output_hook": "Don't launch your next ad until you apply this proven transcript framework."
+  },
+  {
+    "id": 8,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Social Proof & Authority",
+    "sample_input_query": "Authority and tested formula ad hooks",
+    "reference_output_hook": "Top marketers don't guess their hooks — they use this tested transcript formula."
+  },
+  {
+    "id": 9,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Before vs After Transformation",
+    "sample_input_query": "Transformation hooks from zero engagement to viral",
+    "reference_output_hook": "From zero engagement to viral conversion: The step-by-step hook transformation."
+  },
+  {
+    "id": 10,
+    "topic": "Hook Writing",
+    "module": "Module 1: Hook Writing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Actionable 'How-To' Framework",
+    "sample_input_query": "4-part framework in under 10 minutes",
+    "reference_output_hook": "Here is the 4-part framework to write high-converting ads in under 10 minutes."
+  },
+  {
+    "id": 11,
+    "topic": "Offer Framing",
+    "module": "Module 2: Offer Framing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Risk Reversal & Guarantee",
+    "sample_input_query": "Risk reversal and guarantee framing in ad copy",
+    "reference_output_hook": "Tired of offers that sound risky? Learn how to structure risk reversal guaranteed to convert."
+  },
+  {
+    "id": 12,
+    "topic": "Offer Framing",
+    "module": "Module 2: Offer Framing",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Bonus Stacking & Value Multiplication",
+    "sample_input_query": "How to present bonus stacks and pricing value",
+    "reference_output_hook": "Here is how to stack course bonuses so your offer price becomes an absolute no-brainer."
+  },
+  {
+    "id": 13,
+    "topic": "Objection Handling",
+    "module": "Module 3: Overcoming Buying Objections",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Objection Reversal / Time & Effort Neutralization",
+    "sample_input_query": "How to handle 'I don't have time to write ads' objection in copy",
+    "reference_output_hook": "Think you don't have time to write high-converting ads? Here is how to create 10 winning variations in 10 minutes flat."
+  },
+  {
+    "id": 14,
+    "topic": "Audience Targeting",
+    "module": "Module 4: Customer Persona & Messaging Match",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Niche Specificity & Calling Out Target Audience",
+    "sample_input_query": "Calling out B2B SaaS founders and agency owners in ad hooks",
+    "reference_output_hook": "Calling all agency owners: If your current client acquisition cost is killing your margins, read this immediately."
+  },
+  {
+    "id": 15,
+    "topic": "Social Proof & Case Studies",
+    "module": "Module 5: Proof Stacking & Authority Building",
+    "expected_framework": ["Hook", "Problem", "Solution", "CTA"],
+    "target_angle": "Verified Results & Case Study Breakdown",
+    "sample_input_query": "Using verified customer results to build trust in ad copy",
+    "reference_output_hook": "How this creator scaled from $5k/mo to $50k/mo using a single transcript-based ad framework."
+  }
+]
