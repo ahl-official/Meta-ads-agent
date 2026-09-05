@@ -31,6 +31,9 @@ class CostTracker:
     Cost & Token Calculator for LLM and Embedding models at production scale.
     """
 
+    # Same per-token rates apply whether called directly on OpenAI or routed through
+    # OpenRouter (OpenRouter passes provider token pricing through unmarked up); both
+    # key forms are listed so cost lookups resolve regardless of which prefix is used.
     PRICING_TABLE: Dict[str, Dict[str, float]] = {
         "text-embedding-3-small": {
             "token_cost": 0.00002 / 1000.0
@@ -45,10 +48,24 @@ class CostTracker:
         "gpt-4o": {
             "prompt_cost": 0.00250 / 1000.0,
             "completion_cost": 0.01000 / 1000.0
+        },
+        "openai/text-embedding-3-small": {
+            "token_cost": 0.00002 / 1000.0
+        },
+        "openai/text-embedding-3-large": {
+            "token_cost": 0.00013 / 1000.0
+        },
+        "openai/gpt-4o-mini": {
+            "prompt_cost": 0.00015 / 1000.0,
+            "completion_cost": 0.00060 / 1000.0
+        },
+        "openai/gpt-4o": {
+            "prompt_cost": 0.00250 / 1000.0,
+            "completion_cost": 0.01000 / 1000.0
         }
     }
 
-    def __init__(self, default_model: str = "gpt-4o-mini", default_embedding_model: str = "text-embedding-3-small"):
+    def __init__(self, default_model: str = "openai/gpt-4o-mini", default_embedding_model: str = "openai/text-embedding-3-small"):
         self.default_model = default_model
         self.default_embedding_model = default_embedding_model
         if _TIKTOKEN_AVAILABLE:

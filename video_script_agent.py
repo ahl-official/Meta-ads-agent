@@ -1,7 +1,7 @@
 """
 video_script_agent.py
 
-Agent 5 (Video Ads Script Generation Agent):
+Agent 4 (Video Ads Script Generation Agent):
 1. Script Framework Engine: Converts an ad angle/hook into a scene-by-scene script following structures like:
    - PAS (Problem - Agitate - Solution - CTA)
    - Before - After - Bridge (BAB)
@@ -33,6 +33,7 @@ from pydantic import BaseModel
 
 from rag_pipeline import EmbeddingManager, VectorStoreManager
 from feedback_manager import feedback_mgr
+from llm_retry import call_openai_with_retry
 
 try:
     import openai
@@ -78,7 +79,7 @@ class VideoScriptQualityMetrics(BaseModel):
 
 class VideoScriptEngine:
     """
-    Engine for Agent 5: Video Ads Script Generation Agent
+    Engine for Agent 4: Video Ads Script Generation Agent
     Converts an angle into a scene-by-scene script (hook, problem, agitation, product reveal, CTA)
     with visual direction notes, following structures like PAS, Before-After-Bridge, AIDA, or Hook-Problem-Agitate-Reveal-CTA.
     """
@@ -99,7 +100,7 @@ class VideoScriptEngine:
     def __init__(self, vector_store: VectorStoreManager, embedding_manager: EmbeddingManager):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def build_system_prompt(self, product_name: str, chosen_angle: str, chosen_hook: str,
                             target_persona: str, script_framework: str, total_duration: str,
@@ -107,7 +108,7 @@ class VideoScriptEngine:
         """
         Builds system prompt for generating scene-by-scene video ad scripts.
         """
-        return f"""You are the elite Video Ads Script Generation Agent (Agent 5 of Meta Ads Suite).
+        return f"""You are the elite Video Ads Script Generation Agent (Agent 4 of Meta Ads Suite).
 Your job is to convert a strategic ad angle & hook into a scene-by-scene video ad script with precise visual direction, audio cues, on-screen text, and actor guidance.
 
 ### PRODUCT & STRATEGY INPUTS ###
@@ -185,9 +186,10 @@ Respond strictly with valid JSON with key "video_scripts".
 
         if _OPENAI_AVAILABLE and self.api_key:
             try:
-                client = openai.OpenAI(api_key=self.api_key)
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
+                response = call_openai_with_retry(
+                    client,
+                    model="openai/gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": "Generate 8 scene-by-scene video ad scripts with detailed visual directions, voiceover script, on-screen text, and audio cues."}
@@ -275,7 +277,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="0 - 3s",
                 spoken_script="Stop scrolling if you catch yourself constantly adjusting your cap or avoiding harsh overhead elevator lights.",
                 visual_direction="ECU (Extreme Close-Up) of talent looking anxiously in a rearview mirror, pulling cap down. Fast snap-cut transition.",
-                on_screen_text="STOP HIDING YOUR HAIRLINE 🛑",
+                on_screen_text="STOP HIDING YOUR HAIRLINE",
                 audio_cues="Record scratch SFX + Sub-bass drop pattern interrupt"
             ),
             VideoScene(
@@ -293,7 +295,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="7 - 12s",
                 spoken_script="You spend money on greasy foams that smell like chemicals and leave your scalp irritated, only to see zero real change after months.",
                 visual_direction="Quick cut sequence: throwing away half-used chemical spray bottles into trash can. Frustrated facial expression.",
-                on_screen_text="Tired of Wasting Money on Greasy Foams? 💸",
+                on_screen_text="Tired of Wasting Money on Greasy Foams?",
                 audio_cues="Rising tension riser SFX"
             ),
             VideoScene(
@@ -302,7 +304,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="12 - 22s",
                 spoken_script=f"That's why we created the {product_name}. Our non-surgical human hair patch system restores full natural hair density in just 60 minutes with zero surgery.",
                 visual_direction="Hero product shot: Stylist fitting American Hairline custom human hair patch onto client's scalp with invisible lace base. Close-up of seamless front hairline.",
-                on_screen_text="100% NON-SURGICAL HAIR SYSTEM 💈 • UNDETECTABLE HAIRLINE",
+                on_screen_text="100% NON-SURGICAL HAIR SYSTEM• UNDETECTABLE HAIRLINE",
                 audio_cues="Uplifting energetic beat drop with clear ambient vocal tone"
             ),
             VideoScene(
@@ -311,7 +313,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="22 - 30s",
                 spoken_script="Claim your 90-day risk-free starter kit today. Click the button below before stock sells out again!",
                 visual_direction="Talent smiling confidently in natural sunlight, running fingers through thick hair. Overlay of mobile shop button.",
-                on_screen_text="GET 40% OFF + 90-DAY MONEY-BACK GUARANTEE 👉",
+                on_screen_text="GET 40% OFF + 90-DAY MONEY-BACK GUARANTEE",
                 audio_cues="Upbeat resolving chord + button click SFX"
             )
         ]
@@ -333,7 +335,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="3 - 8s",
                 spoken_script="Six months ago, I was wearing hats everywhere — dates, work meetings, gym sessions. I felt like I was losing my edge.",
                 visual_direction="B-Roll montage of talent wearing caps in indoors settings, looking down at phone self-consciously.",
-                on_screen_text="BEFORE: Hiding Under Caps Daily 🧢",
+                on_screen_text="BEFORE: Hiding Under Caps Daily",
                 audio_cues="Muffled lo-fi beat"
             ),
             VideoScene(
@@ -342,7 +344,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="8 - 14s",
                 spoken_script="Now? My hair feels 3x denser, fully natural, and I haven't touched a hat in 90 days. My confidence is completely restored.",
                 visual_direction="Bright outdoor sunlight shot. Talent in crisp suit smiling confidently, high density hair visible.",
-                on_screen_text="AFTER 90 DAYS: 3x Denser, 100% Natural ✨",
+                on_screen_text="AFTER 90 DAYS: 3x Denser, 100% Natural",
                 audio_cues="High-energy beat drop"
             ),
             VideoScene(
@@ -360,7 +362,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="22 - 30s",
                 spoken_script="Try it risk-free for 90 days. If you don't see visible density, you get 100% of your money back. Tap below!",
                 visual_direction="Product bundle display with 90-day badge callout and pulsing arrow pointing to CTA link.",
-                on_screen_text="TRY RISK-FREE FOR 90 DAYS 🛍️",
+                on_screen_text="TRY RISK-FREE FOR 90 DAYS",
                 audio_cues="Upbeat outro sting + click sound"
             )
         ]
@@ -373,7 +375,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="0 - 4s",
                 spoken_script="What dermatologists aren't telling you about early hairline receding will change how you treat your scalp forever.",
                 visual_direction="Dermatology office lab coat setting. Professional tone. Split screen of scalp scanner analysis.",
-                on_screen_text="WHAT THEY DON'T TELL YOU 🔬",
+                on_screen_text="WHAT THEY DON'T TELL YOU",
                 audio_cues="Intriguing mystery WHOOSH + clock ticking SFX"
             ),
             VideoScene(
@@ -382,7 +384,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="4 - 9s",
                 spoken_script="Most treatments only mask the symptoms without restoring follicle blood micro-circulation.",
                 visual_direction="Diagram graphic showing blocked blood vessel circulation around hair roots under scalp layer.",
-                on_screen_text="Blocked Scalp Micro-Circulation ❌",
+                on_screen_text="Blocked Scalp Micro-Circulation",
                 audio_cues="Low warning pulse tone"
             ),
             VideoScene(
@@ -391,7 +393,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="9 - 14s",
                 spoken_script="Wait too long, and those dormant roots calcify permanently, leaving expensive invasive surgery as your only choice.",
                 visual_direction="Graphic highlight of scalp calcification process with warning red highlight.",
-                on_screen_text="Dormant Roots Calcify Over Time! ⚠️",
+                on_screen_text="Dormant Roots Calcify Over Time!",
                 audio_cues="Warning chime SFX"
             ),
             VideoScene(
@@ -400,7 +402,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="14 - 23s",
                 spoken_script=f"Enter {product_name}. Its bio-active elixir reactivates micro-circulation and delivers botanical nutrients straight to dormant roots.",
                 visual_direction="Macro shot of golden elixir drop dissolving smoothly into scalp without leaving greasy residue.",
-                on_screen_text="BIO-ACTIVE BOTANICAL ELIXIR 🧪",
+                on_screen_text="BIO-ACTIVE BOTANICAL ELIXIR",
                 audio_cues="Clean shimmer SFX + rhythmic energetic drum track"
             ),
             VideoScene(
@@ -409,7 +411,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="23 - 30s",
                 spoken_script="Don't wait until surgery is your only option. Order today and save 40% on your initial 90-day supply!",
                 visual_direction="Official certification seal, 40% discount badge, and website checkout screen mockup.",
-                on_screen_text="SAVE 40% TODAY • DIRECT SHIPPING 🚚",
+                on_screen_text="SAVE 40% TODAY • DIRECT SHIPPING",
                 audio_cues="Positive chord resolution"
             )
         ]
@@ -422,7 +424,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="0 - 3s",
                 spoken_script="If you're between 25 and 50 and noticing your hairline creeping back, watch this before buying anything else.",
                 visual_direction="Talent staring directly into camera, holding up hand to pause scrolling feed. Dynamic zoom-in motion.",
-                on_screen_text="ATTENTION: MEN & WOMEN AGED 25-50 ⚠️",
+                on_screen_text="ATTENTION: MEN & WOMEN AGED 25-50",
                 audio_cues="Heavy bass thud + alert chime"
             ),
             VideoScene(
@@ -431,7 +433,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="3 - 8s",
                 spoken_script="Did you know 82% of early hair thinning is caused by localized DHT buildup suffocating follicle roots?",
                 visual_direction="Infographic animation displaying 82% statistic with 3D scalp hair follicle model.",
-                on_screen_text="82% Caused by DHT Root Suffocation 🔬",
+                on_screen_text="82% Caused by DHT Root Suffocation",
                 audio_cues="Subtle digital data ping"
             ),
             VideoScene(
@@ -440,7 +442,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="8 - 15s",
                 spoken_script="Imagine waking up 90 days from now with thick, dense hairline edges you're proud to show off without caps.",
                 visual_direction="Side-by-side split screen comparison: Day 1 vs Day 90 side profile hairline density progression.",
-                on_screen_text="DAY 1 VS DAY 90 TRANSFORMATION 📈",
+                on_screen_text="DAY 1 VS DAY 90 TRANSFORMATION",
                 audio_cues="Uplifting motivational melody"
             ),
             VideoScene(
@@ -449,7 +451,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="15 - 24s",
                 spoken_script=f"{product_name} provides sweat-proof, waterproof hold with our organic scalp bond.",
                 visual_direction="Close up of American Hairline custom hair patch box kit, organic scalp bond application, and water-resistant hold demo.",
-                on_screen_text="100% WATERPROOF & SWEAT-PROOF HOLD 💧",
+                on_screen_text="100% WATERPROOF & SWEAT-PROOF HOLD",
                 audio_cues="Energetic beat acceleration"
             ),
             VideoScene(
@@ -458,7 +460,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 duration_seconds="24 - 30s",
                 spoken_script="Click 'Shop Now' to get your risk-free supply with free express shipping worldwide!",
                 visual_direction="Pulsing CTA button graphic with 5-star rating overlay and fast shipping icon.",
-                on_screen_text="SHOP NOW • FREE EXPRESS SHIPPING 🚚",
+                on_screen_text="SHOP NOW • FREE EXPRESS SHIPPING",
                 audio_cues="Upbeat climax sting"
             )
         ]
@@ -547,11 +549,11 @@ Respond strictly with valid JSON with key "video_scripts".
                 core_hook="Thinking your thinning hairline is permanent? Test this 90-day protocol first.",
                 total_duration_est=total_duration,
                 scenes=[
-                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="Thinking your thinning hairline is permanent? Test this 90-day protocol first.", visual_direction="Direct camera eye contact, tapping screen timer.", on_screen_text="90-DAY HAIRLINE CHALLENGE ⏱️", audio_cues="Alert chime + bass pulse"),
-                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Most people accept thinning as inevitable aging, but dormant hair roots are just sleeping.", visual_direction="Close-up micro scanner graphic of sleeping root follicle.", on_screen_text="Dormant Roots Are Sleeping, Not Dead 💤", audio_cues="Soft ambient synth"),
-                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Ignoring early receding means losing up to 40% density before you even notice.", visual_direction="Graphic bar showing 40% density drop timeline.", on_screen_text="Don't Lose 40% Density! ⚠️", audio_cues="Tension riser SFX"),
-                    VideoScene(scene_number=4, scene_type="Solution & Proof", duration_seconds="12 - 22s", spoken_script=f"Our clinical trial showed 94.2% follicle density recovery in 12 weeks using {product_name}.", visual_direction="Clinical lab proof graphics & high-speed droplet absorption.", on_screen_text="94.2% FOLLICLE DENSITY RECOVERY 🧪", audio_cues="Uplifting swell beat"),
-                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Take the 90-Day Unfiltered Challenge risk-free today with 100% money-back guarantee!", visual_direction="Talent smiling, displaying starter kit packaging.", on_screen_text="TAKE THE 90-DAY CHALLENGE 🛍️", audio_cues="Upbeat resolving chord")
+                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="Thinking your thinning hairline is permanent? Test this 90-day protocol first.", visual_direction="Direct camera eye contact, tapping screen timer.", on_screen_text="90-DAY HAIRLINE CHALLENGE ⏱", audio_cues="Alert chime + bass pulse"),
+                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Most people accept thinning as inevitable aging, but dormant hair roots are just sleeping.", visual_direction="Close-up micro scanner graphic of sleeping root follicle.", on_screen_text="Dormant Roots Are Sleeping, Not Dead", audio_cues="Soft ambient synth"),
+                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Ignoring early receding means losing up to 40% density before you even notice.", visual_direction="Graphic bar showing 40% density drop timeline.", on_screen_text="Don't Lose 40% Density!", audio_cues="Tension riser SFX"),
+                    VideoScene(scene_number=4, scene_type="Solution & Proof", duration_seconds="12 - 22s", spoken_script=f"Our clinical trial showed 94.2% follicle density recovery in 12 weeks using {product_name}.", visual_direction="Clinical lab proof graphics & high-speed droplet absorption.", on_screen_text="94.2% FOLLICLE DENSITY RECOVERY", audio_cues="Uplifting swell beat"),
+                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Take the 90-Day Unfiltered Challenge risk-free today with 100% money-back guarantee!", visual_direction="Talent smiling, displaying starter kit packaging.", on_screen_text="TAKE THE 90-DAY CHALLENGE", audio_cues="Upbeat resolving chord")
                 ],
                 actor_casting_notes="Confident fitness / wellness creator, enthusiastic tone.",
                 b_roll_shot_list=["Micro scanner graphic", "Clinical trial graph", "Starter kit packaging"],
@@ -568,11 +570,11 @@ Respond strictly with valid JSON with key "video_scripts".
                 core_hook="I used to dread standing under harsh elevator lights before key client presentations.",
                 total_duration_est=total_duration,
                 scenes=[
-                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="I used to dread standing under harsh elevator lights before key client presentations.", visual_direction="Elevator mirror reflection in corporate suit.", on_screen_text="ELEVATOR LIGHT REALIZATION 🏢", audio_cues="Muffled city noise + chime"),
-                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Hair thinning silently drains your confidence in high-stakes professional settings.", visual_direction="Conference room meeting, talent adjusting hair.", on_screen_text="Thinning Drains Professional Poise 💼", audio_cues="Subtle piano melody"),
-                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Worrying about your appearance takes focus away from closing big deals.", visual_direction="Split focus on laptop and mirror reflection.", on_screen_text="Stop Self-Conscious Distractions ❌", audio_cues="Deep bass drone"),
-                    VideoScene(scene_number=4, scene_type="Transformation", duration_seconds="12 - 22s", spoken_script=f"{product_name} restored my full hairline and executive poise in under 90 days.", visual_direction="Talent presenting in boardroom with full hair density.", on_screen_text="FULL DENSITY RESTORED ✨", audio_cues="High-energy brass beat"),
-                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Upgrade your executive confidence today with our exclusive 40% OFF package.", visual_direction="Executive desk shot with sleek bottle.", on_screen_text="CLAIM 40% EXECUTIVE OFF 👉", audio_cues="Click SFX + upbeat outro")
+                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="I used to dread standing under harsh elevator lights before key client presentations.", visual_direction="Elevator mirror reflection in corporate suit.", on_screen_text="ELEVATOR LIGHT REALIZATION", audio_cues="Muffled city noise + chime"),
+                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Hair thinning silently drains your confidence in high-stakes professional settings.", visual_direction="Conference room meeting, talent adjusting hair.", on_screen_text="Thinning Drains Professional Poise", audio_cues="Subtle piano melody"),
+                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Worrying about your appearance takes focus away from closing big deals.", visual_direction="Split focus on laptop and mirror reflection.", on_screen_text="Stop Self-Conscious Distractions", audio_cues="Deep bass drone"),
+                    VideoScene(scene_number=4, scene_type="Transformation", duration_seconds="12 - 22s", spoken_script=f"{product_name} restored my full hairline and executive poise in under 90 days.", visual_direction="Talent presenting in boardroom with full hair density.", on_screen_text="FULL DENSITY RESTORED", audio_cues="High-energy brass beat"),
+                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Upgrade your executive confidence today with our exclusive 40% OFF package.", visual_direction="Executive desk shot with sleek bottle.", on_screen_text="CLAIM 40% EXECUTIVE OFF", audio_cues="Click SFX + upbeat outro")
                 ],
                 actor_casting_notes="Well-groomed professional in business attire, authoritative tone.",
                 b_roll_shot_list=["Elevator reflection", "Boardroom presentation", "Executive desk display"],
@@ -589,11 +591,11 @@ Respond strictly with valid JSON with key "video_scripts".
                 core_hook="Watch what happens to dormant scalp capillaries when bio-peptides hit the root.",
                 total_duration_est=total_duration,
                 scenes=[
-                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="Watch what happens to dormant scalp capillaries when bio-peptides hit the root.", visual_direction="Microscope animation zoom-in on follicle capillary.", on_screen_text="SCALP MICROSCANNER DEMO 🔬", audio_cues="Futuristic pulse SFX"),
-                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Poor scalp micro-circulation starves hair roots of essential growth oxygen.", visual_direction="3D diagram showing restricted oxygen flow to hair root.", on_screen_text="Restricted Root Circulation 🚫", audio_cues="Low alert tone"),
-                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Without nutrient blood flow, hair strands grow thinner and break twice as fast.", visual_direction="Fragile strand snapping macro visual.", on_screen_text="Strands Break 2x Faster ⚡", audio_cues="Snap SFX"),
-                    VideoScene(scene_number=4, scene_type="Mechanism Reveal", duration_seconds="12 - 22s", spoken_script=f"Our bio-matrix formula reactivates capillary blood flow within 14 days.", visual_direction="Golden elixir absorbed into scalp with capillary pulse graphic.", on_screen_text="BIO-MATRIX CAPILLARY ACTIVATION 🌿", audio_cues="Energetic synthesizer rise"),
-                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Claim your starter kit now with free global express delivery!", visual_direction="Free express shipping badge and checkout screen.", on_screen_text="ORDER WITH FREE SHIPPING 🚚", audio_cues="Upbeat resolving chord")
+                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="Watch what happens to dormant scalp capillaries when bio-peptides hit the root.", visual_direction="Microscope animation zoom-in on follicle capillary.", on_screen_text="SCALP MICROSCANNER DEMO", audio_cues="Futuristic pulse SFX"),
+                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Poor scalp micro-circulation starves hair roots of essential growth oxygen.", visual_direction="3D diagram showing restricted oxygen flow to hair root.", on_screen_text="Restricted Root Circulation", audio_cues="Low alert tone"),
+                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Without nutrient blood flow, hair strands grow thinner and break twice as fast.", visual_direction="Fragile strand snapping macro visual.", on_screen_text="Strands Break 2x Faster", audio_cues="Snap SFX"),
+                    VideoScene(scene_number=4, scene_type="Mechanism Reveal", duration_seconds="12 - 22s", spoken_script=f"Our bio-matrix formula reactivates capillary blood flow within 14 days.", visual_direction="Golden elixir absorbed into scalp with capillary pulse graphic.", on_screen_text="BIO-MATRIX CAPILLARY ACTIVATION", audio_cues="Energetic synthesizer rise"),
+                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Claim your starter kit now with free global express delivery!", visual_direction="Free express shipping badge and checkout screen.", on_screen_text="ORDER WITH FREE SHIPPING", audio_cues="Upbeat resolving chord")
                 ],
                 actor_casting_notes="Scientist or medical researcher voiceover, clear precise delivery.",
                 b_roll_shot_list=["Microscope capillary animation", "Follicle oxygen diagram", "Golden elixir micro drop"],
@@ -610,11 +612,11 @@ Respond strictly with valid JSON with key "video_scripts".
                 core_hook="Ditch your cap this summer. Here is how to regain full hairline thickness fast.",
                 total_duration_est=total_duration,
                 scenes=[
-                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="Ditch your cap this summer. Here is how to regain full hairline thickness fast.", visual_direction="Talent tossing cap off-camera into ocean breeze.", on_screen_text="ZERO-CAP SUMMER REVIVAL ☀️", audio_cues="Upbeat summer pop intro"),
-                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Sweating under caps all summer worsens scalp congestion and accelerates thinning.", visual_direction="Talent taking off cap revealing sweaty scalp.", on_screen_text="Caps Trap Sweat & Block Scalp 🚫", audio_cues="Muffled bass beat"),
-                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Constantly worrying about wind or swimming ruining your cap cover-up is exhausting.", visual_direction="Wind blowing hair on beach, feeling self-conscious.", on_screen_text="No More Cap Anxiety 🌊", audio_cues="Tension riser SFX"),
-                    VideoScene(scene_number=4, scene_type="Transformation", duration_seconds="12 - 22s", spoken_script=f"Restore natural hair density with {product_name} in a simple 30-second daily routine.", visual_direction="Talent swimming and running fingers through hair with high density.", on_screen_text="100% NATURAL HAIR CONFIDENCE 🌿", audio_cues="Catchy summer beat drop"),
-                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Start your zero-cap summer transformation today with our 90-day risk-free guarantee!", visual_direction="Product display on beach towel with 90-day guarantee badge.", on_screen_text="START YOUR SUMMER REVIVAL 👉", audio_cues="Click sound + upbeat outro")
+                    VideoScene(scene_number=1, scene_type="Hook", duration_seconds="0 - 3s", spoken_script="Ditch your cap this summer. Here is how to regain full hairline thickness fast.", visual_direction="Talent tossing cap off-camera into ocean breeze.", on_screen_text="ZERO-CAP SUMMER REVIVAL", audio_cues="Upbeat summer pop intro"),
+                    VideoScene(scene_number=2, scene_type="Problem", duration_seconds="3 - 7s", spoken_script="Sweating under caps all summer worsens scalp congestion and accelerates thinning.", visual_direction="Talent taking off cap revealing sweaty scalp.", on_screen_text="Caps Trap Sweat & Block Scalp", audio_cues="Muffled bass beat"),
+                    VideoScene(scene_number=3, scene_type="Agitation", duration_seconds="7 - 12s", spoken_script="Constantly worrying about wind or swimming ruining your cap cover-up is exhausting.", visual_direction="Wind blowing hair on beach, feeling self-conscious.", on_screen_text="No More Cap Anxiety", audio_cues="Tension riser SFX"),
+                    VideoScene(scene_number=4, scene_type="Transformation", duration_seconds="12 - 22s", spoken_script=f"Restore natural hair density with {product_name} in a simple 30-second daily routine.", visual_direction="Talent swimming and running fingers through hair with high density.", on_screen_text="100% NATURAL HAIR CONFIDENCE", audio_cues="Catchy summer beat drop"),
+                    VideoScene(scene_number=5, scene_type="Call To Action (CTA)", duration_seconds="22 - 30s", spoken_script="Start your zero-cap summer transformation today with our 90-day risk-free guarantee!", visual_direction="Product display on beach towel with 90-day guarantee badge.", on_screen_text="START YOUR SUMMER REVIVAL", audio_cues="Click sound + upbeat outro")
                 ],
                 actor_casting_notes="Outdoor lifestyle creator, energetic upbeat delivery.",
                 b_roll_shot_list=["Tossing cap into ocean breeze", "Beach swimming confidence", "Product display on beach towel"],
@@ -631,7 +633,7 @@ Respond strictly with valid JSON with key "video_scripts".
         svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="100%" height="240" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;">
             <!-- Header Bar -->
             <rect x="0" y="0" width="800" height="40" fill="#131B2E" rx="12" />
-            <text x="20" y="25" fill="#F8FAFC" font-size="14" font-weight="700">🎬 STORYBOARD TIMELINE: {script.script_title[:45]}...</text>
+            <text x="20" y="25" fill="#F8FAFC" font-size="14" font-weight="700">STORYBOARD TIMELINE: {script.script_title[:45]}...</text>
             <rect x="650" y="10" width="130" height="22" rx="11" fill="{color_scheme}" opacity="0.2"/>
             <text x="715" y="25" fill="{color_scheme}" font-size="11" font-weight="700" text-anchor="middle">{script.framework_structure.split()[0]}</text>
             
@@ -643,7 +645,7 @@ Respond strictly with valid JSON with key "video_scripts".
                 <text x="10" y="16" fill="#F43F5E" font-size="11" font-weight="700">SCENE 1 • HOOK</text>
                 <text x="130" y="16" fill="#9CA3AF" font-size="10" text-anchor="end">0-3s</text>
                 <circle cx="70" cy="70" r="22" fill="#F43F5E" opacity="0.15"/>
-                <text x="70" y="75" fill="#F43F5E" font-size="20" text-anchor="middle">🛑</text>
+                <text x="70" y="75" fill="#F43F5E" font-size="20" text-anchor="middle"></text>
                 <text x="10" y="115" fill="#E5E7EB" font-size="10" font-weight="600">Camera: ECU Rearview</text>
                 <text x="10" y="132" fill="#9CA3AF" font-size="9">Text: STOP HIDING</text>
                 <text x="10" y="150" fill="#6EE7B7" font-size="9">SFX: Record Scratch</text>
@@ -655,7 +657,7 @@ Respond strictly with valid JSON with key "video_scripts".
                     <text x="10" y="16" fill="#F59E0B" font-size="11" font-weight="700">SCENE 2 • PROBLEM</text>
                     <text x="130" y="16" fill="#9CA3AF" font-size="10" text-anchor="end">3-7s</text>
                     <circle cx="70" cy="70" r="22" fill="#F59E0B" opacity="0.15"/>
-                    <text x="70" y="75" fill="#F59E0B" font-size="20" text-anchor="middle">🔍</text>
+                    <text x="70" y="75" fill="#F59E0B" font-size="20" text-anchor="middle"></text>
                     <text x="10" y="115" fill="#E5E7EB" font-size="10" font-weight="600">Camera: MCU Bathroom</text>
                     <text x="10" y="132" fill="#9CA3AF" font-size="9">Text: Thinning Temples?</text>
                     <text x="10" y="150" fill="#6EE7B7" font-size="9">Music: Somber Synth</text>
@@ -668,7 +670,7 @@ Respond strictly with valid JSON with key "video_scripts".
                     <text x="10" y="16" fill="#EC4899" font-size="11" font-weight="700">SCENE 3 • AGITATE</text>
                     <text x="130" y="16" fill="#9CA3AF" font-size="10" text-anchor="end">7-12s</text>
                     <circle cx="70" cy="70" r="22" fill="#EC4899" opacity="0.15"/>
-                    <text x="70" y="75" fill="#EC4899" font-size="20" text-anchor="middle">💸</text>
+                    <text x="70" y="75" fill="#EC4899" font-size="20" text-anchor="middle"></text>
                     <text x="10" y="115" fill="#E5E7EB" font-size="10" font-weight="600">Camera: Trash Cut</text>
                     <text x="10" y="132" fill="#9CA3AF" font-size="9">Text: Wasting Money?</text>
                     <text x="10" y="150" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text>
@@ -681,7 +683,7 @@ Respond strictly with valid JSON with key "video_scripts".
                     <text x="10" y="16" fill="#60A5FA" font-size="11" font-weight="700">SCENE 4 • REVEAL</text>
                     <text x="130" y="16" fill="#9CA3AF" font-size="10" text-anchor="end">12-22s</text>
                     <circle cx="70" cy="70" r="22" fill="#3B82F6" opacity="0.2"/>
-                    <text x="70" y="75" fill="#60A5FA" font-size="20" text-anchor="middle">✨</text>
+                    <text x="70" y="75" fill="#60A5FA" font-size="20" text-anchor="middle"></text>
                     <text x="10" y="115" fill="#E5E7EB" font-size="10" font-weight="600">Camera: 120fps Drop</text>
                     <text x="10" y="132" fill="#9CA3AF" font-size="9">Text: ORGANIC MATRIX</text>
                     <text x="10" y="150" fill="#6EE7B7" font-size="9">Music: Energetic Drop</text>
@@ -694,9 +696,9 @@ Respond strictly with valid JSON with key "video_scripts".
                     <text x="10" y="16" fill="#34D399" font-size="11" font-weight="700">SCENE 5 • CTA</text>
                     <text x="130" y="16" fill="#9CA3AF" font-size="10" text-anchor="end">22-30s</text>
                     <circle cx="70" cy="70" r="22" fill="#10B981" opacity="0.2"/>
-                    <text x="70" y="75" fill="#34D399" font-size="20" text-anchor="middle">🛍️</text>
+                    <text x="70" y="75" fill="#34D399" font-size="20" text-anchor="middle"></text>
                     <text x="10" y="115" fill="#E5E7EB" font-size="10" font-weight="600">Camera: Outdoor Smile</text>
-                    <text x="10" y="132" fill="#9CA3AF" font-size="9">Text: GET 40% OFF 👉</text>
+                    <text x="10" y="132" fill="#9CA3AF" font-size="9">Text: GET 40% OFF</text>
                     <text x="10" y="150" fill="#6EE7B7" font-size="9">SFX: Click Sound</text>
                 </g>
             </g>

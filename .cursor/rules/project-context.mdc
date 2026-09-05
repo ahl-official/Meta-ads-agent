@@ -1,0 +1,192 @@
+---
+description: Full project context for the AHL Meta Ads Script Agent — read before making any change
+globs:
+alwaysApply: true
+---
+
+# What this project is
+
+This is an internal marketing-copy generation tool for **American Hairline (AHL)**, an Indian
+non-surgical hair replacement brand. The product is a single-page dashboard ("Meta Ads Script
+Agent" / "Transcription Meta Ads Suite") where a marketer:
+
+1. Uploads a raw sales-call / training transcript (a `.docx` or pasted text) — this gets chunked
+   and embedded into a RAG vector store.
+2. Runs a pipeline of 10 numbered "Agents" (LLM calls, each grounded in that transcript via RAG)
+   that progressively generate: customer personas → benefit extraction → ad angles → video scripts
+   → creative direction → thumbnail strategy/design → title strategy → content briefs → campaign
+   metadata.
+3. A manager ("Sir") can record voice feedback, which gets transcribed and injected as extra
+   context into several of those agents' prompts to steer future generations.
+4. Thumbs up/down feedback on outputs is stored and fed back into future prompts as positive
+   exemplars (active learning).
+
+**Audience note**: AHL serves the Indian market — men and women, but copy skews toward men,
+25–55, hair loss. Every price or income figure the agents generate must be in **INR**, phrased
+the way Indians actually talk about money (Lakhs/year, ₹X,XXX/month), never USD. This was a real
+bug fixed across ~7 files this session — watch for it recurring in any new generated content.
+
+# Architecture at a glance
+
+- **Backend**: single FastAPI app (`app.py`), deployed as a Vercel serverless function
+  (`vercel.json`, `@vercel/python` builder, routes `/api/*` → `app.py`, everything else →
+  `static/`).
+- **Frontend**: no framework. One `static/index.html` (a tabbed dashboard, one tab per agent),
+  one large `static/app.js` (~vanilla JS, all fetch calls + DOM wiring), one `static/styles.css`.
+- **LLM gateway**: every chat-completion and embedding call goes through **OpenRouter**
+  (`base_url="https://openrouter.ai/api/v1"`, models prefixed `openai/...`, e.g.
+  `openai/gpt-4o-mini`, `openai/text-embedding-3-small`). This was deliberately consolidated
+  from raw OpenAI this session — one account, one key (`OPENROUTER_API_KEY`), one billing surface
+  for every LLM/embedding call.
+- **Vector store**: **Pinecone** (`rag_pipeline.py`), persistent RAG store for transcript chunks.
+  Falls back to an in-memory store automatically if `PINECONE_API_KEY` isn't set (dev-friendly,
+  but non-persistent — don't rely on it surviving a restart).
+- **Feedback store**: **Upstash Redis** (`feedback_manager.py`), persistent thumbs-up/down store.
+  Falls back to a local `feedback_store.json` file if Upstash env vars aren't set (gitignored —
+  never commit this file, it can contain real user data).
+- **Audio transcription**: **AssemblyAI** (not OpenAI Whisper — swapped this session, see
+  "Audio transcription" below). Kept as a deliberately separate vendor from OpenRouter because its
+  free $50 credit covers the realistic lifetime volume of this one feature.
+
+# The 10 numbered agents (and the one that isn't numbered)
+
+The UI tabs and the `name="Agent N: ..."` strings passed to `global_tracer.create_trace()` in
+`app.py` must always match. If you renumber one, grep case-insensitively (`grep -in "agent [0-9]"`)
+across `app.py`, `static/index.html`, and `static/app.js` — a past renumbering pass missed
+ALL-CAPS comments (`AGENT 6:` etc.) because the regex was case-sensitive.
+
+| # | Endpoint | Engine file | Purpose |
+|---|---|---|---|
+| 1 | `/api/generate-personas` | `persona_generator.py` | Customer personas from the transcript |
+| 2 | `/api/generate-benefits` | `benefits_extractor.py` | Extracts product benefits |
+| 3 | `/api/generate-angles` | `benefits_angle_agent.py` | Benefit × persona ad-angle matrix |
+| 4 | `/api/generate-video-scripts` | `video_script_agent.py` | Video ad scripts |
+| 5 | `/api/generate-creative-direction` | `creative_director_agent.py` | Visual/creative direction |
+| 6 | `/api/generate-thumbnail-strategy` | `thumbnail_strategist_agent.py` | Thumbnail concepts |
+| 7 | `/api/generate-thumbnail-design` | `thumbnail_designer_agent.py` | Thumbnail copy/layout detail |
+| 8 | `/api/generate-title-strategy` | `title_strategist_agent.py` | Video/ad titles |
+| 9 | `/api/generate-content-brief` | `content_brief_agent.py` | Full content briefs |
+| 10 | `/api/generate-campaign-metadata` | `metadata_publisher_agent.py` | Campaign/publishing metadata |
+
+`video_script_agent.py`'s own internal docstrings used to say "Agent 5" (a pre-existing
+self-reference bug) even though it's always been surfaced as Agent 4 everywhere else — fixed, but
+if you see agent-number mismatches inside a file's own comments vs. its actual endpoint, that's
+the class of bug to look for.
+
+**`/api/generate-ads`** (`ad_generator.py`) is a separate, unnumbered pipeline — traced as
+`"Ad Generation & Retrieval Pipeline"`, not part of the 1–10 sequence. It's a RAG-grounded ad-copy
+generator that retrieves context via `ad_engine.retrieve_context()` directly from the vector
+store, independent of the numbered agent chain.
+
+# "Sir's Global Feedback" — where it actually goes
+
+The audio-upload panel's UI copy currently says feedback is "applied to Agents 1, 2, 3, and 4."
+**That's stale and inaccurate.** Checking the actual `global_feedback` field wiring in `app.py`,
+it's threaded into six *different* request models and their endpoints:
+`CreativeDirectionRequest` (5), `ThumbnailStrategyRequest` (6), `ThumbnailDesignRequest` (7),
+`TitleStrategyRequest` (8), `ContentBriefRequest` (9), `CampaignMetadataRequest` (10) — i.e.
+Agents 5–10, not 1–4. This was discovered but not yet fixed as of the last session — if you touch
+this panel, either fix the copy to match the code, or fix the wiring to match the copy; don't
+leave them disagreeing.
+
+Also relevant if anyone asks "why is audio transcription token-heavy": it isn't — AssemblyAI/
+Whisper bill per minute of audio, not per token. The actual token cost driver is that whatever
+text ends up in `global_feedback` gets re-sent as extra prompt tokens on *every* call to those six
+agents. If someone wants to cut cost here, the lever is trimming/summarizing that feedback text
+before injection — not the transcription vendor.
+
+# Audio transcription: submit + poll (not blocking)
+
+`app.py` around line 946. This used to be a single blocking call — the client uploaded the file
+and the server waited for the *entire* transcription to finish inside one request. That risked
+exceeding Vercel's serverless function timeout on a long recording. It's now a two-step,
+non-blocking flow:
+
+1. `POST /api/transcribe-audio` — uploads the file, calls `Transcriber().submit(path)` (returns
+   instantly with a `transcript_id`, does **not** wait for completion), deletes the temp file,
+   returns `{"status": "SUBMITTED", "transcript_id": ...}`.
+2. `GET /api/transcribe-audio/{transcript_id}` — single status check via
+   `aai.Transcript.get_by_id(id)`. Returns `{"state": "queued"|"processing"|"completed", "text": ...}`.
+
+The frontend (`static/app.js`, inside the `SIR'S GLOBAL FEEDBACK` drag-and-drop block) polls the
+status endpoint every 3 seconds for up to 15 minutes, updating the status label as it goes, then
+appends the finished text to `#sirs_feedback_text` once `state === "completed"`.
+
+**If you ever touch this again**: never go back to a single blocking transcribe call in this
+endpoint — that's the exact bug this refactor fixed. Any new long-running external API call in
+this codebase should follow the same submit+poll shape, not a blocking wait.
+
+# Conventions that exist for a reason (don't "clean them up")
+
+- **INR only, in generated/fallback content.** Every agent file that can emit a price or income
+  figure has an explicit system-prompt instruction to use INR (Lakhs/year for income, ₹X,XXX/mo
+  for pricing) plus INR-corrected hardcoded fallback templates. `cost_tracker.py` is the one
+  legitimate exception — it tracks *our own* OpenRouter/AssemblyAI API spend, which is billed and
+  reported in USD, and that's correct as-is; don't "fix" it to INR.
+- **No emojis anywhere** — removed from all UI icons/buttons and all hardcoded fallback ad copy
+  because it read as generically AI-generated. Icon-only buttons use text labels instead
+  (`+`, `Edit`, `Delete`, `Like`, `Dislike`).
+- **Brand color is `#1769FF` (blue)**, not the default indigo/violet/purple palette a lot of AI
+  dashboards default to. `static/styles.css` was remapped wholesale from indigo/violet tints to a
+  blue-family palette to match AHL's real brand.
+- **Every blocking SDK call must be wrapped in `asyncio.to_thread(...)`.** This is one FastAPI
+  process — a synchronous call (OpenAI/OpenRouter SDK, Pinecone SDK, AssemblyAI SDK) inside an
+  `async def` route blocks the *entire event loop*, not just that request. Proven earlier this
+  project with a concurrency test where 3 of 8 concurrent requests timed out during a single 36s
+  generation call before this fix; 0 of 112 failed afterward. Every one of the 10 agent endpoints
+  wraps both its RAG-retrieval call and its main generation call this way.
+- **Cache-busting**: any edit to `static/app.js` or `static/styles.css` must bump the `?v=X.X`
+  query param on that file's `<script>`/`<link>` tag in `static/index.html` (currently
+  `app.js?v=3.9`, `styles.css?v=3.4`), or browsers will keep serving a stale cached copy and a
+  real fix will look like it didn't work.
+- **Pinecone upload batching is by estimated byte size** (`max_batch_bytes = 2_000_000` in
+  `rag_pipeline.py`'s `add_chunks()`), not fixed vector count — Pinecone's real limit is a 4MB
+  *payload size*, not a vector count, so a fixed-count batch can still blow past it depending on
+  chunk length. If you touch this again, keep it size-based.
+- **`llm_retry.py`'s `call_openai_with_retry()`** wraps every agent's `chat.completions.create()`
+  call — retries on rate limits (honoring `Retry-After`), connection errors, timeouts, and 5xxs;
+  raises immediately on anything else. Every agent file uses this instead of calling the SDK
+  directly — keep new agents consistent with that.
+
+# Environment variables (`.env`, gitignored)
+
+| Var | Used by | Notes |
+|---|---|---|
+| `OPENROUTER_API_KEY` | all LLM/embedding calls | routes through OpenRouter, not raw OpenAI |
+| `ASSEMBLYAI_API_KEY` | audio transcription | separate vendor, free $50 credit on signup |
+| `PINECONE_API_KEY` / `PINECONE_INDEX_NAME` | `rag_pipeline.py` | falls back to in-memory if unset |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | `feedback_manager.py` | falls back to local JSON file if unset |
+| `CRON_SECRET` | `/api/cron/pinecone-keepalive` | Bearer-token check, used by Vercel Cron (daily, keeps the Pinecone index warm) |
+
+**Important**: these only exist in the local `.env` file right now. Vercel reads env vars from
+its own Project Settings dashboard, not from a committed/local `.env` — they must be added there
+separately before a real deploy, or the app will silently run in degraded fallback mode
+(in-memory vector store, local feedback file) in production.
+
+# Known production-readiness gaps (as of this writing)
+
+- **No authentication on any endpoint.** `CORSMiddleware` is `allow_origins=["*"]` with no auth
+  check anywhere except the cron endpoint's Bearer-token check. Every generation/upload/transcribe
+  endpoint is fully public if deployed as-is — anyone with the URL can burn API credits.
+- **No rate limiting** on any endpoint.
+- **Nothing is committed to git yet** — the whole session's worth of fixes is sitting uncommitted
+  in the working tree. `.gitignore` already excludes `.env`, `.env.local`, `__pycache__/`, `*.pyc`,
+  `feedback_store.json`.
+- **Pinecone only has generic/placeholder transcript content** — no real AHL sales-call transcript
+  has been uploaded yet, so RAG-grounded outputs are still working off demo text.
+- The stale "Agents 1–4" feedback-panel copy mismatch described above.
+
+# Dev workflow
+
+- Local run: `uvicorn app:app --reload` (port 8000 by default; `.claude/launch.json` has this
+  wired for the in-editor preview browser).
+- Python deps: `requirements.txt` — no upper-version pins, all floor-only (`>=`).
+- `eval_regression_suite.py` + `golden_dataset.json` — a regression test harness checking system
+  prompt encoding, retrieved-context injection, and brand-safety/compliance heuristics across the
+  agents. Run this after touching any agent's prompt logic.
+- `scripts/archive/` — old one-off dev/patch scripts (`fix_*.py`, `append_*.py`,
+  `scratch_update_*.py`) moved here via `git mv`; they were how earlier ad-hoc patches got applied
+  to `static/app.js`/`index.html` before larger changes started going through normal edits. Dead
+  weight, kept only for history — don't build on top of them.
+- `demo_rag_ad_agent.py` / `clean_transcript.py` — standalone utility scripts, not imported by
+  `app.py`, used for one-off RAG pipeline demos and `.docx` transcript cleanup respectively.

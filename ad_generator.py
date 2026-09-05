@@ -17,6 +17,7 @@ from pydantic import BaseModel
 
 from rag_pipeline import EmbeddingManager, VectorStoreManager
 from feedback_manager import feedback_mgr
+from llm_retry import call_openai_with_retry
 
 try:
     import openai
@@ -75,7 +76,7 @@ class AdGeneratorEngine:
     def __init__(self, vector_store: VectorStoreManager, embedding_manager: EmbeddingManager):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def build_system_prompt(self, course_name: str, target_audience: str, retrieved_context: str) -> str:
         """
@@ -224,9 +225,10 @@ Generate 10 structured, high-converting ad variations for '{target_audience}' ba
 
         if _OPENAI_AVAILABLE and self.api_key:
             try:
-                client = openai.OpenAI(api_key=self.api_key)
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
+                response = call_openai_with_retry(
+                    client,
+                    model="openai/gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": "Generate 10 structured ad variations following the specified 10 angles."}
@@ -276,73 +278,73 @@ Generate 10 structured, high-converting ad variations for '{target_audience}' ba
             sections_data = [
                 {
                     "section_num": 1,
-                    "title": "⚡ 1. Visual Hook (0-3s)",
+                    "title": "1. Visual Hook (0-3s)",
                     "video": "Video Action :Close-up of presenter stopping mid-scroll, looking directly into camera with intense focus.",
-                    "audio": "🗣️ Spoken Dialogue:\"Stop scrolling! Most creators fail at writing hooks because they skip this 1 step.\"",
-                    "vfx": "✨ Trending VFX:Kinetic typography popup 'STOP SCROLLING' in bold neon yellow + 3D warning icon animation."
+                    "audio": "Spoken Dialogue:\"Stop scrolling! Most creators fail at writing hooks because they skip this 1 step.\"",
+                    "vfx": "Trending VFX: Kinetic typography popup 'STOP SCROLLING' in bold neon yellow + 3D warning icon animation."
                 },
                 {
                     "section_num": 2,
-                    "title": "🎙️ 2. Audio Hook (3-6s)",
+                    "title": "2. Audio Hook (3-6s)",
                     "video": "Video Action :Split-screen showing failing ad dashboard (0% CTR) vs skyrocketing ROI graph.",
-                    "audio": "🗣️ Spoken Dialogue:\"If your ads aren't converting, it's not your offer — it's your first 3 seconds.\"",
-                    "vfx": "✨ Trending VFX:Trending red highlight box drawing around the '0% CTR' metric with floating question mark graphics."
+                    "audio": "Spoken Dialogue:\"If your ads aren't converting, it's not your offer — it's your first 3 seconds.\"",
+                    "vfx": "Trending VFX: Trending red highlight box drawing around the '0% CTR' metric with floating question mark graphics."
                 },
                 {
                     "section_num": 3,
-                    "title": "🔥 3. Pattern Interrupt & Agitation (6-12s)",
+                    "title": "3. Pattern Interrupt & Agitation (6-12s)",
                     "video": "Video Action :Presenter tearing up a sheet of generic ad copy templates, tossing them off camera.",
-                    "audio": "🗣️ Spoken Dialogue:\"You spend hours crafting an offer, but viewers skip past your ad before you even introduce yourself.\"",
-                    "vfx": "✨ Trending VFX:Paper tear visual transition effect + on-screen fire particle explosion overlay."
+                    "audio": "Spoken Dialogue:\"You spend hours crafting an offer, but viewers skip past your ad before you even introduce yourself.\"",
+                    "vfx": "Trending VFX: Paper tear visual transition effect + on-screen fire particle explosion overlay."
                 },
                 {
                     "section_num": 4,
-                    "title": "😩 4. Core Problem Statement (12-20s)",
+                    "title": "4. Core Problem Statement (12-20s)",
                     "video": "Video Action :Over-the-shoulder view of marketer staring at rising Customer Acquisition Cost (CAC) metrics.",
-                    "audio": "🗣️ Spoken Dialogue:\"Ad fatigue is real. Customer acquisition costs keep climbing higher every week because generic scripts blend into the noise.\"",
-                    "vfx": "✨ Trending VFX:Red trendline graph animating upward with floating '$ CAC' inflation tag."
+                    "audio": "Spoken Dialogue:\"Ad fatigue is real. Customer acquisition costs keep climbing higher every week because generic scripts blend into the noise.\"",
+                    "vfx": "Trending VFX: Red trendline graph animating upward with floating '$ CAC' inflation tag."
                 },
                 {
                     "section_num": 5,
-                    "title": "💡 5. Solution & Breakthrough Mechanism (20-35s)",
+                    "title": "5. Solution & Breakthrough Mechanism (20-35s)",
                     "video": f"Video Action :Presenter turning on glowing laptop, revealing the '{course_name}' transcript framework.",
-                    "audio": f"🗣️ Spoken Dialogue:\"The '{course_name}' framework shows you step-by-step how to engineer high-converting hooks and structure winning scripts.\"",
-                    "vfx": "✨ Trending VFX:Glowing blue aura effect surrounding laptop + floating 3D blueprint icon."
+                    "audio": f"Spoken Dialogue:\"The '{course_name}' framework shows you step-by-step how to engineer high-converting hooks and structure winning scripts.\"",
+                    "vfx": "Trending VFX: Glowing blue aura effect surrounding laptop + floating 3D blueprint icon."
                 },
                 {
                     "section_num": 6,
-                    "title": "⭐ 6. Social Proof & Authority Stack (35-45s)",
+                    "title": "6. Social Proof & Authority Stack (35-45s)",
                     "video": "Video Action :Rapid montage of verified creator ROI dashboards and glowing student video testimonials.",
-                    "audio": "🗣️ Spoken Dialogue:\"Top creators and agencies are using this exact transcript formula to generate 5x to 10x return on ad spend.\"",
-                    "vfx": "✨ Trending VFX:Floating 5-star rating badges + verified blue checkmark popups over testimonials."
+                    "audio": "Spoken Dialogue:\"Top creators and agencies are using this exact transcript formula to generate 5x to 10x return on ad spend.\"",
+                    "vfx": "Trending VFX: Floating 5-star rating badges + verified blue checkmark popups over testimonials."
                 },
                 {
                     "section_num": 7,
-                    "title": "🎁 7. Value Stacking & Bonus Offer (45-55s)",
+                    "title": "7. Value Stacking & Bonus Offer (45-55s)",
                     "video": "Video Action :Presenter tapping tablet screen to reveal module guides, script templates, and bonus vault.",
-                    "audio": "🗣️ Spoken Dialogue:\"You get instant access to all course modules, 10 pre-tested script variation templates, and our hook writing cheat sheet.\"",
-                    "vfx": "✨ Trending VFX:Stacked 3D digital bundle graphic unfolding on screen with green 'BONUS INCLUDED' tags."
+                    "audio": "Spoken Dialogue:\"You get instant access to all course modules, 10 pre-tested script variation templates, and our hook writing cheat sheet.\"",
+                    "vfx": "Trending VFX: Stacked 3D digital bundle graphic unfolding on screen with green 'BONUS INCLUDED' tags."
                 },
                 {
                     "section_num": 8,
-                    "title": "🛡️ 8. Risk Reversal & Guarantee Framing (55-65s)",
+                    "title": "8. Risk Reversal & Guarantee Framing (55-65s)",
                     "video": "Video Action :Presenter holding up a gold guarantee seal card with a confident smile.",
-                    "audio": "🗣️ Spoken Dialogue:\"Test these scripts in your campaigns completely risk-free with our 30-day full transformation guarantee.\"",
-                    "vfx": "✨ Trending VFX:Metallic gold 3D shield badge spinning into center screen with '100% RISK FREE' banner."
+                    "audio": "Spoken Dialogue:\"Test these scripts in your campaigns completely risk-free with our 30-day full transformation guarantee.\"",
+                    "vfx": "Trending VFX: Metallic gold 3D shield badge spinning into center screen with '100% RISK FREE' banner."
                 },
                 {
                     "section_num": 9,
-                    "title": "🎯 9. Primary Call to Action (CTA) (65-75s)",
+                    "title": "9. Primary Call to Action (CTA) (65-75s)",
                     "video": "Video Action :Presenter pointing downward toward the glowing call-to-action button overlay.",
-                    "audio": "🗣️ Spoken Dialogue:\"Click the link below right now to claim your framework access and start writing winning ad scripts today!\"",
-                    "vfx": "✨ Trending VFX:Glowing neon green 'CLAIM ACCESS NOW' button pulsing with animated mouse cursor click."
+                    "audio": "Spoken Dialogue:\"Click the link below right now to claim your framework access and start writing winning ad scripts today!\"",
+                    "vfx": "Trending VFX: Glowing neon green 'CLAIM ACCESS NOW' button pulsing with animated mouse cursor click."
                 },
                 {
                     "section_num": 10,
                     "title": "⌛ 10. Urgency & Final Scarcity Push (75-85s)",
                     "video": "Video Action :Presenter glancing at live countdown clock on wall screen.",
-                    "audio": "🗣️ Spoken Dialogue:\"Limited slots remain for this cohort. Don't launch your next ad until you apply this proven framework — click below before it closes!\"",
-                    "vfx": "✨ Trending VFX:Countdown timer widget counting down from 04:59 with flashing red 'LIMITED TIME' banner."
+                    "audio": "Spoken Dialogue:\"Limited slots remain for this cohort. Don't launch your next ad until you apply this proven framework — click below before it closes!\"",
+                    "vfx": "Trending VFX: Countdown timer widget counting down from 04:59 with flashing red 'LIMITED TIME' banner."
                 }
             ]
 

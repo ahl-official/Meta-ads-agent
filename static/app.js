@@ -1,5 +1,5 @@
 
-// --- GLOBAL FEEDBACK LOGIC (AGENT 5) ---
+// --- GLOBAL FEEDBACK LOGIC (SIR'S GLOBAL FEEDBACK) ---
 window.sirsGlobalFeedback = '';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.sirsGlobalFeedback = feedbackText.value.trim();
             if (window.sirsGlobalFeedback) {
                 feedbackStatus.style.display = 'block';
-                feedbackStatus.textContent = '✓ Feedback locked in. It will now be applied to all future agent generations.';
+                feedbackStatus.textContent = 'Feedback locked in. It will now be applied to all future agent generations.';
                 setTimeout(() => { feedbackStatus.style.display = 'none'; }, 5000);
             }
         });
@@ -63,7 +63,7 @@ const INITIAL_SAVED_AUDIENCES = [
         id: "aud_4",
         title: "Performance Marketers & Agency Leaders",
         subtitle: "High-ROAS Direct Response Scaling",
-        description: "Direct-response agency owners scaling $50k+/mo ad spend looking for high-converting hook structures and audience alignment.",
+        description: "Direct-response agency owners scaling ₹40+ Lakhs/mo ad spend looking for high-converting hook structures and audience alignment.",
         active: false,
         dateAdded: "2026-08-31"
     }
@@ -80,7 +80,7 @@ const INITIAL_PERSONAS = [
         demographics: {
             "Age": "25 - 55 years old",
             "Gender": "All Genders",
-            "Income": "$50,000 - $150,000 / year",
+            "Income": "₹6 - 20 Lakhs / year",
             "Occupation": "Professionals & Executives",
             "Location": "Urban & Suburban",
             "Marital Status": "Single or Married",
@@ -164,7 +164,7 @@ const INITIAL_BENEFITS = [
         underlying_emotion: "Financial Security & Liberation from Dependence",
         description: "Break free from lifetime prescription drugs and expensive recurring clinic bills with a self-sustaining natural root recovery system.",
         feature_mapping: "Organic root stabilization and self-sustaining follicle nourishment",
-        ad_hook_idea: "Tired of paying $150/month forever for temporary sprays? Here is how to lock in permanent density."
+        ad_hook_idea: "Tired of paying ₹2,999/month forever for temporary sprays? Here is how to lock in permanent density."
     },
     {
         benefit_id: 6,
@@ -242,11 +242,11 @@ const INITIAL_ANGLES = [
             {
                 angle_id: 3,
                 framework: "Gift & Reciprocity",
-                angle_headline: "Free Scalp Density Scan + Bonus Hair Care Routine Kit ($150 Value)",
+                angle_headline: "Free Scalp Density Scan + Bonus Hair Care Routine Kit (₹1,999 Value)",
                 core_hook: "We're giving away 50 complimentary organic scalp vitality diagnostic kits this week.",
                 angle_concept: "Leverages reciprocity by offering a zero-cost initial scan and bonus routine guide to remove friction.",
                 target_persona: "The Research-Driven Pragmatist (David, 45)",
-                call_to_action: "Claim Your Free $150 Scalp Diagnostic Kit Now"
+                call_to_action: "Claim Your Free ₹1,999 Scalp Diagnostic Kit Now"
             },
             {
                 angle_id: 4,
@@ -305,8 +305,8 @@ const INITIAL_ANGLES = [
             {
                 angle_id: 4,
                 framework: "Contrast & Comparison",
-                angle_headline: "$12,000 Surgical Transplants vs. 90-Day Organic Revival: The Real Comparison",
-                core_hook: "Before spending $10k+ and facing 3 weeks of painful downtime, compare these two paths.",
+                angle_headline: "₹1,20,000 Surgical Transplants vs. 90-Day Organic Revival: The Real Comparison",
+                core_hook: "Before spending ₹1,00,000+ and facing 3 weeks of painful downtime, compare these two paths.",
                 angle_concept: "Side-by-side breakdown contrasting high cost/risk surgery with zero-downtime organic revival.",
                 target_persona: "The Overwhelmed Parent & Professional (Elena, 38)",
                 call_to_action: "View Full Surgery vs. Organic Revival Comparison"
@@ -350,7 +350,7 @@ const INITIAL_ANGLES = [
             {
                 angle_id: 3,
                 framework: "Gift & Reciprocity",
-                angle_headline: "Includes Free Micro-Applicator & Pocket Travel Case ($45 Value)",
+                angle_headline: "Includes Free Micro-Applicator & Pocket Travel Case (₹799 Value)",
                 core_hook: "Order today and receive our precision serum applicator tool absolutely free.",
                 angle_concept: "Enhances routine speed by providing free custom applicator hardware.",
                 target_persona: "The Research-Driven Pragmatist (David, 45)",
@@ -494,7 +494,7 @@ const INITIAL_ANGLES = [
             {
                 angle_id: 1,
                 framework: "Contrast & Comparison",
-                angle_headline: "$15,000 Surgery vs. $49/mo Organic Protocol: The Financial Breakdown",
+                angle_headline: "₹1,50,000 Surgery vs. ₹2,999/mo Organic Protocol: The Financial Breakdown",
                 core_hook: "Why spend your entire savings on invasive surgery when you can restore density at a fraction of the cost?",
                 angle_concept: "Directly compares surgical debt with an affordable monthly self-care protocol.",
                 target_persona: "The High-Stakes Career Achiever (Sarah, 29)",
@@ -522,7 +522,7 @@ const INITIAL_ANGLES = [
                 angle_id: 4,
                 framework: "Gift & Reciprocity",
                 angle_headline: "Lock In 40% Off Your First 90-Day Organic Revival Kit",
-                core_hook: "Save an extra $120 today with our introductory direct-to-consumer savings voucher.",
+                core_hook: "Save an extra ₹999 today with our introductory direct-to-consumer savings voucher.",
                 angle_concept: "Applies direct savings incentives to lower purchase resistance.",
                 target_persona: "The Overwhelmed Parent & Professional (Elena, 38)",
                 call_to_action: "Claim Your 40% Off Introductory Voucher"
@@ -530,7 +530,7 @@ const INITIAL_ANGLES = [
             {
                 angle_id: 5,
                 framework: "Proof & Evidence",
-                angle_headline: "Save Over $12,000 While Achieving Comparable Hair Density Results",
+                angle_headline: "Save Over ₹1,20,000 While Achieving Comparable Hair Density Results",
                 core_hook: "Independent consumer studies show 89% satisfaction rating equivalent to surgical density.",
                 angle_concept: "Uses financial statistics to validate high-value outcomes.",
                 target_persona: "The Research-Driven Pragmatist (David, 45)",
@@ -575,7 +575,7 @@ const INITIAL_ANGLES = [
             {
                 angle_id: 4,
                 framework: "Scarcity & Urgency",
-                angle_headline: "First 100 Orders Receive Free Scalp Care & Maintenance Kit ($65 Value)",
+                angle_headline: "First 100 Orders Receive Free Scalp Care & Maintenance Kit (₹999 Value)",
                 core_hook: "Get a complete hairline maintenance kit free with your custom hair patch consultation.",
                 angle_concept: "Drives immediate consultations through bonus hair system maintenance kit.",
                 target_persona: "The Skeptical Solution Seeker (Marcus, 34)",
@@ -594,554 +594,12 @@ const INITIAL_ANGLES = [
     }
 ];
 
-const INITIAL_CREATIVES = [
-    {
-        creative_id: 1,
-        angle_headline: "Tired of Hiding Under Caps & Avoiding Overhead Lights?",
-        core_hook: "Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors.",
-        target_persona: "The Skeptical Solution Seeker (Marcus, 34)",
-        image_url: "/static/images/hair_patch_display.jpg",
-        visual_prompt_master: "Ultra-realistic professional studio product shot of a premium human hair patch system by American Hairline. High quality natural black hair patch placed on a minimalist mannequin head display, highlighting the hyper-realistic front hairline and invisible lace base, soft luxury studio lighting, dark elegant background.",
-        background_styling: "Deep dark emerald velvet background with subtle atmospheric mist and illuminated studio accents.",
-        lighting_realism: "Key light 5600K softbox at 45 degrees, warm 3200K rim lighting highlighting micro-lace scalp base contours.",
-        composition_layout: "Product hero positioned in lower-right third, showcasing front hairline transparency and natural hair flow.",
-        color_palette: {
-            primary_hex: "#0F291E",
-            secondary_hex: "#1E3A2B",
-            accent_hex: "#D4AF37",
-            background_hex: "#08140E",
-            color_harmony_reasoning: "Complementary contrast pairing luxury dark emerald (#0F291E) with warm champagne gold (#D4AF37) to project premium authority."
-        },
-        text_overlay: {
-            headline_text: "Tired of Hiding Under Caps & Avoiding Overhead Lights?",
-            subheadline_text: "American Hairline Non-Surgical Hair Patch • 100% Undetectable Hairline",
-            font_style_typography: "Inter Heavy 800 for Headline, Outfit Medium 500 for Sub-headline",
-            badge_tag_text: "✓ 100% Human Hair • Non-Surgical",
-            cta_button_text: "Book Custom Hair Patch Fitting",
-            overlay_positioning: "Top-left 40% area with dark gradient scrim backdrop"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Results may vary. Based on 90-day daily organic application protocol.",
-            claim_substantiation_note: "Follicle density claims substantiated by empirical customer outcome tracking without surgical claims.",
-            prohibited_elements_checked: [
-                "Verified no exaggerated before/after photo manipulations",
-                "Verified no unauthorized medical cure guarantees (FTC Sec. 5 Compliant)",
-                "Clear & conspicuous disclosure tag placement"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <linearGradient id="bg-grad-init-1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F291E" />
-      <stop offset="50%" stop-color="#1E3A2B" />
-      <stop offset="100%" stop-color="#08140E" />
-    </linearGradient>
-    <clipPath id="clip-patch-1">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="url(#bg-grad-init-1)" />
-  <circle cx="400" cy="100" r="120" fill="#D4AF37" opacity="0.15" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#111827" stroke="#D4AF37" stroke-width="3"/>
-    <image href="/static/images/hair_patch_display.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-1)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="210" height="26" rx="13" fill="#D4AF37" opacity="0.9" />
-    <text x="105" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">✓ 100% Human Hair • Non-Surgical</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">Tired of Hiding Under Caps &amp;</tspan>
-    <tspan x="25" dy="26">Avoiding Overhead Lights?</tspan>
-  </text>
-  <text x="25" y="175" font-size="12" font-weight="500" fill="#D1D5DB">
-    <tspan x="25" dy="0">American Hairline Non-Surgical Hair Patch</tspan>
-    <tspan x="25" dy="18">100% Undetectable Natural Hairline</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#D4AF37" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">Book Custom Hair Patch Fitting</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 2,
-        angle_headline: "Reclaim Your Executive Presence & Youthful Edge",
-        core_hook: "Looking 10 years younger isn't about vanity—it's about leading with total confidence.",
-        image_url: "/static/images/hair_patch_styling.jpg",
-        visual_prompt_master: "Professional hair studio scene showing a expert stylist applying and seamlessly blending an American Hairline natural human hair patch onto a male client's scalp. Clean modern salon setting, warm lighting, client looking satisfied in salon mirror with full natural hair density restored.",
-        background_styling: "Modern architectural corporate office backdrop with warm oak wood accents and soft morning daylight bokeh.",
-        lighting_realism: "Natural golden-hour window key lighting complemented by subtle 5500K fill light for smooth facial detail.",
-        composition_layout: "Subject offset to the right third, looking confidently towards the left; clear upper left zone for text injection.",
-        color_palette: {
-            primary_hex: "#1B263B",
-            secondary_hex: "#415A77",
-            accent_hex: "#E0A96D",
-            background_hex: "#0D1B2A",
-            color_harmony_reasoning: "Executive Navy Blue (#1B263B) harmonized with warm bronze amber (#E0A96D) accents to trigger authority, status, and professional trust."
-        },
-        text_overlay: {
-            headline_text: "Reclaim Your Executive Presence & Hair Density",
-            subheadline_text: "Look 10 Years Younger Without Surgery or Downtime",
-            font_style_typography: "Outfit ExtraBold 800 with Inter Regular body",
-            badge_tag_text: "⭐ Rated 4.9/5 By 1,240+ Professionals",
-            cta_button_text: "Book VIP Confidential Consultation",
-            overlay_positioning: "Top-left corner box with solid 80% opacity dark navy backdrop pill"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Individual outcomes depend on individual scalp vitality and adherence.",
-            claim_substantiation_note: "Executive career benefits framed around self-confidence survey data.",
-            prohibited_elements_checked: [
-                "Verified authentic user representation without deceptive retouching",
-                "Verified clear FTC affiliate & commercial advertisement declaration",
-                "No unvalidated clinical claims"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <linearGradient id="bg-grad-init-2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1B263B" />
-      <stop offset="50%" stop-color="#415A77" />
-      <stop offset="100%" stop-color="#0D1B2A" />
-    </linearGradient>
-    <clipPath id="clip-patch-2">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="url(#bg-grad-init-2)" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#0D1B2A" stroke="#E0A96D" stroke-width="3"/>
-    <image href="/static/images/hair_patch_styling.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-2)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="220" height="26" rx="13" fill="#E0A96D" />
-    <text x="110" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">⭐ Rated 4.9/5 By 1,240+ Professionals</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">Reclaim Your Executive Presence</tspan>
-    <tspan x="25" dy="26">&amp; Hair Density</tspan>
-  </text>
-  <text x="25" y="175" font-size="12" font-weight="500" fill="#E2E8F0">
-    <tspan x="25" dy="0">Look 10 Years Younger Non-Surgically</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#E0A96D" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">Book VIP Confidential Consult</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 3,
-        angle_headline: "94.2% Density Recovery in 90 Days: See Clinical Proof",
-        core_hook: "Don't take our word for it—here is what 1,240+ real clients experienced without surgery.",
-        target_persona: "The Research-Driven Pragmatist (David, 45)",
-        visual_prompt_master: "Macro scientific laboratory shot showing the microscopic follicle activation mechanism of American Hairline Scalp Revival System, organic active bio-peptides penetrating scalp tissue layer, 3D photorealistic medical visualization style --ar 1:1",
-        background_styling: "Clinical laboratory setting with ultra-clean glass reflection, soft blue ambient accent lighting, and macro scalp cross-section diagram.",
-        lighting_realism: "High-CRI 6000K daylight balanced laboratory lighting with precision spot highlight on active bio-peptides.",
-        composition_layout: "Split side-by-side or macro focus center with structured banner overlay zones at top and bottom.",
-        color_palette: {
-            primary_hex: "#0A192F",
-            secondary_hex: "#172A45",
-            accent_hex: "#64FFDA",
-            background_hex: "#020C1B",
-            color_harmony_reasoning: "Clinical Deep Sapphire (#0A192F) paired with vibrant Cyan Neon (#64FFDA) accent to evoke high-tech innovation and empirical precision."
-        },
-        text_overlay: {
-            headline_text: "94.2% Follicle Density Recovery • Clinical Proof",
-            subheadline_text: "Micro-Activation Technology Targets Root Cause Hair Thinning",
-            font_style_typography: "Inter Black 900 for high-impact readability",
-            badge_tag_text: "🔬 Dermatologically Tested & Certified Organic",
-            cta_button_text: "Explore Clinical Case Studies",
-            overlay_positioning: "Top banner dark bar across full top width with 90% opacity"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Clinical trial percentage based on 90-day double-blind observational study of 1,240 subjects.",
-            claim_substantiation_note: "94.2% claim directly supported by third-party dermatological trial records.",
-            prohibited_elements_checked: [
-                "Verified empirical study citations provided in fine print",
-                "No misleading pharmaceutical drug claims",
-                "Fully FTC compliant scientific disclosure"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <linearGradient id="bg-grad-init-3" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0A192F" />
-      <stop offset="50%" stop-color="#172A45" />
-      <stop offset="100%" stop-color="#020C1B" />
-    </linearGradient>
-    <clipPath id="clip-patch-3">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="url(#bg-grad-init-3)" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#020C1B" stroke="#64FFDA" stroke-width="3"/>
-    <image href="/static/images/hair_patch_macro_base.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-3)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="250" height="26" rx="13" fill="#64FFDA" />
-    <text x="125" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">🔬 Micro-Lace Base • Clinical Proof</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">94.2% Natural Hair Density</tspan>
-    <tspan x="25" dy="26">Restoration Proof</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#64FFDA" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">Explore Hair Patch Case Studies</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 4,
-        angle_headline: "Free Scalp Density Scan + Bonus Hair Routine Kit ($150 Value)",
-        core_hook: "We're giving away 50 complimentary organic scalp diagnostic kits this week.",
-        target_persona: "The Value-Conscious Optimizer (Alex, 31)",
-        visual_prompt_master: "Flatlay unboxing aesthetic of American Hairline Premium Hair System boxed kit, surrounded by organic scalp adhesive bond, skin protector spray, and gold-foiled care guide, soft studio illumination --ar 1:1",
-        background_styling: "Rustic oak wood tabletop with clean velvet tray inlay, surrounded by fresh botanical rosemary sprigs.",
-        lighting_realism: "Soft diffused top softbox light eliminating harsh specular shadows, with warm amber fill accent.",
-        composition_layout: "Knolling flatlay arrangement with product hero centered and bonus items angled neatly around it.",
-        color_palette: {
-            primary_hex: "#78350F",
-            secondary_hex: "#D97706",
-            accent_hex: "#F59E0B",
-            background_hex: "#1C1917",
-            color_harmony_reasoning: "Warm Amber & Gold (#D97706 & #F59E0B) contrasted against dark walnut wood (#1C1917) to invoke gift excitement."
-        },
-        text_overlay: {
-            headline_text: "Free Hair Patch Maintenance Kit Included",
-            subheadline_text: "Complimentary Organic Scalp Bond & 90-Day Hairline Guarantee",
-            font_style_typography: "Inter ExtraBold 800 with Outfit Bold accent",
-            badge_tag_text: "🎁 Free $150 Bonus Kit • 50 Slots Only",
-            cta_button_text: "Claim Free Diagnostic Kit Now",
-            overlay_positioning: "Bottom third dark gradient box with high-visibility CTA"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Free bonus kit included with eligible 90-day subscription orders while supplies last.",
-            claim_substantiation_note: "Bonus item values verified against individual retail pricing.",
-            prohibited_elements_checked: [
-                "Verified clear terms of free gift eligibility",
-                "No hidden fee traps or deceptive auto-enrollments",
-                "FTC compliant bonus disclosure"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <clipPath id="clip-patch-4">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="#1C1917" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#1C1917" stroke="#F59E0B" stroke-width="3"/>
-    <image href="/static/images/hair_patch_box_kit.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-4)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="220" height="26" rx="13" fill="#F59E0B" />
-    <text x="110" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">🎁 Free Hair Patch Kit Included</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">Free Hair Patch Care</tspan>
-    <tspan x="25" dy="26">Kit Included</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#F59E0B" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">Claim Free Care Kit Now</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 5,
-        angle_headline: "'Will People Notice?' Why Our Bio-Matrix Looks 100% Natural",
-        core_hook: "The #1 fear guys have before trying scalp revival: 'What if it looks fake?' Here's the truth.",
-        target_persona: "The Skeptical Solution Seeker (Marcus, 34)",
-        visual_prompt_master: "Close-up macro photography of natural hairline scalp texture treated with American Hairline Scalp Revival System, seamless organic hair follicle integration, zero artificial shine, 85mm macro lens --ar 1:1",
-        background_styling: "Soft muted platinum gray background with elegant directional light beam highlighting natural hair root density.",
-        lighting_realism: "Natural 5200K side key lighting creating subtle natural depth shadows between individual hair strands.",
-        composition_layout: "Extreme macro close-up taking up right two-thirds, left third dark slate negative space for objection copy.",
-        color_palette: {
-            primary_hex: "#334155",
-            secondary_hex: "#475569",
-            accent_hex: "#6366F1",
-            background_hex: "#0F172A",
-            color_harmony_reasoning: "Cool Slate & Electric Indigo (#6366F1) to communicate sophisticated engineering and modern reliability."
-        },
-        text_overlay: {
-            headline_text: "'What If It Looks Fake?' Here Is The Truth",
-            subheadline_text: "100% Undetectable Natural Follicle Integration Guarantee",
-            font_style_typography: "Outfit Heavy 800 with Inter Medium",
-            badge_tag_text: "🛡️ 100% Undetectable • Zero Side Effects",
-            cta_button_text: "See Scalp Micro-Photos",
-            overlay_positioning: "Left third dark panel overlay with solid 85% slate background"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Undetectable density based on 100% organic natural hair growth micro-activation.",
-            claim_substantiation_note: "Non-synthetic claim verified through 100% organic ingredient list.",
-            prohibited_elements_checked: [
-                "Verified no false claim of instant hair piece attachment",
-                "Clear distinction between organic growth and artificial hairpieces",
-                "FTC compliant objection handling"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <clipPath id="clip-patch-5">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="#0F172A" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#0F172A" stroke="#6366F1" stroke-width="3"/>
-    <image href="/static/images/hair_patch_transformation.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-5)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="230" height="26" rx="13" fill="#6366F1" />
-    <text x="115" y="17" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">🛡️ 100% Undetectable • Zero Risks</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">'What If It Looks Fake?'</tspan>
-    <tspan x="25" dy="26">Here Is The Truth</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#6366F1" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle">See Hair Patch Closeups</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 6,
-        angle_headline: "Only 12 Consultation Slots Available For This Month's Organic Batch",
-        core_hook: "Due to custom organic formulation times, monthly intake is strictly limited to 25 clients.",
-        target_persona: "The High-Stakes Career Achiever (Sarah, 29)",
-        visual_prompt_master: "Luxury dark aesthetic hair salon display of American Hairline custom human hair patch system with gold foil batch seal #042/100, custom black velvet display case, spotlight beam --ar 1:1",
-        background_styling: "Dramatic dark crimson velvet backdrop with soft theatrical spotlight focus.",
-        lighting_realism: "Narrow beam 4500K spotlight on hair patch hero, creating intense contrast and high urgency aura.",
-        composition_layout: "Centered luxury hero placement with bold countdown urgency banner at top.",
-        color_palette: {
-            primary_hex: "#4C0519",
-            secondary_hex: "#881337",
-            accent_hex: "#FB7185",
-            background_hex: "#0F050A",
-            color_harmony_reasoning: "Crimson Velvet (#4C0519) paired with Coral Rose (#FB7185) to signal high-priority urgency, scarcity, and exclusive luxury."
-        },
-        text_overlay: {
-            headline_text: "Only 12 Fitting Slots Left For This Month",
-            subheadline_text: "Custom Hand-Knotted Human Hair Systems Limited To 25 Clients",
-            font_style_typography: "Inter Black 900 with Outfit Bold",
-            badge_tag_text: "⚡ High Demand • Limited Monthly Slots",
-            cta_button_text: "Secure 1 of 12 Fitting Spots",
-            overlay_positioning: "Top full-width urgency banner with gradient crimson glow"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Fitting slot limits reflect custom hand-knotting master craftsman capacity.",
-            claim_substantiation_note: "Scarcity claim verified by actual monthly studio fitting schedule.",
-            prohibited_elements_checked: [
-                "Verified authentic production volume limits",
-                "True batch scarcity qualification",
-                "FTC compliant urgency guidelines"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <clipPath id="clip-patch-6">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="#0F050A" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#0F050A" stroke="#FB7185" stroke-width="3"/>
-    <image href="/static/images/hair_patch_styling.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-6)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="230" height="26" rx="13" fill="#FB7185" />
-    <text x="115" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">⚡ High Demand • 12 Fitting Slots</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">Only 12 Slots Left For</tspan>
-    <tspan x="25" dy="26">Custom Hair Patch Fitting</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#FB7185" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">Secure 1 of 12 Fitting Spots</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 7,
-        angle_headline: "The 'Follicle Awakening' Protocol Top Clinics Don't Want You to Know",
-        core_hook: "Why 80% of topical serums fail—and the micro-activation layer surgeons skip.",
-        target_persona: "The Research-Driven Pragmatist (David, 45)",
-        visual_prompt_master: "Mysterious high-tech laboratory research imagery of bio-active molecule interaction with dormant hair roots, glowing golden particles, 3D photorealistic science render --ar 1:1",
-        background_styling: "Futuristic deep purple cosmic research environment with glowing bio-luminescent particles.",
-        lighting_realism: "Bio-luminescent golden glow from within active ingredients, surrounded by deep violet atmospheric shadows.",
-        composition_layout: "Diagonal split layout creating dynamic visual curiosity and motion.",
-        color_palette: {
-            primary_hex: "#2E1065",
-            secondary_hex: "#581C87",
-            accent_hex: "#10B981",
-            background_hex: "#090514",
-            color_harmony_reasoning: "Deep Amethyst (#581C87) paired with Bio-Emerald (#10B981) to provoke deep curiosity and breakthrough discovery."
-        },
-        text_overlay: {
-            headline_text: "The 'Follicle Awakening' Secret Clinics Skip",
-            subheadline_text: "Why Topical Serums Fail & How Micro-Activation Unlocks Roots",
-            font_style_typography: "Outfit Heavy 800 with Inter Bold body",
-            badge_tag_text: "💡 Breakthrough Protocol • 3-Min Video",
-            cta_button_text: "Watch Free 3-Minute Breakdown",
-            overlay_positioning: "Bottom half overlay box with dark purple gradient"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Educational content detailing biological mechanisms of follicle micro-activation.",
-            claim_substantiation_note: "Mechanism supported by published bio-peptide research literature.",
-            prohibited_elements_checked: [
-                "Verified clear distinction between educational research and medical claims",
-                "No conspiracy theory misrepresentation",
-                "FTC compliant curiosity hook"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <clipPath id="clip-patch-7">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="500" height="500" rx="12" fill="#090514" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#090514" stroke="#10B981" stroke-width="3"/>
-    <image href="/static/images/hair_patch_macro_base.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-7)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="230" height="26" rx="13" fill="#10B981" />
-    <text x="115" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">💡 Breathable Micro-Lace Secret</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">Breathable Micro-Lace</tspan>
-    <tspan x="25" dy="26">Hair Patch Technology</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#10B981" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">Watch Free 3-Min Breakdown</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    },
-    {
-        creative_id: 8,
-        angle_headline: "$12,000 Surgical Transplants vs. 90-Day Organic Revival: The Real Comparison",
-        core_hook: "Before spending $10k+ and facing 3 weeks of painful downtime, compare these two paths.",
-        target_persona: "The Skeptical Solution Seeker (Marcus, 34)",
-        visual_prompt_master: "Split-screen comparison image: Left side shows surgical scalp surgery ($12,000 cost banner), Right side shows American Hairline non-surgical hair patch system with dense natural hair ($0 Downtime banner) --ar 1:1",
-        background_styling: "Split background: Left side cold dark gray clinic texture, Right side warm glowing luxury dark emerald.",
-        lighting_realism: "Dual lighting setup: Harsh clinical 6500K left light vs. warm inviting 3200K right light.",
-        composition_layout: "Exact 50/50 vertical split-screen matrix with bold comparison checkmarks.",
-        color_palette: {
-            primary_hex: "#18181B",
-            secondary_hex: "#EF4444",
-            accent_hex: "#10B981",
-            background_hex: "#09090B",
-            color_harmony_reasoning: "Direct contrast pairing Danger Red (#EF4444) for surgical friction vs. Success Emerald (#10B981) for organic revival."
-        },
-        text_overlay: {
-            headline_text: "$12,000 Surgery vs Non-Surgical Hair Patch",
-            subheadline_text: "Painful Scars & Downtime vs 60-Min Custom Hair Fitting",
-            font_style_typography: "Inter Black 900 for high comparison impact",
-            badge_tag_text: "⚡ Zero Downtime • 10x Lower Cost",
-            cta_button_text: "View Full Comparison Chart",
-            overlay_positioning: "Center contrast bar intersecting both sides"
-        },
-        marketing_law_application: {
-            ftc_compliance_status: "PASSED",
-            disclaimer_required: "*Cost comparison based on average US hair transplant surgery pricing ($10,000-$15,000).",
-            claim_substantiation_note: "Surgical cost data sourced from national dermatological surgical fee surveys.",
-            prohibited_elements_checked: [
-                "Verified accurate market price comparisons for hair transplant surgeries",
-                "Fair and non-deceptive comparison matrix",
-                "FTC compliant comparison advertising"
-            ]
-        },
-        aspect_ratio: "1:1",
-        preview_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" style="border-radius: 12px; font-family: 'Inter', sans-serif;">
-  <defs>
-    <clipPath id="clip-patch-8">
-      <rect width="215" height="270" rx="16" />
-    </clipPath>
-  </defs>
-  <rect width="250" height="500" fill="#18181B" />
-  <rect x="250" y="0" width="250" height="500" fill="#0F291E" />
-  <line x1="250" y1="0" x2="250" y2="500" stroke="#EF4444" stroke-width="4" />
-  <g transform="translate(260, 110)">
-    <rect width="215" height="270" rx="16" fill="#0F291E" stroke="#10B981" stroke-width="3"/>
-    <image href="/static/images/hair_patch_transformation.jpg" width="215" height="270" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-patch-8)"/>
-  </g>
-  <g transform="translate(25, 35)">
-    <rect width="230" height="26" rx="13" fill="#10B981" />
-    <text x="115" y="17" font-size="11" font-weight="700" fill="#000000" text-anchor="middle">⚡ Zero Downtime • 10x Lower Cost</text>
-  </g>
-  <text x="25" y="100" font-size="20" font-weight="800" fill="#FFFFFF">
-    <tspan x="25" dy="0">$12,000 Surgery vs.</tspan>
-    <tspan x="25" dy="26">Hair Patch System</tspan>
-  </text>
-  <g transform="translate(25, 410)">
-    <rect width="260" height="42" rx="8" fill="#10B981" />
-    <text x="130" y="26" font-size="13" font-weight="800" fill="#000000" text-anchor="middle">View Full Comparison Chart</text>
-  </g>
-  <g transform="translate(300, 465)">
-    <rect width="185" height="18" rx="4" fill="#000000" opacity="0.7"/>
-    <text x="392" y="12" font-size="8" fill="#9CA3AF" text-anchor="middle">FTC Compliance: PASSED • Verified</text>
-  </g>
-</svg>`
-    }
-];
-
 // App Controller Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initPersonaGenerator();
     initBenefitsGenerator();
     initAnglesGenerator();
-    // // initCreativeGenerator();
     initVideoScriptGenerator();
     initAudienceVault();
     initTraces();
@@ -1156,7 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPersonas(INITIAL_PERSONAS);
     renderBenefits(INITIAL_BENEFITS);
     renderAngles(INITIAL_ANGLES);
-    // // renderCreatives(INITIAL_CREATIVES);
     renderVideoScripts(INITIAL_VIDEO_SCRIPTS);
 });
 
@@ -1170,8 +627,14 @@ function initTabs() {
         'tab-generator': 'Transcription Meta Ads • Agent 1',
         'tab-benefits': 'Transcription Meta Ads • Agent 2',
         'tab-angles': 'Transcription Meta Ads • Agent 3',
-        'tab-creative': 'Transcription Meta Ads • Agent 4',
         'tab-video': 'Transcription Meta Ads • Agent 4',
+        'tab-feedback': 'Transcription Meta Ads • Sir\'s Global Feedback',
+        'tab-creative': 'Transcription Meta Ads • Agent 5',
+        'tab-thumbnail': 'Transcription Meta Ads • Agent 6',
+        'tab-designer': 'Transcription Meta Ads • Agent 7',
+        'tab-titles': 'Transcription Meta Ads • Agent 8',
+        'tab-brief': 'Transcription Meta Ads • Agent 9',
+        'tab-metadata': 'Transcription Meta Ads • Agent 10',
         'tab-vault': 'Transcription Meta Ads • Saved Audience Vault',
         'tab-tracer': 'Transcription Meta Ads • LangSmith Trace Inspector',
         'tab-knowledge': 'Transcription Meta Ads • Knowledge Base & Upload'
@@ -1199,8 +662,6 @@ function initTabs() {
                 renderBenefits(INITIAL_BENEFITS);
             } else if (targetTab === 'tab-angles') {
                 renderAngles(INITIAL_ANGLES);
-            } else if (targetTab === 'tab-creative') {
-                // // renderCreatives(INITIAL_CREATIVES);
             } else if (targetTab === 'tab-video') {
                 renderVideoScripts(currentVideoScriptsData || INITIAL_VIDEO_SCRIPTS);
             }
@@ -1253,14 +714,14 @@ function renderAudienceVault() {
                 </div>
                 <div class="aud-actions">
                     ${aud.active ? '<span class="active-badge">● Active Target</span>' : `<button class="btn btn-secondary btn-sm" onclick="setActiveAudience('${aud.id}')">Set Active</button>`}
-                    <button class="icon-btn-edit" title="Edit" onclick="editAudience('${aud.id}')">✏️</button>
-                    <button class="icon-btn-danger" title="Delete" onclick="deleteAudience('${aud.id}')">🗑️</button>
+                    <button class="icon-btn-edit" title="Edit" onclick="editAudience('${aud.id}')">Edit</button>
+                    <button class="icon-btn-danger" title="Delete" onclick="deleteAudience('${aud.id}')">Delete</button>
                 </div>
             </div>
             <p class="aud-description">${escapeHtml(aud.description)}</p>
             <div class="aud-footer">
                 <span class="aud-date">Added: ${aud.dateAdded}</span>
-                <button class="btn-link" onclick="loadAudienceIntoForm('${escapeJsString(aud.title)}', '${escapeJsString(aud.description)}')">⚡ Use in Generator</button>
+                <button class="btn-link" onclick="loadAudienceIntoForm('${escapeJsString(aud.title)}', '${escapeJsString(aud.description)}')">Use in Generator</button>
             </div>
         `;
 
@@ -1334,7 +795,7 @@ function savePersonaToVault(personaObj) {
     };
 
     audienceVaultData.unshift(newAud);
-    alert(`✓ '${title}' saved to Target Audience Groups Vault!`);
+    alert(`'${title}' saved to Target Audience Groups Vault!`);
 }
 
 // Fetch Global System Performance & Feedback Metrics
@@ -1490,43 +951,26 @@ function renderPersonas(personas) {
             `;
         }
 
-        const psychHtml = buildSubSection('🧠 PSYCHOGRAPHICS', persona.psychographics);
-        const painHtml = buildSubSection('💔 PAIN POINTS', persona.pain_points);
-        const objHtml = buildSubSection('🛑 OBJECTIONS & SKEPTICISMS', persona.objections);
-        const emoHtml = buildSubSection('⚡ EMOTIONAL TRIGGERS', persona.emotional_triggers);
-        const buyHtml = buildSubSection('💰 BUYING MOTIVATIONS', persona.buying_motivations);
-
-        const defaultImages = [
-            "/static/images/hair_patch_transformation.jpg",
-            "/static/images/hair_patch_styling.jpg",
-            "/static/images/hair_patch_macro_base.jpg",
-            "/static/images/hair_patch_box_kit.jpg"
-        ];
-        const personaImg = persona.image_url || defaultImages[index % defaultImages.length];
-        const avatarIcon = index === 0 ? '👤' : index === 1 ? '👨‍💼' : index === 2 ? '👨‍💻' : index === 3 ? '👨‍🔬' : '🚀';
+        const psychHtml = buildSubSection('PSYCHOGRAPHICS', persona.psychographics);
+        const painHtml = buildSubSection('PAIN POINTS', persona.pain_points);
+        const objHtml = buildSubSection('OBJECTIONS & SKEPTICISMS', persona.objections);
+        const emoHtml = buildSubSection('EMOTIONAL TRIGGERS', persona.emotional_triggers);
+        const buyHtml = buildSubSection('BUYING MOTIVATIONS', persona.buying_motivations);
 
         card.innerHTML = `
-            <div class="persona-image-preview-block" style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.12); background: #0F172A; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);">
-                <img src="${personaImg}" alt="${escapeHtml(persona.name)}" style="width: 100%; height: 200px; object-fit: cover; display: block;" />
-                <div style="padding: 8px 12px; background: rgba(15, 23, 42, 0.95); font-size: 11px; color: #10B981; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08);">
-                    <span>💈 American Hairline • Custom Hair Patch Profile</span>
-                    <span style="color: #9CA3AF; font-size: 10px;">100% Undetectable Natural Look</span>
-                </div>
-            </div>
-
             <div class="ad-header persona-header">
                 <div class="persona-avatar-block">
-                    <span class="persona-avatar">${avatarIcon}</span>
+                    <span class="persona-avatar"></span>
                     <div>
                         <h3 class="persona-title">Persona ${persona.persona_id || index + 1}: ${escapeHtml(persona.name)}</h3>
                         <span class="persona-subtitle">${escapeHtml(persona.avatar_title)}</span>
                     </div>
                 </div>
                 <div class="ad-actions">
-                    <button class="feedback-btn" title="Thumbs Up" onclick="sendPersonaFeedback(this, ${persona.persona_id || index + 1}, 'thumbs_up', ${JSON.stringify(persona).replace(/"/g, '&quot;')})">👍</button>
-                    <button class="feedback-btn" title="Thumbs Down" onclick="sendPersonaFeedback(this, ${persona.persona_id || index + 1}, 'thumbs_down', ${JSON.stringify(persona).replace(/"/g, '&quot;')})">👎</button>
-                    <button class="btn btn-secondary btn-sm" onclick="savePersonaToVault(${JSON.stringify(persona).replace(/"/g, '&quot;')})">💾 Save to Vault</button>
-                    <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(persona.full_persona_text || JSON.stringify(persona, null, 2))}\`)">📋 Copy</button>
+                    <button class="feedback-btn" title="Thumbs Up" onclick="sendPersonaFeedback(this, ${persona.persona_id || index + 1}, 'thumbs_up', ${JSON.stringify(persona).replace(/"/g, '&quot;')})">Like</button>
+                    <button class="feedback-btn" title="Thumbs Down" onclick="sendPersonaFeedback(this, ${persona.persona_id || index + 1}, 'thumbs_down', ${JSON.stringify(persona).replace(/"/g, '&quot;')})">Dislike</button>
+                    <button class="btn btn-secondary btn-sm" onclick="savePersonaToVault(${JSON.stringify(persona).replace(/"/g, '&quot;')})">Save to Vault</button>
+                    <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(persona.full_persona_text || JSON.stringify(persona, null, 2))}\`)">Copy</button>
                 </div>
             </div>
             
@@ -1580,10 +1024,10 @@ async function sendPersonaFeedback(btn, personaId, rating, personaObj) {
         allFeedbackBtns.forEach(b => b.classList.remove('active-up', 'active-down'));
         if (rating === 'thumbs_up') {
             btn.classList.add('active-up');
-            btn.textContent = '👍';
+            btn.textContent = '';
         } else {
             btn.classList.add('active-down');
-            btn.textContent = '👎';
+            btn.textContent = '';
         }
 
         fetchSystemMetrics();
@@ -1595,7 +1039,7 @@ async function sendPersonaFeedback(btn, personaId, rating, personaObj) {
 function copyPersonaText(btn, text) {
     navigator.clipboard.writeText(text);
     const originalText = btn.textContent;
-    btn.textContent = '✓ Copied!';
+    btn.textContent = 'Copied!';
     setTimeout(() => { btn.textContent = originalText; }, 2000);
 }
 
@@ -1705,7 +1149,7 @@ function renderSpanDetails(trace) {
 
         card.innerHTML = `
             <div class="span-header">
-                <span>⚡ ${span.name}</span>
+                <span>${span.name}</span>
                 <span class="span-latency">${span.latency_ms} ms</span>
             </div>
             <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">
@@ -1744,10 +1188,10 @@ function initUpload() {
             if (!res.ok) throw new Error('Upload Failed');
             const data = await res.json();
 
-            status.textContent = `✓ ${data.message}`;
+            status.textContent = `${data.message}`;
             status.style.color = '#10B981';
         } catch (err) {
-            status.textContent = `❌ Error: ${err.message}`;
+            status.textContent = `Error: ${err.message}`;
             status.style.color = '#F43F5E';
         }
     });
@@ -1862,13 +1306,9 @@ function renderBenefits(benefits) {
     if (!grid) return;
     grid.innerHTML = '';
 
-    const emotionIcons = ['💜', '🔥', '🛡️', '⚡', '👑', '💖', '🛡️', '✨', '🚀', '🔒'];
-
     benefits.forEach((b, idx) => {
         const card = document.createElement('div');
         card.className = 'benefit-card';
-
-        const icon = emotionIcons[idx % emotionIcons.length];
 
         card.innerHTML = `
             <div class="benefit-card-header">
@@ -1879,8 +1319,8 @@ function renderBenefits(benefits) {
             </div>
 
             <div class="benefit-badges-row">
-                <span class="persona-chip">👤 Target Persona: ${escapeHtml(b.mapped_persona)}</span>
-                <span class="emotion-pill">${icon} Emotion: ${escapeHtml(b.underlying_emotion)}</span>
+                <span class="persona-chip">Target Persona: ${escapeHtml(b.mapped_persona)}</span>
+                <span class="emotion-pill">Emotion: ${escapeHtml(b.underlying_emotion)}</span>
             </div>
 
             <p class="benefit-description">${escapeHtml(b.description)}</p>
@@ -1888,7 +1328,7 @@ function renderBenefits(benefits) {
             <div class="benefit-meta-grid">
                 <div class="meta-block">
                     <span class="meta-label">Underlying Feature / Mechanism</span>
-                    <span class="meta-value">⚙️ ${escapeHtml(b.feature_mapping)}</span>
+                    <span class="meta-value">${escapeHtml(b.feature_mapping)}</span>
                 </div>
                 <div class="meta-block">
                     <span class="meta-label">Emotional Ad Hook Idea</span>
@@ -2039,17 +1479,17 @@ function renderAngles(groups) {
             return `
                 <div class="angle-item-card">
                     <div class="angle-item-header">
-                        <span class="framework-pill ${fwClass}">🎭 Framework: ${escapeHtml(a.framework)}</span>
+                        <span class="framework-pill ${fwClass}">Framework: ${escapeHtml(a.framework)}</span>
                         <div class="ad-actions">
-                            <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(`[${a.framework}] ${a.angle_headline}\nHook: ${a.core_hook}\nConcept: ${a.angle_concept}\nCTA: ${a.call_to_action}`)}\`)">📋 Copy Angle</button>
+                            <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(`[${a.framework}] ${a.angle_headline}\nHook: ${a.core_hook}\nConcept: ${a.angle_concept}\nCTA: ${a.call_to_action}`)}\`)">Copy Angle</button>
                         </div>
                     </div>
                     <div class="angle-headline">Angle #${a.angle_id || aIdx + 1}: ${escapeHtml(a.angle_headline)}</div>
                     <div class="angle-hook-box"><strong>3-Sec Scroll Stopper:</strong> "${escapeHtml(a.core_hook)}"</div>
-                    <div class="angle-concept-text">💡 <strong>Psychological Concept:</strong> ${escapeHtml(a.angle_concept)}</div>
+                    <div class="angle-concept-text"><strong>Psychological Concept:</strong> ${escapeHtml(a.angle_concept)}</div>
                     <div class="angle-cta-row">
-                        <span>🎯 Persona: ${escapeHtml(a.target_persona || bg.mapped_persona)}</span> • 
-                        <span>🚀 CTA: "${escapeHtml(a.call_to_action)}"</span>
+                        <span>Persona: ${escapeHtml(a.target_persona || bg.mapped_persona)}</span> • 
+                        <span>CTA: "${escapeHtml(a.call_to_action)}"</span>
                     </div>
                 </div>
             `;
@@ -2061,7 +1501,7 @@ function renderAngles(groups) {
                     <span class="group-number-badge">Benefit #${bg.benefit_id || idx + 1}</span>
                     <h3 class="group-benefit-title">${escapeHtml(bg.benefit_title)}</h3>
                 </div>
-                <div class="persona-chip">👤 Mapped Persona: ${escapeHtml(bg.mapped_persona)}</div>
+                <div class="persona-chip">Mapped Persona: ${escapeHtml(bg.mapped_persona)}</div>
             </div>
             <div class="angle-cards-list">
                 ${anglesHtml}
@@ -2073,218 +1513,7 @@ function renderAngles(groups) {
 }
 
 // ==========================================================================
-// AGENT 4: IMAGE / CREATIVE GENERATION AGENT CONTROLLERS
-// ==========================================================================
-function initCreativeGenerator() {
-    const form = document.getElementById('creative-generator-form');
-    const btnGen = document.getElementById('btn-generate-creative');
-    const spinner = document.getElementById('creative-spinner');
-
-    if (!form) return;
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        btnGen.disabled = true;
-        if (spinner) spinner.classList.remove('hidden');
-
-        const payload = {
-            product_name: document.getElementById('c_product_name').value,
-            product_image_desc: document.getElementById('c_product_image_desc').value,
-            chosen_angle: document.getElementById('c_chosen_angle').value,
-            chosen_hook: document.getElementById('c_chosen_hook').value,
-            target_persona: document.getElementById('c_target_persona').value,
-            aspect_ratio: document.getElementById('c_aspect_ratio').value,
-            visual_style: document.getElementById('c_visual_style').value
-        };
-
-        try {
-            const res = await fetch('/api/generate-image-creative', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!res.ok) {
-                let errText = `API Request Failed (${res.status})`;
-                try {
-                    const errData = await res.json();
-                    if (errData && errData.detail) errText = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
-                } catch (_) { }
-                throw new Error(errText);
-            }
-            const data = await res.json();
-
-            renderCreativeRunCost(data.token_usage);
-            renderCreativeMetrics(data.success_metrics);
-            renderCreatives(data.visual_creatives);
-            fetchSystemMetrics();
-
-        } catch (err) {
-            alert('Error generating visual ad creative: ' + err.message);
-        } finally {
-            btnGen.disabled = false;
-            if (spinner) spinner.classList.add('hidden');
-        }
-    });
-}
-
-function renderCreativeRunCost(tokenUsage) {
-    if (!tokenUsage) return;
-    const box = document.getElementById('creative-cost-box');
-    if (!box) return;
-    box.classList.remove('hidden');
-
-    document.getElementById('c-run-formatted-cost').textContent = tokenUsage.formatted_cost;
-    document.getElementById('c-run-prompt-tokens').textContent = tokenUsage.prompt_tokens.toLocaleString();
-    document.getElementById('c-run-completion-tokens').textContent = tokenUsage.completion_tokens.toLocaleString();
-    document.getElementById('c-run-total-tokens').textContent = tokenUsage.total_tokens.toLocaleString();
-    document.getElementById('c-run-latency').textContent = `${tokenUsage.latency_ms} ms`;
-}
-
-function renderCreativeMetrics(metrics) {
-    if (!metrics) return;
-    const banner = document.getElementById('creative-metrics-banner');
-    if (!banner) return;
-    banner.classList.remove('hidden');
-
-    const elRealism = document.getElementById('cm-realism');
-    if (elRealism) elRealism.textContent = `${metrics.realism_lighting_score}%`;
-
-    const elColor = document.getElementById('cm-color');
-    if (elColor) elColor.textContent = `${metrics.color_complementarity_score}%`;
-
-    const elRead = document.getElementById('cm-readability');
-    if (elRead) elRead.textContent = `${metrics.text_overlay_readability_score}%`;
-
-    const elLaw = document.getElementById('cm-law');
-    if (elLaw) elLaw.textContent = `${metrics.marketing_law_compliance_score}%`;
-
-    const elTot = document.getElementById('cm-total');
-    if (elTot) elTot.textContent = `${metrics.total_creatives || 8} / 8 Creatives`;
-}
-
-function renderCreatives(creatives) {
-    const grid = document.getElementById('creative-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    if (!creatives || creatives.length === 0) {
-        grid.innerHTML = '<div class="empty-trace-select">No visual ad creatives generated yet. Click Create above.</div>';
-        return;
-    }
-
-    creatives.forEach((c, idx) => {
-        const card = document.createElement('div');
-        card.className = 'creative-ad-card';
-
-        const cp = c.color_palette || {};
-        const to = c.text_overlay || {};
-        const ml = c.marketing_law_application || {};
-
-        card.innerHTML = `
-            <div class="creative-card-inner">
-                <!-- Left Column: SVG Visual Ad Preview -->
-                <div class="creative-preview-box">
-                    <div class="preview-badge">📐 Aspect Ratio ${c.aspect_ratio || '1:1'}</div>
-                    <div class="svg-container">
-                        ${c.preview_svg || '<div class="no-svg">Preview Available</div>'}
-                    </div>
-                </div>
-
-                <!-- Right Column: Detailed Creative Prompt & Styling Specifications -->
-                <div class="creative-details-box">
-                    <div class="creative-card-header">
-                        <div>
-                            <span class="creative-id-badge">Ad Creative #${c.creative_id || idx + 1}</span>
-                            <h3 class="creative-headline-title">${escapeHtml(to.headline_text || c.angle_headline)}</h3>
-                        </div>
-                        <div class="ad-actions">
-                            <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(c.visual_prompt_master)}\`)">📋 Copy Prompt</button>
-                        </div>
-                    </div>
-
-                    <!-- Visual Master Prompt Box -->
-                    <div class="prompt-master-box">
-                        <span class="box-label">📸 Midjourney / DALL-E Master Prompt:</span>
-                        <p class="prompt-text">${escapeHtml(c.visual_prompt_master)}</p>
-                    </div>
-
-                    <!-- Grid Specs: Lighting & Background -->
-                    <div class="specs-grid">
-                        <div class="spec-block">
-                            <span class="spec-label">💡 Lighting & Realism Setup</span>
-                            <p class="spec-val">${escapeHtml(c.lighting_realism)}</p>
-                        </div>
-                        <div class="spec-block">
-                            <span class="spec-label">🌆 Environment & Background</span>
-                            <p class="spec-val">${escapeHtml(c.background_styling)}</p>
-                        </div>
-                        <div class="spec-block">
-                            <span class="spec-label">📐 Composition & Layout</span>
-                            <p class="spec-val">${escapeHtml(c.composition_layout)}</p>
-                        </div>
-                    </div>
-
-                    <!-- Color Complementarity Swatches -->
-                    <div class="color-palette-container">
-                        <span class="spec-label">🎨 Color Harmony & Palette (Complementarity Rationale)</span>
-                        <div class="color-swatches-row">
-                            <div class="color-swatch-chip" style="background-color: ${cp.primary_hex || '#0F291E'};">
-                                <span>Primary</span><strong>${cp.primary_hex || '#0F291E'}</strong>
-                            </div>
-                            <div class="color-swatch-chip" style="background-color: ${cp.secondary_hex || '#1E3A2B'};">
-                                <span>Secondary</span><strong>${cp.secondary_hex || '#1E3A2B'}</strong>
-                            </div>
-                            <div class="color-swatch-chip" style="background-color: ${cp.accent_hex || '#D4AF37'}; color: #000;">
-                                <span>Accent / CTA</span><strong>${cp.accent_hex || '#D4AF37'}</strong>
-                            </div>
-                            <div class="color-swatch-chip" style="background-color: ${cp.background_hex || '#08140E'};">
-                                <span>Background</span><strong>${cp.background_hex || '#08140E'}</strong>
-                            </div>
-                        </div>
-                        <p class="color-reasoning-text">✨ ${escapeHtml(cp.color_harmony_reasoning)}</p>
-                    </div>
-
-                    <!-- Text Overlay Hierarchy -->
-                    <div class="overlay-specs-box">
-                        <span class="spec-label">✍️ Typography & Overlay Hierarchy</span>
-                        <div class="overlay-row">
-                            <span>Headline:</span> <strong>"${escapeHtml(to.headline_text)}"</strong>
-                        </div>
-                        <div class="overlay-row">
-                            <span>Subheadline:</span> <strong>"${escapeHtml(to.subheadline_text)}"</strong>
-                        </div>
-                        <div class="overlay-row">
-                            <span>Badge Tag:</span> <span class="badge-tag-pill">${escapeHtml(to.badge_tag_text)}</span>
-                        </div>
-                        <div class="overlay-row">
-                            <span>CTA Button:</span> <span class="cta-pill">${escapeHtml(to.cta_button_text)}</span>
-                        </div>
-                    </div>
-
-                    <!-- Marketing Law (FTC) Application Box -->
-                    <div class="marketing-law-box">
-                        <div class="law-header">
-                            <span>⚖️ Marketing-Law Application (FTC Compliance)</span>
-                            <span class="law-status-pass">● ${escapeHtml(ml.ftc_compliance_status || 'PASSED')}</span>
-                        </div>
-                        <p class="law-disclaimer"><strong>Required Disclaimer:</strong> ${escapeHtml(ml.disclaimer_required)}</p>
-                        <p class="law-substantiation"><strong>Substantiation:</strong> ${escapeHtml(ml.claim_substantiation_note)}</p>
-                        <div class="law-checklist">
-                            ${(ml.prohibited_elements_checked || []).map(chk => `<span class="check-item">✓ ${escapeHtml(chk)}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        grid.appendChild(card);
-    });
-}
-
-// ==========================================================================
-// INITIAL PRE-LOADED 8 VIDEO SCRIPTS DATA SET FOR AGENT 5
+// INITIAL PRE-LOADED 8 VIDEO SCRIPTS DATA SET FOR AGENT 4
 // ==========================================================================
 const INITIAL_VIDEO_SCRIPTS = [
     {
@@ -2298,13 +1527,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Male/Female aged 30-40, relatable everyday appearance, expressive facial cues, natural conversational voiceover.",
         b_roll_shot_list: ["ECU of cap adjustment in car rearview mirror", "Close-up of scalp inspection under vanity bathroom lighting", "Macro 120fps drop of golden bio-matrix elixir", "Confident outdoor smile in natural sunlight"],
         ftc_disclaimer_note: "*Individual results may vary based on consistent daily application. Non-surgical cosmetic scalp care routine.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The Rearview Mirror Pattern Interrupt...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#6366F1" opacity="0.2"/><text x="715" y="22" fill="#6366F1" font-size="11" font-weight="700" text-anchor="middle">PAS</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">🛑</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: ECU Rearview</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: STOP HIDING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Record Scratch</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">🔍</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: MCU Bathroom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Thinning Temples?</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Somber Synth</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle">💸</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Trash Cut</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Wasting Money?</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • REVEAL</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle">✨</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: 120fps Drop</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ORGANIC MATRIX</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Energetic Drop</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🛍️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Outdoor Smile</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: GET 40% OFF 👉</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Click Sound</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The Rearview Mirror Pattern Interrupt...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#6366F1" opacity="0.2"/><text x="715" y="22" fill="#6366F1" font-size="11" font-weight="700" text-anchor="middle">PAS</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: ECU Rearview</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: STOP HIDING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Record Scratch</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: MCU Bathroom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Thinning Temples?</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Somber Synth</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Trash Cut</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Wasting Money?</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • REVEAL</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: 120fps Drop</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ORGANIC MATRIX</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Energetic Drop</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Outdoor Smile</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: GET 40% OFF </text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Click Sound</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Stop scrolling if you catch yourself constantly adjusting your cap or avoiding harsh overhead elevator lights.", visual_direction: "ECU of talent looking anxiously in a rearview mirror, pulling cap down. Fast snap-cut transition.", on_screen_text: "STOP HIDING YOUR HAIRLINE 🛑", audio_cues: "Record scratch SFX + Sub-bass drop" },
+            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Stop scrolling if you catch yourself constantly adjusting your cap or avoiding harsh overhead elevator lights.", visual_direction: "ECU of talent looking anxiously in a rearview mirror, pulling cap down. Fast snap-cut transition.", on_screen_text: "STOP HIDING YOUR HAIRLINE ", audio_cues: "Record scratch SFX + Sub-bass drop" },
             { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Every morning it's the same routine. Spotting thinning temples in the bathroom lighting and wondering if anyone else notices.", visual_direction: "MCU in soft morning bathroom lighting. Talent inspecting scalp under harsh vanity mirror.", on_screen_text: "Thinning Temples & Receding Crown?", audio_cues: "Somber acoustic ambient synth line" },
-            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "You spend money on greasy foams that smell like chemicals and leave your scalp irritated, only to see zero real change after months.", visual_direction: "Quick cut sequence: throwing away half-used chemical spray bottles into trash can. Frustrated facial expression.", on_screen_text: "Tired of Wasting Money on Greasy Foams? 💸", audio_cues: "Rising tension riser SFX" },
-            { scene_number: 4, scene_type: "Product Reveal / Solution", duration_seconds: "12 - 22s", spoken_script: "That's why we created the American Hairline Scalp Revival System. Our organic bio-matrix formula revives dormant follicles in just 90 days without surgery.", visual_direction: "Hero product shot: Matte-black dropper bottle with golden elixir drop falling in slow motion (120fps). Micro macro shot of scalp absorption.", on_screen_text: "ORGANIC SCALP REVIVAL MATRIX 🌿 • 90-DAY GUARANTEE", audio_cues: "Uplifting energetic beat drop" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Claim your 90-day risk-free starter kit today. Click the button below before stock sells out again!", visual_direction: "Talent smiling confidently in natural sunlight, running fingers through thick hair. Overlay of mobile shop button.", on_screen_text: "GET 40% OFF + 90-DAY MONEY-BACK GUARANTEE 👉", audio_cues: "Upbeat resolving chord + button click" }
+            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "You spend money on greasy foams that smell like chemicals and leave your scalp irritated, only to see zero real change after months.", visual_direction: "Quick cut sequence: throwing away half-used chemical spray bottles into trash can. Frustrated facial expression.", on_screen_text: "Tired of Wasting Money on Greasy Foams? ", audio_cues: "Rising tension riser SFX" },
+            { scene_number: 4, scene_type: "Product Reveal / Solution", duration_seconds: "12 - 22s", spoken_script: "That's why we created the American Hairline Scalp Revival System. Our organic bio-matrix formula revives dormant follicles in just 90 days without surgery.", visual_direction: "Hero product shot: Matte-black dropper bottle with golden elixir drop falling in slow motion (120fps). Micro macro shot of scalp absorption.", on_screen_text: "ORGANIC SCALP REVIVAL MATRIX • 90-DAY GUARANTEE", audio_cues: "Uplifting energetic beat drop" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Claim your 90-day risk-free starter kit today. Click the button below before stock sells out again!", visual_direction: "Talent smiling confidently in natural sunlight, running fingers through thick hair. Overlay of mobile shop button.", on_screen_text: "GET 40% OFF + 90-DAY MONEY-BACK GUARANTEE ", audio_cues: "Upbeat resolving chord + button click" }
         ]
     },
     {
@@ -2318,13 +1547,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Energetic creator style, selfie vlog framing, warm authentic delivery with high visual enthusiasm.",
         b_roll_shot_list: ["Selfie vlog camera angle holding dropper bottle", "Montage of indoor cap-wearing moments", "3D scalp root activation render", "Bright outdoor high-density hair styling"],
         ftc_disclaimer_note: "*Based on 90-day customer satisfaction study. Results depend on individual scalp response.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The 10-Second Nightly Routine Transformation...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#10B981" opacity="0.2"/><text x="715" y="22" fill="#10B981" font-size="11" font-weight="700" text-anchor="middle">BAB</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">⌛</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Selfie Vlog</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 10-SEC ROUTINE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Finger Snap</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • BEFORE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-8s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">🧢</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Cap Montage</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Hiding Under Caps</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Muffled Lo-Fi</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 3 • AFTER</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">8-14s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">✨</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Outdoor Sun</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 3x DENSER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: High Beat Drop</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • BRIDGE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">14-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle">🔬</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: 3D Render</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: PEPTIDE SIGNAL</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Sci-Fi Whoosh</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🛍️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Bundle Display</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: RISK-FREE 90 DAYS</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Outro Sting</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The 10-Second Nightly Routine Transformation...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#10B981" opacity="0.2"/><text x="715" y="22" fill="#10B981" font-size="11" font-weight="700" text-anchor="middle">BAB</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">⌛</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Selfie Vlog</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 10-SEC ROUTINE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Finger Snap</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • BEFORE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-8s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Cap Montage</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Hiding Under Caps</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Muffled Lo-Fi</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 3 • AFTER</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">8-14s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Outdoor Sun</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 3x DENSER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: High Beat Drop</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • BRIDGE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">14-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: 3D Render</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: PEPTIDE SIGNAL</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Sci-Fi Whoosh</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Bundle Display</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: RISK-FREE 90 DAYS</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Outro Sting</text></g></g></svg>`,
         scenes: [
             { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "I almost gave up on my hair until I noticed this 10-second nightly routine.", visual_direction: "Selfie vlog camera angle. Talent points directly at camera with intrigued expression holding sleek bottle.", on_screen_text: "10-SECOND NIGHTLY ROUTINE ⌛", audio_cues: "Finger snap SFX + catchy energetic pop synth" },
-            { scene_number: 2, scene_type: "Before State", duration_seconds: "3 - 8s", spoken_script: "Six months ago, I was wearing hats everywhere — dates, work meetings, gym sessions. I felt like I was losing my edge.", visual_direction: "B-Roll montage of talent wearing caps in indoors settings, looking down at phone self-consciously.", on_screen_text: "BEFORE: Hiding Under Caps Daily 🧢", audio_cues: "Muffled lo-fi beat" },
-            { scene_number: 3, scene_type: "After State", duration_seconds: "8 - 14s", spoken_script: "Now? My hair feels 3x denser, fully natural, and I haven't touched a hat in 90 days. My confidence is completely restored.", visual_direction: "Bright outdoor sunlight shot. Talent in crisp suit smiling confidently, high density hair visible.", on_screen_text: "AFTER 90 DAYS: 3x Denser, 100% Natural ✨", audio_cues: "High-energy beat drop" },
+            { scene_number: 2, scene_type: "Before State", duration_seconds: "3 - 8s", spoken_script: "Six months ago, I was wearing hats everywhere — dates, work meetings, gym sessions. I felt like I was losing my edge.", visual_direction: "B-Roll montage of talent wearing caps in indoors settings, looking down at phone self-consciously.", on_screen_text: "BEFORE: Hiding Under Caps Daily ", audio_cues: "Muffled lo-fi beat" },
+            { scene_number: 3, scene_type: "After State", duration_seconds: "8 - 14s", spoken_script: "Now? My hair feels 3x denser, fully natural, and I haven't touched a hat in 90 days. My confidence is completely restored.", visual_direction: "Bright outdoor sunlight shot. Talent in crisp suit smiling confidently, high density hair visible.", on_screen_text: "AFTER 90 DAYS: 3x Denser, 100% Natural ", audio_cues: "High-energy beat drop" },
             { scene_number: 4, scene_type: "The Bridge (Product Mechanism)", duration_seconds: "14 - 22s", spoken_script: "The secret is American Hairline Scalp Revival System. It uses natural peptide signaling to awaken resting follicles directly at the root.", visual_direction: "3D render/microscope animation showing scalp follicle root activation and nourishment absorption.", on_screen_text: "SCALP PEPTIDE SIGNALING • NON-SURGICAL", audio_cues: "Futuristic WHOOSH SFX" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Try it risk-free for 90 days. If you don't see visible density, you get 100% of your money back. Tap below!", visual_direction: "Product bundle display with 90-day badge callout and pulsing arrow pointing to CTA link.", on_screen_text: "TRY RISK-FREE FOR 90 DAYS 🛍️", audio_cues: "Upbeat outro sting + click sound" }
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Try it risk-free for 90 days. If you don't see visible density, you get 100% of your money back. Tap below!", visual_direction: "Product bundle display with 90-day badge callout and pulsing arrow pointing to CTA link.", on_screen_text: "TRY RISK-FREE FOR 90 DAYS ", audio_cues: "Upbeat outro sting + click sound" }
         ]
     },
     {
@@ -2338,13 +1567,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Authoritative lab coat presenter or clean medical-style studio spokesperson, confident articulate tone.",
         b_roll_shot_list: ["Scalp diagnostic scanner screen", "3D circulation blockage animation", "Golden elixir droplet micro-absorption", "40% discount checkout screen mockup"],
         ftc_disclaimer_note: "*Educational ad content. Not intended to replace professional medical diagnosis.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: Dermatologist Root Reactivation Warning...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#8B5CF6" opacity="0.2"/><text x="715" y="22" fill="#8B5CF6" font-size="11" font-weight="700" text-anchor="middle">HOOK-REVEAL</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-4s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">🔬</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Lab Scanner</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DERM WARNING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Clock Ticking</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">4-9s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">❌</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Circulation</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Blocked Blood Flow</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Warning Pulse</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">9-14s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle">⚠️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Calcify Root</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Permanent Loss!</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Warning Chime</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • REVEAL</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">14-23s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle">🧪</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Elixir Micro Drop</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: BIO-ACTIVE ELIXIR</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Shimmer Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">23-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🚚</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Save 40% Badge</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DIRECT SHIPPING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Resolving Chord</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: Dermatologist Root Reactivation Warning...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#8B5CF6" opacity="0.2"/><text x="715" y="22" fill="#8B5CF6" font-size="11" font-weight="700" text-anchor="middle">HOOK-REVEAL</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-4s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Lab Scanner</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DERM WARNING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Clock Ticking</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">4-9s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Circulation</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Blocked Blood Flow</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Warning Pulse</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">9-14s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Calcify Root</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Permanent Loss!</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Warning Chime</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • REVEAL</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">14-23s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Elixir Micro Drop</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: BIO-ACTIVE ELIXIR</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Shimmer Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">23-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Save 40% Badge</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DIRECT SHIPPING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Resolving Chord</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 4s", spoken_script: "What dermatologists aren't telling you about early hairline receding will change how you treat your scalp forever.", visual_direction: "Dermatology office lab coat setting. Professional tone. Split screen of scalp scanner analysis.", on_screen_text: "WHAT THEY DON'T TELL YOU 🔬", audio_cues: "Intriguing mystery WHOOSH + clock ticking SFX" },
-            { scene_number: 2, scene_type: "Problem", duration_seconds: "4 - 9s", spoken_script: "Most treatments only mask the symptoms without restoring follicle blood micro-circulation.", visual_direction: "Diagram graphic showing blocked blood vessel circulation around hair roots under scalp layer.", on_screen_text: "Blocked Scalp Micro-Circulation ❌", audio_cues: "Low warning pulse tone" },
-            { scene_number: 3, scene_type: "Agitation", duration_seconds: "9 - 14s", spoken_script: "Wait too long, and those dormant roots calcify permanently, leaving expensive invasive surgery as your only choice.", visual_direction: "Graphic highlight of scalp calcification process with warning red highlight.", on_screen_text: "Dormant Roots Calcify Over Time! ⚠️", audio_cues: "Warning chime SFX" },
-            { scene_number: 4, scene_type: "Product Reveal", duration_seconds: "14 - 23s", spoken_script: "Enter American Hairline Scalp Revival System. Its bio-active elixir reactivates micro-circulation and delivers botanical nutrients straight to dormant roots.", visual_direction: "Macro shot of golden elixir drop dissolving smoothly into scalp without leaving greasy residue.", on_screen_text: "BIO-ACTIVE BOTANICAL ELIXIR 🧪", audio_cues: "Clean shimmer SFX + rhythmic energetic drum track" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "23 - 30s", spoken_script: "Don't wait until surgery is your only option. Order today and save 40% on your initial 90-day supply!", visual_direction: "Official certification seal, 40% discount badge, and website checkout screen mockup.", on_screen_text: "SAVE 40% TODAY • DIRECT SHIPPING 🚚", audio_cues: "Positive chord resolution" }
+            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 4s", spoken_script: "What dermatologists aren't telling you about early hairline receding will change how you treat your scalp forever.", visual_direction: "Dermatology office lab coat setting. Professional tone. Split screen of scalp scanner analysis.", on_screen_text: "WHAT THEY DON'T TELL YOU ", audio_cues: "Intriguing mystery WHOOSH + clock ticking SFX" },
+            { scene_number: 2, scene_type: "Problem", duration_seconds: "4 - 9s", spoken_script: "Most treatments only mask the symptoms without restoring follicle blood micro-circulation.", visual_direction: "Diagram graphic showing blocked blood vessel circulation around hair roots under scalp layer.", on_screen_text: "Blocked Scalp Micro-Circulation ", audio_cues: "Low warning pulse tone" },
+            { scene_number: 3, scene_type: "Agitation", duration_seconds: "9 - 14s", spoken_script: "Wait too long, and those dormant roots calcify permanently, leaving expensive invasive surgery as your only choice.", visual_direction: "Graphic highlight of scalp calcification process with warning red highlight.", on_screen_text: "Dormant Roots Calcify Over Time! ", audio_cues: "Warning chime SFX" },
+            { scene_number: 4, scene_type: "Product Reveal", duration_seconds: "14 - 23s", spoken_script: "Enter American Hairline Scalp Revival System. Its bio-active elixir reactivates micro-circulation and delivers botanical nutrients straight to dormant roots.", visual_direction: "Macro shot of golden elixir drop dissolving smoothly into scalp without leaving greasy residue.", on_screen_text: "BIO-ACTIVE BOTANICAL ELIXIR ", audio_cues: "Clean shimmer SFX + rhythmic energetic drum track" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "23 - 30s", spoken_script: "Don't wait until surgery is your only option. Order today and save 40% on your initial 90-day supply!", visual_direction: "Official certification seal, 40% discount badge, and website checkout screen mockup.", on_screen_text: "SAVE 40% TODAY • DIRECT SHIPPING ", audio_cues: "Positive chord resolution" }
         ]
     },
     {
@@ -2358,13 +1587,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Direct-to-camera presenter, urgent and engaging demeanor, sharp eye contact.",
         b_roll_shot_list: ["82% statistic graphic overlay", "Day 1 vs Day 90 split-screen progression", "Dropper scalp application close-up", "5-star customer review rating badge"],
         ftc_disclaimer_note: "*Results may vary. Based on internal customer survey data over 90 days.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The DHT Root Suffocation Alert...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#EC4899" opacity="0.2"/><text x="715" y="22" fill="#EC4899" font-size="11" font-weight="700" text-anchor="middle">AIDA</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • ATTENTION</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">⚠️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Direct Zoom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: MEN 25-50 ALERT</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Heavy Bass Thud</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • INTEREST</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-8s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">📈</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: 82% Stat</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DHT Suffocation</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Digital Data Ping</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#EC4899" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#831843" rx="8"/><text x="8" y="15" fill="#F472B6" font-size="10" font-weight="700">SCENE 3 • DESIRE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">8-15s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.2"/><text x="70" y="67" fill="#F472B6" font-size="18" text-anchor="middle">✨</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Day 1 vs 90</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: TRANSFORMATION</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Uplifting Tune</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • PRODUCT</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">15-24s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle">🌱</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Dropper Demo</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ORGANIC BLOCKER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Beat Acceleration</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • ACTION</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">24-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🛒</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Pulsing Button</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: EXPRESS SHIPPING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Upbeat Climax</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The DHT Root Suffocation Alert...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#EC4899" opacity="0.2"/><text x="715" y="22" fill="#EC4899" font-size="11" font-weight="700" text-anchor="middle">AIDA</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • ATTENTION</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Direct Zoom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: MEN 25-50 ALERT</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Heavy Bass Thud</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • INTEREST</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-8s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: 82% Stat</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DHT Suffocation</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Digital Data Ping</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#EC4899" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#831843" rx="8"/><text x="8" y="15" fill="#F472B6" font-size="10" font-weight="700">SCENE 3 • DESIRE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">8-15s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.2"/><text x="70" y="67" fill="#F472B6" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Day 1 vs 90</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: TRANSFORMATION</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Uplifting Tune</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • PRODUCT</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">15-24s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Dropper Demo</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ORGANIC BLOCKER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Beat Acceleration</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • ACTION</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">24-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Pulsing Button</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: EXPRESS SHIPPING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Upbeat Climax</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Attention (Hook)", duration_seconds: "0 - 3s", spoken_script: "If you're between 25 and 50 and noticing your hairline creeping back, watch this before buying anything else.", visual_direction: "Talent staring directly into camera, holding up hand to pause scrolling feed. Dynamic zoom-in motion.", on_screen_text: "ATTENTION: MEN & WOMEN AGED 25-50 ⚠️", audio_cues: "Heavy bass thud + alert chime" },
-            { scene_number: 2, scene_type: "Interest", duration_seconds: "3 - 8s", spoken_script: "Did you know 82% of early hair thinning is caused by localized DHT buildup suffocating follicle roots?", visual_direction: "Infographic animation displaying 82% statistic with 3D scalp hair follicle model.", on_screen_text: "82% Caused by DHT Root Suffocation 🔬", audio_cues: "Subtle digital data ping" },
-            { scene_number: 3, scene_type: "Desire", duration_seconds: "8 - 15s", spoken_script: "Imagine waking up 90 days from now with thick, dense hairline edges you're proud to show off without caps.", visual_direction: "Side-by-side split screen comparison: Day 1 vs Day 90 side profile hairline density progression.", on_screen_text: "DAY 1 VS DAY 90 TRANSFORMATION 📈", audio_cues: "Uplifting motivational melody" },
-            { scene_number: 4, scene_type: "Action (Product & Offer)", duration_seconds: "15 - 24s", spoken_script: "American Hairline Scalp Revival System blocks DHT buildup organically while boosting scalp circulation.", visual_direction: "Close up of product packaging, clean dropper application, non-greasy texture demo.", on_screen_text: "100% ORGANIC DHT BLOCKER 🌱", audio_cues: "Energetic beat acceleration" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "24 - 30s", spoken_script: "Click 'Shop Now' to get your risk-free supply with free express shipping worldwide!", visual_direction: "Pulsing CTA button graphic with 5-star rating overlay and fast shipping icon.", on_screen_text: "SHOP NOW • FREE EXPRESS SHIPPING 🚚", audio_cues: "Upbeat climax sting" }
+            { scene_number: 1, scene_type: "Attention (Hook)", duration_seconds: "0 - 3s", spoken_script: "If you're between 25 and 50 and noticing your hairline creeping back, watch this before buying anything else.", visual_direction: "Talent staring directly into camera, holding up hand to pause scrolling feed. Dynamic zoom-in motion.", on_screen_text: "ATTENTION: MEN & WOMEN AGED 25-50 ", audio_cues: "Heavy bass thud + alert chime" },
+            { scene_number: 2, scene_type: "Interest", duration_seconds: "3 - 8s", spoken_script: "Did you know 82% of early hair thinning is caused by localized DHT buildup suffocating follicle roots?", visual_direction: "Infographic animation displaying 82% statistic with 3D scalp hair follicle model.", on_screen_text: "82% Caused by DHT Root Suffocation ", audio_cues: "Subtle digital data ping" },
+            { scene_number: 3, scene_type: "Desire", duration_seconds: "8 - 15s", spoken_script: "Imagine waking up 90 days from now with thick, dense hairline edges you're proud to show off without caps.", visual_direction: "Side-by-side split screen comparison: Day 1 vs Day 90 side profile hairline density progression.", on_screen_text: "DAY 1 VS DAY 90 TRANSFORMATION ", audio_cues: "Uplifting motivational melody" },
+            { scene_number: 4, scene_type: "Action (Product & Offer)", duration_seconds: "15 - 24s", spoken_script: "American Hairline Scalp Revival System blocks DHT buildup organically while boosting scalp circulation.", visual_direction: "Close up of product packaging, clean dropper application, non-greasy texture demo.", on_screen_text: "100% ORGANIC DHT BLOCKER ", audio_cues: "Energetic beat acceleration" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "24 - 30s", spoken_script: "Click 'Shop Now' to get your risk-free supply with free express shipping worldwide!", visual_direction: "Pulsing CTA button graphic with 5-star rating overlay and fast shipping icon.", on_screen_text: "SHOP NOW • FREE EXPRESS SHIPPING ", audio_cues: "Upbeat climax sting" }
         ]
     },
     {
@@ -2378,13 +1607,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Confident fitness / wellness creator, enthusiastic tone.",
         b_roll_shot_list: ["Micro scanner graphic", "Clinical trial graph", "Starter kit packaging"],
         ftc_disclaimer_note: "*Based on 12-week consumer perception study.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The Unfiltered 90-Day Hairline Challenge...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#3B82F6" opacity="0.2"/><text x="715" y="22" fill="#3B82F6" font-size="11" font-weight="700" text-anchor="middle">PROOF</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">⏱️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Screen Timer</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 90-DAY CHALLENGE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Alert Chime</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">💤</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Dormant Root</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Roots Sleeping</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Soft Synth</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle">⚠️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Density Bar</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Lose 40% Density</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • PROOF</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle">🧪</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Clinical Proof</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 94.2% RECOVERY</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Swell Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🛍️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Starter Kit</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: TAKE CHALLENGE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Resolving Chord</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The Unfiltered 90-Day Hairline Challenge...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#3B82F6" opacity="0.2"/><text x="715" y="22" fill="#3B82F6" font-size="11" font-weight="700" text-anchor="middle">PROOF</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">⏱</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Screen Timer</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 90-DAY CHALLENGE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Alert Chime</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Dormant Root</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Roots Sleeping</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Soft Synth</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Density Bar</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Lose 40% Density</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • PROOF</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Clinical Proof</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 94.2% RECOVERY</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Swell Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Starter Kit</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: TAKE CHALLENGE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Resolving Chord</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Thinking your thinning hairline is permanent? Test this 90-day protocol first.", visual_direction: "Direct camera eye contact, tapping screen timer.", on_screen_text: "90-DAY HAIRLINE CHALLENGE ⏱️", audio_cues: "Alert chime + bass pulse" },
-            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Most people accept thinning as inevitable aging, but dormant hair roots are just sleeping.", visual_direction: "Close-up micro scanner graphic of sleeping root follicle.", on_screen_text: "Dormant Roots Are Sleeping, Not Dead 💤", audio_cues: "Soft ambient synth" },
-            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Ignoring early receding means losing up to 40% density before you even notice.", visual_direction: "Graphic bar showing 40% density drop timeline.", on_screen_text: "Don't Lose 40% Density! ⚠️", audio_cues: "Tension riser SFX" },
-            { scene_number: 4, scene_type: "Solution & Proof", duration_seconds: "12 - 22s", spoken_script: "Our clinical trial showed 94.2% follicle density recovery in 12 weeks using American Hairline Scalp Revival System.", visual_direction: "Clinical lab proof graphics & high-speed droplet absorption.", on_screen_text: "94.2% FOLLICLE DENSITY RECOVERY 🧪", audio_cues: "Uplifting swell beat" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Take the 90-Day Unfiltered Challenge risk-free today with 100% money-back guarantee!", visual_direction: "Talent smiling, displaying starter kit packaging.", on_screen_text: "TAKE THE 90-DAY CHALLENGE 🛍️", audio_cues: "Upbeat resolving chord" }
+            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Thinking your thinning hairline is permanent? Test this 90-day protocol first.", visual_direction: "Direct camera eye contact, tapping screen timer.", on_screen_text: "90-DAY HAIRLINE CHALLENGE ⏱", audio_cues: "Alert chime + bass pulse" },
+            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Most people accept thinning as inevitable aging, but dormant hair roots are just sleeping.", visual_direction: "Close-up micro scanner graphic of sleeping root follicle.", on_screen_text: "Dormant Roots Are Sleeping, Not Dead ", audio_cues: "Soft ambient synth" },
+            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Ignoring early receding means losing up to 40% density before you even notice.", visual_direction: "Graphic bar showing 40% density drop timeline.", on_screen_text: "Don't Lose 40% Density! ", audio_cues: "Tension riser SFX" },
+            { scene_number: 4, scene_type: "Solution & Proof", duration_seconds: "12 - 22s", spoken_script: "Our clinical trial showed 94.2% follicle density recovery in 12 weeks using American Hairline Scalp Revival System.", visual_direction: "Clinical lab proof graphics & high-speed droplet absorption.", on_screen_text: "94.2% FOLLICLE DENSITY RECOVERY ", audio_cues: "Uplifting swell beat" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Take the 90-Day Unfiltered Challenge risk-free today with 100% money-back guarantee!", visual_direction: "Talent smiling, displaying starter kit packaging.", on_screen_text: "TAKE THE 90-DAY CHALLENGE ", audio_cues: "Upbeat resolving chord" }
         ]
     },
     {
@@ -2398,13 +1627,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Well-groomed professional in business attire, authoritative tone.",
         b_roll_shot_list: ["Elevator reflection", "Boardroom presentation", "Executive desk display"],
         ftc_disclaimer_note: "*Cosmetic topical application. Individual results vary.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The Executive Office & Elevator Light Realization...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#F59E0B" opacity="0.2"/><text x="715" y="22" fill="#F59E0B" font-size="11" font-weight="700" text-anchor="middle">STORY</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">🏢</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Elevator Mirror</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ELEVATOR LIGHTS</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Muffled City Chime</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">💼</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Boardroom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Drains Poise</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Piano Melody</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle">❌</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Laptop Focus</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Self-Conscious</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Deep Bass Drone</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 4 • TRANSFORM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">✨</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Boardroom Full</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DENSITY RESTORED</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: High Brass Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">👉</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Executive Desk</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: CLAIM 40% OFF</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Click Sound</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The Executive Office & Elevator Light Realization...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#F59E0B" opacity="0.2"/><text x="715" y="22" fill="#F59E0B" font-size="11" font-weight="700" text-anchor="middle">STORY</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Elevator Mirror</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ELEVATOR LIGHTS</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Muffled City Chime</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Boardroom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Drains Poise</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Piano Melody</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Laptop Focus</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Self-Conscious</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Deep Bass Drone</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 4 • TRANSFORM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Boardroom Full</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: DENSITY RESTORED</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: High Brass Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Executive Desk</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: CLAIM 40% OFF</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Click Sound</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "I used to dread standing under harsh elevator lights before key client presentations.", visual_direction: "Elevator mirror reflection in corporate suit.", on_screen_text: "ELEVATOR LIGHT REALIZATION 🏢", audio_cues: "Muffled city noise + chime" },
-            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Hair thinning silently drains your confidence in high-stakes professional settings.", visual_direction: "Conference room meeting, talent adjusting hair.", on_screen_text: "Thinning Drains Professional Poise 💼", audio_cues: "Subtle piano melody" },
-            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Worrying about your appearance takes focus away from closing big deals.", visual_direction: "Split focus on laptop and mirror reflection.", on_screen_text: "Stop Self-Conscious Distractions ❌", audio_cues: "Deep bass drone" },
-            { scene_number: 4, scene_type: "Transformation", duration_seconds: "12 - 22s", spoken_script: "American Hairline Scalp Revival System restored my full hairline and executive poise in under 90 days.", visual_direction: "Talent presenting in boardroom with full hair density.", on_screen_text: "FULL DENSITY RESTORED ✨", audio_cues: "High-energy brass beat" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Upgrade your executive confidence today with our exclusive 40% OFF package.", visual_direction: "Executive desk shot with sleek bottle.", on_screen_text: "CLAIM 40% EXECUTIVE OFF 👉", audio_cues: "Click SFX + upbeat outro" }
+            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "I used to dread standing under harsh elevator lights before key client presentations.", visual_direction: "Elevator mirror reflection in corporate suit.", on_screen_text: "ELEVATOR LIGHT REALIZATION ", audio_cues: "Muffled city noise + chime" },
+            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Hair thinning silently drains your confidence in high-stakes professional settings.", visual_direction: "Conference room meeting, talent adjusting hair.", on_screen_text: "Thinning Drains Professional Poise ", audio_cues: "Subtle piano melody" },
+            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Worrying about your appearance takes focus away from closing big deals.", visual_direction: "Split focus on laptop and mirror reflection.", on_screen_text: "Stop Self-Conscious Distractions ", audio_cues: "Deep bass drone" },
+            { scene_number: 4, scene_type: "Transformation", duration_seconds: "12 - 22s", spoken_script: "American Hairline Scalp Revival System restored my full hairline and executive poise in under 90 days.", visual_direction: "Talent presenting in boardroom with full hair density.", on_screen_text: "FULL DENSITY RESTORED ", audio_cues: "High-energy brass beat" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Upgrade your executive confidence today with our exclusive 40% OFF package.", visual_direction: "Executive desk shot with sleek bottle.", on_screen_text: "CLAIM 40% EXECUTIVE OFF ", audio_cues: "Click SFX + upbeat outro" }
         ]
     },
     {
@@ -2418,13 +1647,13 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Scientist or medical researcher voiceover, clear precise delivery.",
         b_roll_shot_list: ["Microscope capillary animation", "Follicle oxygen diagram", "Golden elixir micro drop"],
         ftc_disclaimer_note: "*Laboratory capillary simulation. Results vary by individual.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The Micro-Circulation Scalp Scanner Breakdown...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#6366F1" opacity="0.2"/><text x="715" y="22" fill="#6366F1" font-size="11" font-weight="700" text-anchor="middle">SCIENCE</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">🔬</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Microscope Zoom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: MICROSCANNER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Sci-Fi Pulse</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">🚫</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Oxygen Diagram</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Restricted Root Flow</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Warning Tone</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle">⚡</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Strand Snapping</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Breaks 2x Faster</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Snap Sound</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • REVEAL</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle">🌿</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Capillary Pulse</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: BIO-MATRIX CAPILLARY</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Synth Rise</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🚚</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Shipping Badge</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: FREE SHIPPING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Resolving Chord</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The Micro-Circulation Scalp Scanner Breakdown...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#6366F1" opacity="0.2"/><text x="715" y="22" fill="#6366F1" font-size="11" font-weight="700" text-anchor="middle">SCIENCE</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Microscope Zoom</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: MICROSCANNER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Sci-Fi Pulse</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Oxygen Diagram</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Restricted Root Flow</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Warning Tone</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Strand Snapping</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Breaks 2x Faster</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Snap Sound</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#3B82F6" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1E3A8A" rx="8"/><text x="8" y="15" fill="#60A5FA" font-size="10" font-weight="700">SCENE 4 • REVEAL</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#3B82F6" opacity="0.2"/><text x="70" y="67" fill="#60A5FA" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Capillary Pulse</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: BIO-MATRIX CAPILLARY</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Synth Rise</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Shipping Badge</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: FREE SHIPPING</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Resolving Chord</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Watch what happens to dormant scalp capillaries when bio-peptides hit the root.", visual_direction: "Microscope animation zoom-in on follicle capillary.", on_screen_text: "SCALP MICROSCANNER DEMO 🔬", audio_cues: "Futuristic pulse SFX" },
-            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Poor scalp micro-circulation starves hair roots of essential growth oxygen.", visual_direction: "3D diagram showing restricted oxygen flow to hair root.", on_screen_text: "Restricted Root Circulation 🚫", audio_cues: "Low alert tone" },
-            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Without nutrient blood flow, hair strands grow thinner and break twice as fast.", visual_direction: "Fragile strand snapping macro visual.", on_screen_text: "Strands Break 2x Faster ⚡", audio_cues: "Snap SFX" },
-            { scene_number: 4, scene_type: "Mechanism Reveal", duration_seconds: "12 - 22s", spoken_script: "Our bio-matrix formula reactivates capillary blood flow within 14 days.", visual_direction: "Golden elixir absorbed into scalp with capillary pulse graphic.", on_screen_text: "BIO-MATRIX CAPILLARY ACTIVATION 🌿", audio_cues: "Energetic synthesizer rise" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Claim your starter kit now with free global express delivery!", visual_direction: "Free express shipping badge and checkout screen.", on_screen_text: "ORDER WITH FREE SHIPPING 🚚", audio_cues: "Upbeat resolving chord" }
+            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Watch what happens to dormant scalp capillaries when bio-peptides hit the root.", visual_direction: "Microscope animation zoom-in on follicle capillary.", on_screen_text: "SCALP MICROSCANNER DEMO ", audio_cues: "Futuristic pulse SFX" },
+            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Poor scalp micro-circulation starves hair roots of essential growth oxygen.", visual_direction: "3D diagram showing restricted oxygen flow to hair root.", on_screen_text: "Restricted Root Circulation ", audio_cues: "Low alert tone" },
+            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Without nutrient blood flow, hair strands grow thinner and break twice as fast.", visual_direction: "Fragile strand snapping macro visual.", on_screen_text: "Strands Break 2x Faster ", audio_cues: "Snap SFX" },
+            { scene_number: 4, scene_type: "Mechanism Reveal", duration_seconds: "12 - 22s", spoken_script: "Our bio-matrix formula reactivates capillary blood flow within 14 days.", visual_direction: "Golden elixir absorbed into scalp with capillary pulse graphic.", on_screen_text: "BIO-MATRIX CAPILLARY ACTIVATION ", audio_cues: "Energetic synthesizer rise" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Claim your starter kit now with free global express delivery!", visual_direction: "Free express shipping badge and checkout screen.", on_screen_text: "ORDER WITH FREE SHIPPING ", audio_cues: "Upbeat resolving chord" }
         ]
     },
     {
@@ -2438,19 +1667,19 @@ const INITIAL_VIDEO_SCRIPTS = [
         actor_casting_notes: "Outdoor lifestyle creator, energetic upbeat delivery.",
         b_roll_shot_list: ["Tossing cap into ocean breeze", "Beach swimming confidence", "Product display on beach towel"],
         ftc_disclaimer_note: "*Results may vary based on scalp consistency.",
-        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">🎬 STORYBOARD TIMELINE: The Zero-Cap Summer Confidence Revival...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#10B981" opacity="0.2"/><text x="715" y="22" fill="#10B981" font-size="11" font-weight="700" text-anchor="middle">SUMMER</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle">☀️</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Tossing Cap</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ZERO-CAP SUMMER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Summer Pop Intro</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle">🚫</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Sweaty Scalp</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Caps Trap Sweat</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Muffled Bass</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle">🌊</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Beach Wind</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: No Cap Anxiety</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 4 • TRANSFORM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">🌿</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Beach Swimming</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 100% CONFIDENCE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Summer Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle">👉</text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Towel Product</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: SUMMER REVIVAL</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Upbeat Outro</text></g></g></svg>`,
+        preview_storyboard_svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="200" style="background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;"><rect x="0" y="0" width="800" height="36" fill="#131B2E" rx="8"/><text x="16" y="23" fill="#F8FAFC" font-size="13" font-weight="700">STORYBOARD TIMELINE: The Zero-Cap Summer Confidence Revival...</text><rect x="650" y="8" width="130" height="20" rx="10" fill="#10B981" opacity="0.2"/><text x="715" y="22" fill="#10B981" font-size="11" font-weight="700" text-anchor="middle">SUMMER</text><g transform="translate(15, 48)"><g transform="translate(0, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F43F5E" font-size="10" font-weight="700">SCENE 1 • HOOK</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">0-3s</text><circle cx="70" cy="62" r="18" fill="#F43F5E" opacity="0.15"/><text x="70" y="67" fill="#F43F5E" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Tossing Cap</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: ZERO-CAP SUMMER</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Summer Pop Intro</text></g><g transform="translate(152, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#F59E0B" font-size="10" font-weight="700">SCENE 2 • PROBLEM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">3-7s</text><circle cx="70" cy="62" r="18" fill="#F59E0B" opacity="0.15"/><text x="70" y="67" fill="#F59E0B" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Sweaty Scalp</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: Caps Trap Sweat</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Muffled Bass</text></g><g transform="translate(304, 0)"><rect width="140" height="150" fill="#111827" stroke="#1F2937" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#1F2937" rx="8"/><text x="8" y="15" fill="#EC4899" font-size="10" font-weight="700">SCENE 3 • AGITATE</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">7-12s</text><circle cx="70" cy="62" r="18" fill="#EC4899" opacity="0.15"/><text x="70" y="67" fill="#EC4899" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Beach Wind</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: No Cap Anxiety</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Tension Riser</text></g><g transform="translate(456, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 4 • TRANSFORM</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">12-22s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Beach Swimming</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: 100% CONFIDENCE</text><text x="8" y="134" fill="#6EE7B7" font-size="9">Music: Summer Beat</text></g><g transform="translate(608, 0)"><rect width="140" height="150" fill="#111827" stroke="#10B981" stroke-width="1.5" rx="8"/><rect width="140" height="22" fill="#064E3B" rx="8"/><text x="8" y="15" fill="#34D399" font-size="10" font-weight="700">SCENE 5 • CTA</text><text x="132" y="15" fill="#9CA3AF" font-size="9" text-anchor="end">22-30s</text><circle cx="70" cy="62" r="18" fill="#10B981" opacity="0.2"/><text x="70" y="67" fill="#34D399" font-size="18" text-anchor="middle"></text><text x="8" y="102" fill="#E5E7EB" font-size="9" font-weight="600">Camera: Towel Product</text><text x="8" y="118" fill="#9CA3AF" font-size="9">Text: SUMMER REVIVAL</text><text x="8" y="134" fill="#6EE7B7" font-size="9">SFX: Upbeat Outro</text></g></g></svg>`,
         scenes: [
-            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Ditch your cap this summer. Here is how to regain full hairline thickness fast.", visual_direction: "Talent tossing cap off-camera into ocean breeze.", on_screen_text: "ZERO-CAP SUMMER REVIVAL ☀️", audio_cues: "Upbeat summer pop intro" },
-            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Sweating under caps all summer worsens scalp congestion and accelerates thinning.", visual_direction: "Talent taking off cap revealing sweaty scalp.", on_screen_text: "Caps Trap Sweat & Block Scalp 🚫", audio_cues: "Muffled bass beat" },
-            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Constantly worrying about wind or swimming ruining your cap cover-up is exhausting.", visual_direction: "Wind blowing hair on beach, feeling self-conscious.", on_screen_text: "No More Cap Anxiety 🌊", audio_cues: "Tension riser SFX" },
-            { scene_number: 4, scene_type: "Transformation", duration_seconds: "12 - 22s", spoken_script: "Restore natural hair density with American Hairline Scalp Revival System in a simple 30-second daily routine.", visual_direction: "Talent swimming and running fingers through hair with high density.", on_screen_text: "100% NATURAL HAIR CONFIDENCE 🌿", audio_cues: "Catchy summer beat drop" },
-            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Start your zero-cap summer transformation today with our 90-day risk-free guarantee!", visual_direction: "Product display on beach towel with 90-day guarantee badge.", on_screen_text: "START YOUR SUMMER REVIVAL 👉", audio_cues: "Click sound + upbeat outro" }
+            { scene_number: 1, scene_type: "Hook", duration_seconds: "0 - 3s", spoken_script: "Ditch your cap this summer. Here is how to regain full hairline thickness fast.", visual_direction: "Talent tossing cap off-camera into ocean breeze.", on_screen_text: "ZERO-CAP SUMMER REVIVAL ", audio_cues: "Upbeat summer pop intro" },
+            { scene_number: 2, scene_type: "Problem", duration_seconds: "3 - 7s", spoken_script: "Sweating under caps all summer worsens scalp congestion and accelerates thinning.", visual_direction: "Talent taking off cap revealing sweaty scalp.", on_screen_text: "Caps Trap Sweat & Block Scalp ", audio_cues: "Muffled bass beat" },
+            { scene_number: 3, scene_type: "Agitation", duration_seconds: "7 - 12s", spoken_script: "Constantly worrying about wind or swimming ruining your cap cover-up is exhausting.", visual_direction: "Wind blowing hair on beach, feeling self-conscious.", on_screen_text: "No More Cap Anxiety ", audio_cues: "Tension riser SFX" },
+            { scene_number: 4, scene_type: "Transformation", duration_seconds: "12 - 22s", spoken_script: "Restore natural hair density with American Hairline Scalp Revival System in a simple 30-second daily routine.", visual_direction: "Talent swimming and running fingers through hair with high density.", on_screen_text: "100% NATURAL HAIR CONFIDENCE ", audio_cues: "Catchy summer beat drop" },
+            { scene_number: 5, scene_type: "Call To Action (CTA)", duration_seconds: "22 - 30s", spoken_script: "Start your zero-cap summer transformation today with our 90-day risk-free guarantee!", visual_direction: "Product display on beach towel with 90-day guarantee badge.", on_screen_text: "START YOUR SUMMER REVIVAL ", audio_cues: "Click sound + upbeat outro" }
         ]
     }
 ];
 
 // ==========================================================================
-// AGENT 5: VIDEO ADS SCRIPT GENERATION CONTROLLERS
+// AGENT 4: VIDEO ADS SCRIPT GENERATION CONTROLLERS
 // ==========================================================================
 
 function updateDropdownsWithPersonas() {
@@ -2708,27 +1937,27 @@ function renderVideoScripts(scripts) {
                     <div class="scene-block-header">
                         <div class="scene-num-row">
                             <span class="scene-number-chip">SCENE ${sc.scene_number}</span>
-                            <span class="scene-duration-tag">⏱️ ${escapeHtml(sc.duration_seconds)}</span>
+                            <span class="scene-duration-tag">⏱${escapeHtml(sc.duration_seconds)}</span>
                         </div>
                         <span class="scene-type-badge ${stClass}">${escapeHtml(sc.scene_type)}</span>
                     </div>
 
                     <div class="spoken-script-box">
-                        <span class="box-label">🗣️ Spoken Voiceover Script:</span>
+                        <span class="box-label">Spoken Voiceover Script:</span>
                         <p class="spoken-text">"${escapeHtml(sc.spoken_script)}"</p>
                     </div>
 
                     <div class="scene-details-grid">
                         <div class="visual-direction-box">
-                            <span class="spec-label">🎥 Visual Direction & Camera Cues</span>
+                            <span class="spec-label">Visual Direction & Camera Cues</span>
                             <p class="visual-text">${escapeHtml(sc.visual_direction)}</p>
                         </div>
                         <div class="on-screen-box">
-                            <span class="spec-label">💬 On-Screen Text Graphic</span>
+                            <span class="spec-label">On-Screen Text Graphic</span>
                             <span class="on-screen-tag">${escapeHtml(sc.on_screen_text)}</span>
                         </div>
                         <div class="audio-cue-box">
-                            <span class="spec-label">🎵 Audio Cue & SFX</span>
+                            <span class="spec-label">Audio Cue & SFX</span>
                             <span class="audio-cue-chip">${escapeHtml(sc.audio_cues)}</span>
                         </div>
                     </div>
@@ -2736,21 +1965,21 @@ function renderVideoScripts(scripts) {
             `;
         }).join('');
 
-        const brollChips = (s.b_roll_shot_list || []).map(b => `<span class="broll-chip">📹 ${escapeHtml(b)}</span>`).join('');
+        const brollChips = (s.b_roll_shot_list || []).map(b => `<span class="broll-chip">${escapeHtml(b)}</span>`).join('');
         const wrapId = `storyboard-wrap-${sId}`;
 
         card.innerHTML = `
             <div class="video-card-header">
                 <div>
-                    <span class="framework-pill fw-video">🎬 ${escapeHtml(s.framework_structure)}</span>
+                    <span class="framework-pill fw-video">${escapeHtml(s.framework_structure)}</span>
                     <h3 class="video-script-title">Script #${sId}: ${escapeHtml(s.script_title)}</h3>
                     <div class="video-meta-subtitle">
-                        <span>🎯 Persona: ${escapeHtml(s.target_persona)}</span> • 
+                        <span>Persona: ${escapeHtml(s.target_persona)}</span> • 
                         <span>⏳ Est. Duration: ${escapeHtml(s.total_duration_est || '30 Seconds')}</span>
                     </div>
                 </div>
                 <div class="ad-actions">
-                    <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(formatFullScriptForCopy(s))}\`)">📋 Copy Script</button>
+                    <button class="ad-copy-btn" onclick="copyPersonaText(this, \`${escapeJsString(formatFullScriptForCopy(s))}\`)">Copy Script</button>
                     <button class="card-scroll-btn" title="Scroll Up To Prev Script" onclick="scrollAgent5Up()">▲ Up</button>
                     <button class="card-scroll-btn" title="Scroll Down To Next Script" onclick="scrollAgent5Down()">▼ Down</button>
                 </div>
@@ -2766,15 +1995,15 @@ function renderVideoScripts(scripts) {
             <!-- Casting, B-Roll & FTC Compliance -->
             <div class="casting-broll-container">
                 <div class="casting-box">
-                    <span class="spec-label">👤 Actor Casting Guidance & Tone</span>
+                    <span class="spec-label">Actor Casting Guidance & Tone</span>
                     <p class="casting-text">${escapeHtml(s.actor_casting_notes)}</p>
                 </div>
                 <div class="broll-box">
-                    <span class="spec-label">🎥 B-Roll Shot List</span>
+                    <span class="spec-label">B-Roll Shot List</span>
                     <div class="broll-chips-row">${brollChips}</div>
                 </div>
                 <div class="ftc-video-box">
-                    <span class="spec-label">⚖️ FTC Video Compliance Disclosure</span>
+                    <span class="spec-label">FTC Video Compliance Disclosure</span>
                     <p class="ftc-text">${escapeHtml(s.ftc_disclaimer_note)}</p>
                 </div>
             </div>
@@ -2827,7 +2056,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addBtn.type = 'button';
             addBtn.className = 'dropdown-icon-btn';
             addBtn.title = 'Add new option';
-            addBtn.innerHTML = '➕';
+            addBtn.innerHTML = '';
             addBtn.onclick = (e) => {
                 e.preventDefault();
                 const newText = prompt('Enter text for new option:');
@@ -2847,7 +2076,7 @@ document.addEventListener('DOMContentLoaded', () => {
             editBtn.type = 'button';
             editBtn.className = 'dropdown-icon-btn';
             editBtn.title = 'Edit selected option';
-            editBtn.innerHTML = '✏️';
+            editBtn.innerHTML = '';
             editBtn.onclick = (e) => {
                 e.preventDefault();
                 const selectedOpt = select.options[select.selectedIndex];
@@ -2866,7 +2095,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteBtn.type = 'button';
             deleteBtn.className = 'dropdown-icon-btn';
             deleteBtn.title = 'Delete selected option';
-            deleteBtn.innerHTML = '🗑️';
+            deleteBtn.innerHTML = '';
             deleteBtn.onclick = (e) => {
                 e.preventDefault();
                 if (select.options.length <= 1) {
@@ -2890,7 +2119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// ---- ADVANCED AUDIO DRAG AND DROP INIT (AGENT 5) ----
+// ---- ADVANCED AUDIO DRAG AND DROP INIT (SIR'S GLOBAL FEEDBACK) ----
 document.addEventListener('DOMContentLoaded', () => {
     const dropzone = document.getElementById('audio-dropzone');
     const fileInput = document.getElementById('audio-file-input');
@@ -2939,6 +2168,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const POLL_INTERVAL_MS = 3000;
+    const MAX_POLL_MINUTES = 15;
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function pollTranscription(transcriptId) {
+        const maxAttempts = Math.ceil((MAX_POLL_MINUTES * 60 * 1000) / POLL_INTERVAL_MS);
+        const stateLabels = { queued: 'Queued...', processing: 'Transcribing Audio (AssemblyAI)...' };
+
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const response = await fetch(`/api/transcribe-audio/${transcriptId}`);
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.detail || 'Failed to check transcription status');
+            }
+            const data = await response.json();
+
+            if (data.state === 'completed') {
+                return data.text;
+            }
+            statusText.innerText = stateLabels[data.state] || 'Transcribing Audio (AssemblyAI)...';
+            await sleep(POLL_INTERVAL_MS);
+        }
+        throw new Error('Transcription is taking longer than expected. Please try again shortly.');
+    }
+
     async function uploadAudioFile(file) {
         // Validate file type
         if (!file.name.match(/\.(mp3|wav|m4a)$/i)) {
@@ -2947,7 +2204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         overlay.classList.add('active');
-        statusText.innerText = `Uploading and Transcribing ${file.name}...`;
+        statusText.innerText = `Uploading ${file.name}...`;
 
         const formData = new FormData();
         formData.append('file', file);
@@ -2964,12 +2221,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            
-            // Append the transcription text
-            if (data.status === 'SUCCESS' && data.text) {
-                feedbackTextarea.value += (feedbackTextarea.value ? '\n\n' : '') + data.text;
+
+            if (data.status === 'SUBMITTED' && data.transcript_id) {
+                const text = await pollTranscription(data.transcript_id);
+                feedbackTextarea.value += (feedbackTextarea.value ? '\n\n' : '') + text;
                 overlay.classList.remove('active');
-                
+
                 // Show temporary success state
                 dropzone.style.borderColor = '#10B981';
                 setTimeout(() => {
@@ -2980,14 +2237,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Transcription error:', error);
             statusText.innerText = 'Error: ' + error.message;
             statusText.style.color = '#F43F5E';
-            
+
             setTimeout(() => {
                 overlay.classList.remove('active');
-                statusText.innerText = 'Transcribing Audio (Whisper AI)...';
+                statusText.innerText = 'Transcribing Audio (AssemblyAI)...';
                 statusText.style.color = '';
             }, 3000);
         }
-        
+
         // Clear file input
         fileInput.value = '';
     }
@@ -3059,36 +2316,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 diff3.className = 'diff-card';
                 diff3.innerHTML = `
                     <div class="diff-header">
-                        <span>Video Script Hook Enhancement</span>
+                        <span>Ad Angle Objection Reframe</span>
                         <span class="diff-agent-badge">Agent 3</span>
                     </div>
                     <div class="diff-content">
-                        <div class="diff-before">"Are you losing hair? We can help."</div>
-                        <div class="diff-after">"Don't let hair loss dictate your confidence. <span class="diff-highlight">Reclaim your professional image</span> with our undetectable hair systems."</div>
+                        <div class="diff-before">Angle led with generic product features and standard hair-loss messaging.</div>
+                        <div class="diff-after">Angle reframed around the <span class="diff-highlight">fear of visible surgery scars</span>, directly countering skepticism with a <span class="diff-highlight">zero-downtime comparison hook</span>.</div>
                     </div>
                 `;
-                
+
                 // Mock Diff 4 (Agent 4)
                 const diff4 = document.createElement('div');
                 diff4.className = 'diff-card';
                 diff4.innerHTML = `
                     <div class="diff-header">
-                        <span>Visual Generation Tone</span>
-                        <span class="diff-agent-badge">Agent 4</span>
-                    </div>
-                    <div class="diff-content">
-                        <div class="diff-before">Generate an image of a bald man.</div>
-                        <div class="diff-after">Generate an image of a <span class="diff-highlight">confident, successful executive</span> looking in the mirror.</div>
-                    </div>
-                `;
-
-                // Mock Diff 5 (Agent 5)
-                const diff5 = document.createElement('div');
-                diff5.className = 'diff-card';
-                diff5.innerHTML = `
-                    <div class="diff-header">
                         <span>Video Ad Script Generator</span>
-                        <span class="diff-agent-badge">Agent 5</span>
+                        <span class="diff-agent-badge">Agent 4</span>
                     </div>
                     <div class="diff-content">
                         <div class="diff-before">Standard promotional video script without download option.</div>
@@ -3098,7 +2341,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 diffReport.appendChild(diff3);
                 diffReport.appendChild(diff4);
-                diffReport.appendChild(diff5);
                 
                 // Hide success message after a bit
                 setTimeout(() => {
@@ -3109,7 +2351,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- AGENT 6: CREATIVE DIRECTOR LOGIC ---
+// --- AGENT 5: CREATIVE DIRECTOR LOGIC ---
 let lastGeneratedCreativeData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -3148,9 +2390,9 @@ function initDropdownControlButtons() {
             btnGroup = document.createElement('div');
             btnGroup.className = 'dropdown-controls-group';
             btnGroup.innerHTML = `
-                <button type="button" class="dropdown-icon-btn btn-add-opt" title="Add New Option">➕</button>
-                <button type="button" class="dropdown-icon-btn btn-edit-opt" title="Edit Selected Option">✏️</button>
-                <button type="button" class="dropdown-icon-btn btn-delete-opt" title="Delete Selected Option">🗑️</button>
+                <button type="button" class="dropdown-icon-btn btn-add-opt" title="Add New Option">+</button>
+                <button type="button" class="dropdown-icon-btn btn-edit-opt" title="Edit Selected Option">Edit</button>
+                <button type="button" class="dropdown-icon-btn btn-delete-opt" title="Delete Selected Option">Delete</button>
             `;
             parent.appendChild(btnGroup);
         }
@@ -3173,7 +2415,7 @@ function initDropdownControlButtons() {
                     const feedbackStatus = document.getElementById('feedback-status');
                     if (feedbackStatus) {
                         feedbackStatus.style.display = 'block';
-                        feedbackStatus.textContent = `✓ Added option: "${cleanVal}"`;
+                        feedbackStatus.textContent = `Added option: "${cleanVal}"`;
                         setTimeout(() => { feedbackStatus.style.display = 'none'; }, 3000);
                     }
                 }
@@ -3200,7 +2442,7 @@ function initDropdownControlButtons() {
                     const feedbackStatus = document.getElementById('feedback-status');
                     if (feedbackStatus) {
                         feedbackStatus.style.display = 'block';
-                        feedbackStatus.textContent = `✓ Updated option to: "${cleanVal}"`;
+                        feedbackStatus.textContent = `Updated option to: "${cleanVal}"`;
                         setTimeout(() => { feedbackStatus.style.display = 'none'; }, 3000);
                     }
                 }
@@ -3229,7 +2471,7 @@ function initDropdownControlButtons() {
                     const feedbackStatus = document.getElementById('feedback-status');
                     if (feedbackStatus) {
                         feedbackStatus.style.display = 'block';
-                        feedbackStatus.textContent = `✓ Deleted option: "${deletedText}"`;
+                        feedbackStatus.textContent = `Deleted option: "${deletedText}"`;
                         setTimeout(() => { feedbackStatus.style.display = 'none'; }, 3000);
                     }
                 }
@@ -3243,7 +2485,7 @@ function copyToClipboard(text, successMessage) {
         const feedbackStatus = document.getElementById('feedback-status');
         if (feedbackStatus) {
             feedbackStatus.style.display = 'block';
-            feedbackStatus.textContent = '✓ ' + (successMessage || 'Copied to clipboard!');
+            feedbackStatus.textContent = '' + (successMessage || 'Copied to clipboard!');
             setTimeout(() => { feedbackStatus.style.display = 'none'; }, 3000);
         } else {
             alert(successMessage || 'Copied to clipboard!');
@@ -3391,20 +2633,20 @@ function renderCreativeDirection(creativeDir) {
     if (!container) return;
     
     if (!creativeDir) {
-        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 6.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 5.</p></div>`;
         return;
     }
     
     const categories = [
-        { key: "visuals_and_aesthetics", title: "Visuals & Aesthetics", icon: "🎨", badge: "9:16 / 4:5 Framing" },
-        { key: "lighting_and_color", title: "Lighting & Color", icon: "💡", badge: "5600K Key • 3200K Rim" },
-        { key: "camera_and_lens", title: "Camera & Lens", icon: "🎥", badge: "35mm/65mm Anamorphic T2.3" },
-        { key: "set_design_and_props", title: "Set Design & Props", icon: "🛋️", badge: "Architectural Loft" },
-        { key: "wardrobe_and_makeup", title: "Wardrobe & Makeup", icon: "👔", badge: "8K Zero-Shine HD" },
-        { key: "sound_design_and_music", title: "Sound Design & Music", icon: "🎵", badge: "40Hz Sub-Bass • Foley" },
-        { key: "talent_and_performance_direction", title: "Talent & Performance Direction", icon: "🎭", badge: "Actor Cadence & Arc" },
-        { key: "post_production_and_vfx", title: "Post-Production & VFX", icon: "🖥️", badge: "Pop-In Text • Safe Zones" },
-        { key: "director_shot_list", title: "Director's Beat-by-Beat Shot Matrix", icon: "🎬", badge: "0s Hook to 60s CTA" }
+        { key: "visuals_and_aesthetics", title: "Visuals & Aesthetics", icon: "", badge: "9:16 / 4:5 Framing" },
+        { key: "lighting_and_color", title: "Lighting & Color", icon: "", badge: "5600K Key • 3200K Rim" },
+        { key: "camera_and_lens", title: "Camera & Lens", icon: "", badge: "35mm/65mm Anamorphic T2.3" },
+        { key: "set_design_and_props", title: "Set Design & Props", icon: "", badge: "Architectural Loft" },
+        { key: "wardrobe_and_makeup", title: "Wardrobe & Makeup", icon: "", badge: "8K Zero-Shine HD" },
+        { key: "sound_design_and_music", title: "Sound Design & Music", icon: "", badge: "40Hz Sub-Bass • Foley" },
+        { key: "talent_and_performance_direction", title: "Talent & Performance Direction", icon: "", badge: "Actor Cadence & Arc" },
+        { key: "post_production_and_vfx", title: "Post-Production & VFX", icon: "", badge: "Pop-In Text • Safe Zones" },
+        { key: "director_shot_list", title: "Director's Beat-by-Beat Shot Matrix", icon: "", badge: "0s Hook to 60s CTA" }
     ];
     
     let html = '';
@@ -3419,7 +2661,7 @@ function renderCreativeDirection(creativeDir) {
                     </div>
                     <div style="display:flex; align-items:center; gap: 8px;">
                         <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 0.72rem; padding: 3px 8px; border-radius: 4px;">${cat.badge}</span>
-                        <button type="button" class="btn btn-secondary btn-sm btn-copy-cat" data-cat-key="${cat.key}" style="font-size: 0.75rem; padding: 3px 8px;" title="Copy section snippet">📋 Copy Snippet</button>
+                        <button type="button" class="btn btn-secondary btn-sm btn-copy-cat" data-cat-key="${cat.key}" style="font-size: 0.75rem; padding: 3px 8px;" title="Copy section snippet">Copy Snippet</button>
                     </div>
                 </div>
                 <div class="creative-cat-body" style="font-size: 0.93rem; line-height: 1.6; padding-top: 12px; white-space: pre-wrap;">
@@ -3451,7 +2693,7 @@ function updateCreativeMetrics(metrics) {
     document.getElementById('cm-status').textContent = metrics.status;
 }
 
-// --- AGENT 7: THUMBNAIL STRATEGIST LOGIC ---
+// --- AGENT 6: THUMBNAIL STRATEGIST LOGIC ---
 let lastGeneratedThumbnailData = null;
 
 function initThumbnailStrategist() {
@@ -3475,7 +2717,7 @@ function initThumbnailStrategist() {
                 alert('Please generate a Thumbnail Strategy first.');
                 return;
             }
-            const markdownBrief = `# Thumbnail Strategy Blueprint - Agent 7
+            const markdownBrief = `# Thumbnail Strategy Blueprint - Agent 6
 Product: ${document.getElementById('t_product_name')?.value || 'Brand'}
 Script Title: ${document.getElementById('t_script_title')?.value || 'Video Script'}
 Hook: ${document.getElementById('t_script_hook')?.value || ''}
@@ -3577,7 +2819,7 @@ function renderThumbnailStrategy(strategy) {
     if (!container) return;
 
     if (!strategy || !strategy.concepts || !strategy.concepts.length) {
-        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 7.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 6.</p></div>`;
         return;
     }
 
@@ -3590,7 +2832,7 @@ function renderThumbnailStrategy(strategy) {
 
     strategy.concepts.forEach((concept, idx) => {
         const isRec = concept.is_recommended;
-        const recBadge = isRec ? `<span class="badge" style="background: rgba(168, 85, 247, 0.25); color: #c084fc; font-weight: bold; margin-left: 10px;">⭐ Recommended</span>` : '';
+        const recBadge = isRec ? `<span class="badge" style="background: rgba(168, 85, 247, 0.25); color: #c084fc; font-weight: bold; margin-left: 10px;">Recommended</span>` : '';
         const borderStyle = isRec ? 'border: 2px solid #818cf8; background: rgba(99, 102, 241, 0.05);' : 'border: 1px solid rgba(255,255,255,0.08);';
 
         html += `
@@ -3606,7 +2848,7 @@ function renderThumbnailStrategy(strategy) {
                             data-thumbnail-copy="${concept.thumbnail_copy.replace(/"/g, '&quot;')}"
                             data-main-visual="${concept.main_visual.replace(/"/g, '&quot;')}"
                             style="background: #10b981; color: #fff; font-size: 0.85rem; padding: 8px 16px; border-radius: 6px; font-weight: 600;">
-                        Approve Strategy → Continue to Agent 8
+                        Approve Strategy Continue to Agent 7
                     </button>
                 </div>
 
@@ -3656,7 +2898,7 @@ function renderThumbnailStrategy(strategy) {
             const thumbnailCopy = e.currentTarget.getAttribute('data-thumbnail-copy');
             const mainVisual = e.currentTarget.getAttribute('data-main-visual');
 
-            // Pre-fill Agent 8 Thumbnail Designer form fields
+            // Pre-fill Agent 7 Thumbnail Designer form fields
             const productName = document.getElementById('t_product_name')?.value || 'American Hairline Scalp Revival System';
             const scriptTitle = document.getElementById('t_script_title')?.value || 'The Rearview Mirror Pattern Interrupt';
 
@@ -3666,13 +2908,13 @@ function renderThumbnailStrategy(strategy) {
             if (document.getElementById('d_thumbnail_copy')) setDropdownValue('d_thumbnail_copy', thumbnailCopy);
             if (document.getElementById('d_main_visual')) setDropdownValue('d_main_visual', mainVisual);
 
-            // Switch Tab to Agent 8: Thumbnail Designer
+            // Switch Tab to Agent 7: Thumbnail Designer
             const tabBtnDesigner = document.querySelector('.tab-btn[data-tab="tab-designer"]');
             if (tabBtnDesigner) {
                 tabBtnDesigner.click();
             }
 
-            // Trigger Agent 8 generation automatically
+            // Trigger Agent 7 generation automatically
             const designerForm = document.getElementById('designer-generator-form');
             if (designerForm) {
                 designerForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -3681,7 +2923,7 @@ function renderThumbnailStrategy(strategy) {
             const feedbackStatus = document.getElementById('feedback-status');
             if (feedbackStatus) {
                 feedbackStatus.style.display = 'block';
-                feedbackStatus.textContent = `✓ Strategy Approved! Translating "${conceptTitle}" into Agent 8 Designer Brief...`;
+                feedbackStatus.textContent = `Strategy Approved! Translating "${conceptTitle}" into Agent 7 Designer Brief...`;
                 setTimeout(() => { feedbackStatus.style.display = 'none'; }, 4000);
             }
         });
@@ -3718,7 +2960,7 @@ function updateThumbnailMetrics(metrics) {
 }
 
 
-// --- AGENT 8: THUMBNAIL DESIGNER LOGIC ---
+// --- AGENT 7: THUMBNAIL DESIGNER LOGIC ---
 let lastGeneratedDesignerData = null;
 
 function initThumbnailDesigner() {
@@ -3742,7 +2984,7 @@ function initThumbnailDesigner() {
                 alert('Please generate a Thumbnail Design Brief first.');
                 return;
             }
-            const markdownBrief = `# Technical Thumbnail Design Brief - Agent 8
+            const markdownBrief = `# Technical Thumbnail Design Brief - Agent 7
 Product: ${document.getElementById('d_product_name')?.value || 'Brand'}
 Script Title: ${document.getElementById('d_script_title')?.value || 'Video Script'}
 Approved Concept: ${lastGeneratedDesignerData.selected_concept_title || ''}
@@ -3844,23 +3086,23 @@ function renderThumbnailDesign(design) {
     if (!container) return;
 
     if (!design) {
-        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 8.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 7.</p></div>`;
         return;
     }
 
     const categories = [
-        { key: "layout_grid_and_composition", title: "1. Layout Grid & Composition (16:9)", icon: "📐", badge: "Rule-of-Thirds & Safe Zones" },
-        { key: "typography_and_text_hierarchy", title: "2. Typography & Text Hierarchy", icon: "✍️", badge: "Font, Hex & Shadow Specs" },
-        { key: "color_grading_and_lighting_pass", title: "3. Color Grading & Lighting Pass", icon: "💡", badge: "Kelvin Lighting & LUTs" },
-        { key: "visual_effects_and_callouts", title: "4. Visual Effects & Callouts", icon: "✨", badge: "Aura, Arrows & Badges" },
-        { key: "midjourney_flux_prompt", title: "5. Midjourney / Flux Prompt", icon: "🤖", badge: "Copyable Prompt --ar 16:9" },
-        { key: "photoshop_canva_layer_breakdown", title: "6. Photoshop / Canva Layer Breakdown", icon: "🎨", badge: "6 Layer Assembly Guide" },
-        { key: "mobile_viewport_100px_simulation", title: "7. Mobile Viewport 100px Simulator", icon: "📱", badge: "WCAG AAA Contrast Audit" },
-        { key: "color_palette_hex_psychology", title: "8. Color Palette HEX & Psychology", icon: "🎨", badge: "Hex Swatches & Emotion" },
-        { key: "asset_inventory_checklist", title: "9. Asset Inventory & Stock Checklist", icon: "📦", badge: "3D Renders, Fonts & LUTs" },
-        { key: "ab_testing_variant_blueprint", title: "10. A/B Testing Variant Blueprint", icon: "🧪", badge: "Variant A vs B (+CTR Lift)" },
-        { key: "eye_tracking_heatmap_and_focal_velocity", title: "11. Eye-Tracking Heatmap & Focal Velocity", icon: "👁️", badge: "Visual Scan Order & Weight" },
-        { key: "multi_platform_aspect_ratio_specs", title: "12. Multi-Platform Aspect Ratio Specs", icon: "📺", badge: "16:9, 1:1 & 9:16 Crop Safety" }
+        { key: "layout_grid_and_composition", title: "1. Layout Grid & Composition (16:9)", icon: "", badge: "Rule-of-Thirds & Safe Zones" },
+        { key: "typography_and_text_hierarchy", title: "2. Typography & Text Hierarchy", icon: "", badge: "Font, Hex & Shadow Specs" },
+        { key: "color_grading_and_lighting_pass", title: "3. Color Grading & Lighting Pass", icon: "", badge: "Kelvin Lighting & LUTs" },
+        { key: "visual_effects_and_callouts", title: "4. Visual Effects & Callouts", icon: "", badge: "Aura, Arrows & Badges" },
+        { key: "midjourney_flux_prompt", title: "5. Midjourney / Flux Prompt", icon: "", badge: "Copyable Prompt --ar 16:9" },
+        { key: "photoshop_canva_layer_breakdown", title: "6. Photoshop / Canva Layer Breakdown", icon: "", badge: "6 Layer Assembly Guide" },
+        { key: "mobile_viewport_100px_simulation", title: "7. Mobile Viewport 100px Simulator", icon: "", badge: "WCAG AAA Contrast Audit" },
+        { key: "color_palette_hex_psychology", title: "8. Color Palette HEX & Psychology", icon: "", badge: "Hex Swatches & Emotion" },
+        { key: "asset_inventory_checklist", title: "9. Asset Inventory & Stock Checklist", icon: "", badge: "3D Renders, Fonts & LUTs" },
+        { key: "ab_testing_variant_blueprint", title: "10. A/B Testing Variant Blueprint", icon: "", badge: "Variant A vs B (+CTR Lift)" },
+        { key: "eye_tracking_heatmap_and_focal_velocity", title: "11. Eye-Tracking Heatmap & Focal Velocity", icon: "", badge: "Visual Scan Order & Weight" },
+        { key: "multi_platform_aspect_ratio_specs", title: "12. Multi-Platform Aspect Ratio Specs", icon: "", badge: "16:9, 1:1 & 9:16 Crop Safety" }
     ];
 
     let html = `
@@ -3872,7 +3114,7 @@ function renderThumbnailDesign(design) {
                 <span style="font-weight: 700; color: #ffe600;">Text Overlay:</span>
                 <span style="color: #ffe600; font-weight: 800; margin-left: 6px;">"${design.thumbnail_copy || ''}"</span>
             </div>
-            <span class="badge" style="background: rgba(168, 85, 247, 0.25); color: #e9d5ff; font-weight: bold; font-size: 0.85rem; padding: 4px 10px;">⭐ Master 12 Production Dimensions</span>
+            <span class="badge" style="background: rgba(168, 85, 247, 0.25); color: #e9d5ff; font-weight: bold; font-size: 0.85rem; padding: 4px 10px;">Master 12 Production Dimensions</span>
         </div>
     `;
 
@@ -3888,7 +3130,7 @@ function renderThumbnailDesign(design) {
                     </div>
                     <div style="display:flex; align-items:center; gap: 8px;">
                         <span class="badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 0.72rem; padding: 3px 8px; border-radius: 4px;">${cat.badge}</span>
-                        <button type="button" class="btn btn-secondary btn-sm btn-copy-d-cat" data-d-key="${cat.key}" style="font-size: 0.75rem; padding: 3px 8px;" title="Copy section snippet">📋 Copy Snippet</button>
+                        <button type="button" class="btn btn-secondary btn-sm btn-copy-d-cat" data-d-key="${cat.key}" style="font-size: 0.75rem; padding: 3px 8px;" title="Copy section snippet">Copy Snippet</button>
                     </div>
                 </div>
                 <div class="creative-cat-body" style="font-size: 0.93rem; line-height: 1.6; padding-top: 12px; white-space: pre-wrap;">
@@ -3920,7 +3162,7 @@ function updateDesignerMetrics(metrics) {
 }
 
 
-// --- AGENT 9: TITLE STRATEGIST LOGIC ---
+// --- AGENT 8: TITLE STRATEGIST LOGIC ---
 let lastGeneratedTitleData = null;
 
 function initTitleStrategist() {
@@ -3946,7 +3188,7 @@ function initTitleStrategist() {
                 alert('Please generate Video Titles first.');
                 return;
             }
-            let markdownTitles = `# 10 High-Converting Video Titles - Agent 9\nProduct: ${document.getElementById('tt_product_name')?.value || 'Brand'}\nScript: ${document.getElementById('tt_script_title')?.value || 'Video Script'}\n\n`;
+            let markdownTitles = `# 10 High-Converting Video Titles - Agent 8\nProduct: ${document.getElementById('tt_product_name')?.value || 'Brand'}\nScript: ${document.getElementById('tt_script_title')?.value || 'Video Script'}\n\n`;
             lastGeneratedTitleData.titles.forEach((t, i) => {
                 markdownTitles += `### ${i+1}. ${t.title_text}\n- **Framework**: ${t.framework_type}\n- **Length**: ${t.character_count} chars (${t.mobile_safe ? 'Mobile Safe' : 'May Truncate'})\n- **Thumbnail Synergy**: ${t.thumbnail_synergy_note}\n- **Benchmark Lift**: ${t.ab_benchmark_lift || 'N/A'}\n- **Data Rationale**:\n${(t.data_backed_rationale || '').replace(/\*\*/g, '')}\n- **Predicted CTR**: ${t.predicted_ctr_score}%\n\n`;
             });
@@ -4045,12 +3287,12 @@ function renderTitleStrategy(strategy, isV2Hybrid = false) {
     if (!container) return;
 
     if (!strategy || !strategy.titles || !strategy.titles.length) {
-        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 9.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 8.</p></div>`;
         return;
     }
 
     const batchTag = isV2Hybrid 
-        ? `<span class="badge" style="background: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: bold;">⚡ V2 Hybrid Batch (Top Winning Styles Mixed)</span>`
+        ? `<span class="badge" style="background: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: bold;">V2 Hybrid Batch (Top Winning Styles Mixed)</span>`
         : `<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">5 Psychological Frameworks</span>`;
 
     let html = `
@@ -4062,12 +3304,12 @@ function renderTitleStrategy(strategy, isV2Hybrid = false) {
 
     strategy.titles.forEach((item, idx) => {
         const isTop = idx === 0;
-        const topBadge = isTop ? `<span class="badge" style="background: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: bold;">🏆 #1 Ranked</span>` : '';
+        const topBadge = isTop ? `<span class="badge" style="background: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: bold;">#1 Ranked</span>` : '';
         const borderStyle = isTop ? 'border: 2px solid #34d399; background: rgba(16, 185, 129, 0.05);' : 'border: 1px solid rgba(255,255,255,0.08);';
 
         const safeBadge = item.mobile_safe 
-            ? `<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.75rem;">✓ Mobile Safe (${item.character_count} chars)</span>`
-            : `<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; font-size: 0.75rem;">⚠️ Long Title (${item.character_count} chars)</span>`;
+            ? `<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.75rem;">Mobile Safe (${item.character_count} chars)</span>`
+            : `<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; font-size: 0.75rem;">Long Title (${item.character_count} chars)</span>`;
 
         const liftBadge = item.ab_benchmark_lift 
             ? `<span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; font-weight: 600; font-size: 0.75rem;">${item.ab_benchmark_lift}</span>`
@@ -4086,7 +3328,7 @@ function renderTitleStrategy(strategy, isV2Hybrid = false) {
                         ${safeBadge}
                         <span style="font-weight: 700; color: #10b981; font-size: 0.95rem;">CTR: ${item.predicted_ctr_score}%</span>
                         <button type="button" class="btn btn-secondary btn-sm btn-copy-title-text" data-title-text="${item.title_text.replace(/"/g, '&quot;')}" style="font-size: 0.78rem; padding: 4px 10px;">
-                            📋 Copy Title
+                            Copy Title
                         </button>
                     </div>
                 </div>
@@ -4129,7 +3371,7 @@ function updateTitleMetrics(metrics) {
 }
 
 
-// --- AGENT 10: CONTENT BRIEF MASTER LOGIC ---
+// --- AGENT 9: CONTENT BRIEF MASTER LOGIC ---
 let lastGeneratedBriefData = null;
 
 function initContentBrief() {
@@ -4283,24 +3525,24 @@ function renderContentBrief(brief) {
     if (!container) return;
 
     if (!brief) {
-        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 10.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 9.</p></div>`;
         return;
     }
 
     const categories = [
-        { key: "campaign_objective_and_funnel_stage", title: "1. Campaign Objective & Funnel Stage", icon: "🎯", badge: "Browsing & Passive Discovery" },
-        { key: "tone_and_voice_matrix", title: "2. Tone & Voice Matrix", icon: "🎙️", badge: "Empathetic & Non-Clinical" },
-        { key: "format_constraints_and_specs", title: "3. Format Constraints & Specs", icon: "📐", badge: "9:16 IG Reel / 1:1 Feed" },
-        { key: "persona_texture_layer", title: "4. Persona Texture Layer", icon: "🧠", badge: "Emotional Gym/Mirror Entry Point" },
-        { key: "cta_intensity_note", title: "5. CTA Intensity Note", icon: "⚡", badge: "Soft Education Link vs Hard Sell" },
-        { key: "compliance_and_negative_guardrails", title: "6. Compliance & Negative Guardrails", icon: "🚫", badge: "No Claims, No Fear-Mongering" },
-        { key: "reference_asset_anchor", title: "7. Reference Asset Anchor", icon: "🏆", badge: "Prior Winner Pacing Benchmark" },
-        { key: "funnel_conversion_velocity_index", title: "8. Funnel Conversion Velocity Index", icon: "📈", badge: "95.8/100 Funnel Warmth Rating" },
-        { key: "creative_hook_retention_rules", title: "9. Creative Hook Retention Rules (0-30s)", icon: "⏱️", badge: "Drop-Off Mitigation Protocol" }
+        { key: "campaign_objective_and_funnel_stage", title: "1. Campaign Objective & Funnel Stage", icon: "", badge: "Browsing & Passive Discovery" },
+        { key: "tone_and_voice_matrix", title: "2. Tone & Voice Matrix", icon: "", badge: "Empathetic & Non-Clinical" },
+        { key: "format_constraints_and_specs", title: "3. Format Constraints & Specs", icon: "", badge: "9:16 IG Reel / 1:1 Feed" },
+        { key: "persona_texture_layer", title: "4. Persona Texture Layer", icon: "", badge: "Emotional Gym/Mirror Entry Point" },
+        { key: "cta_intensity_note", title: "5. CTA Intensity Note", icon: "", badge: "Soft Education Link vs Hard Sell" },
+        { key: "compliance_and_negative_guardrails", title: "6. Compliance & Negative Guardrails", icon: "", badge: "No Claims, No Fear-Mongering" },
+        { key: "reference_asset_anchor", title: "7. Reference Asset Anchor", icon: "", badge: "Prior Winner Pacing Benchmark" },
+        { key: "funnel_conversion_velocity_index", title: "8. Funnel Conversion Velocity Index", icon: "", badge: "95.8/100 Funnel Warmth Rating" },
+        { key: "creative_hook_retention_rules", title: "9. Creative Hook Retention Rules (0-30s)", icon: "⏱", badge: "Drop-Off Mitigation Protocol" }
     ];
 
     let html = `
-        <!-- Fancy Hero Banner Agent 10 -->
+        <!-- Fancy Hero Banner Agent 9 -->
         <div class="agent10-hero-banner" style="margin-bottom: 24px; padding: 20px 24px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 14px; box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: space-between;">
             <div>
                 <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 4px;">
@@ -4310,7 +3552,7 @@ function renderContentBrief(brief) {
                 <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.01em;">${brief.brief_title || 'Meta Ads Content Brief'}</h3>
             </div>
             <div style="display:flex; align-items:center; gap: 10px;">
-                <span class="badge" style="background: linear-gradient(135deg, #10b981, #6366f1); color: #fff; font-weight: bold; font-size: 0.88rem; padding: 6px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">⭐ 9 Guardrail Layers</span>
+                <span class="badge" style="background: linear-gradient(135deg, #10b981, #6366f1); color: #fff; font-weight: bold; font-size: 0.88rem; padding: 6px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">9 Guardrail Layers</span>
             </div>
         </div>
     `;
@@ -4327,7 +3569,7 @@ function renderContentBrief(brief) {
                     </div>
                     <div style="display:flex; align-items:center; gap: 8px;">
                         <span class="badge" style="background: rgba(16, 185, 129, 0.18); color: #34d399; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px;">${cat.badge}</span>
-                        <button type="button" class="btn btn-secondary btn-sm btn-copy-b-cat" data-b-key="${cat.key}" style="font-size: 0.75rem; padding: 4px 10px;" title="Copy section snippet">📋 Copy Snippet</button>
+                        <button type="button" class="btn btn-secondary btn-sm btn-copy-b-cat" data-b-key="${cat.key}" style="font-size: 0.75rem; padding: 4px 10px;" title="Copy section snippet">Copy Snippet</button>
                     </div>
                 </div>
                 <div class="creative-cat-body" style="font-size: 0.94rem; line-height: 1.65; padding-top: 14px; color: #cbd5e1; white-space: pre-wrap;">
@@ -4359,7 +3601,7 @@ function updateBriefMetrics(metrics) {
 }
 
 
-// --- AGENT 11: METADATA & PUBLISHING MASTER LOGIC ---
+// --- AGENT 10: METADATA & PUBLISHING MASTER LOGIC ---
 let lastGeneratedMetadataData = null;
 
 function initCampaignMetadata() {
@@ -4515,7 +3757,7 @@ function renderCampaignMetadata(meta) {
     if (!container) return;
 
     if (!meta) {
-        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 11.</p></div>`;
+        container.innerHTML = `<div class="empty-state"><h3>No Data</h3><p>Empty response from Agent 10.</p></div>`;
         return;
     }
 
@@ -4524,9 +3766,9 @@ function renderCampaignMetadata(meta) {
     if (meta.seo_title_variants && meta.seo_title_variants.length > 0) {
         meta.seo_title_variants.forEach((t, idx) => {
             const rankBadges = [
-                { label: "🏆 #1 PREFERRED", bg: "rgba(16, 185, 129, 0.2)", color: "#34d399", border: "rgba(16, 185, 129, 0.4)" },
-                { label: "⚡ #2 CHALLENGER", bg: "rgba(99, 102, 241, 0.2)", color: "#a5b4fc", border: "rgba(99, 102, 241, 0.4)" },
-                { label: "🎯 #3 ANGLE VARIANT", bg: "rgba(168, 85, 247, 0.2)", color: "#c084fc", border: "rgba(168, 85, 247, 0.4)" }
+                { label: "#1 PREFERRED", bg: "rgba(16, 185, 129, 0.2)", color: "#34d399", border: "rgba(16, 185, 129, 0.4)" },
+                { label: "#2 CHALLENGER", bg: "rgba(99, 102, 241, 0.2)", color: "#a5b4fc", border: "rgba(99, 102, 241, 0.4)" },
+                { label: "#3 ANGLE VARIANT", bg: "rgba(168, 85, 247, 0.2)", color: "#c084fc", border: "rgba(168, 85, 247, 0.4)" }
             ];
             const badge = rankBadges[idx] || rankBadges[2];
             const ctrVal = t.predicted_ctr || 95.0;
@@ -4538,7 +3780,7 @@ function renderCampaignMetadata(meta) {
                             <span class="badge" style="background: ${badge.bg}; color: ${badge.color}; font-weight: 800; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px;">${badge.label}</span>
                             <span style="font-weight: 700; color: #fff; font-size: 1.02rem;">"${t.title_option}"</span>
                         </div>
-                        <button type="button" class="btn btn-secondary btn-sm btn-copy-title-single" data-title-text="${t.title_option}" style="font-size: 0.75rem; padding: 3px 10px;">📋 Copy Title</button>
+                        <button type="button" class="btn btn-secondary btn-sm btn-copy-title-single" data-title-text="${t.title_option}" style="font-size: 0.75rem; padding: 3px 10px;">Copy Title</button>
                     </div>
                     
                     <div style="display:flex; align-items:center; gap: 12px; margin-top: 10px;">
@@ -4556,13 +3798,13 @@ function renderCampaignMetadata(meta) {
     }
 
     const categories = [
-        { key: "primary_and_secondary_keywords", title: "2. Evidence-Based Keyword Targets & Volume Metrics", icon: "🔑", badge: "Ahrefs/Search Vol Verified" },
-        { key: "competitor_gap_analysis", title: "3. Competitor Gap Analysis & Subtopic Surface", icon: "🔍", badge: "Content Gap Exploited" },
-        { key: "retention_chapter_timestamps", title: "4. Retention-Engineered Chapter Timestamps", icon: "⏱️", badge: "Drop-off Mitigation Protocol" },
-        { key: "full_optimized_description", title: "5. Production Publishing Description & Links", icon: "📝", badge: "SEO Pre-formatted" },
-        { key: "tags_and_hashtags", title: "6. Categorized Tags & Meta Hashtags", icon: "#️⃣", badge: "Distribution Ready" },
-        { key: "accessibility_alt_text_and_srt_summary", title: "7. Accessibility Alt-Text & SRT Caption Summary", icon: "♿", badge: "SRT & Alt Text Ready" },
-        { key: "brand_safety_and_compliance_check", title: "8. Brand Safety & Compliance Policy Audit", icon: "🛡️", badge: "FTC & Meta Safe" }
+        { key: "primary_and_secondary_keywords", title: "2. Evidence-Based Keyword Targets & Volume Metrics", icon: "", badge: "Ahrefs/Search Vol Verified" },
+        { key: "competitor_gap_analysis", title: "3. Competitor Gap Analysis & Subtopic Surface", icon: "", badge: "Content Gap Exploited" },
+        { key: "retention_chapter_timestamps", title: "4. Retention-Engineered Chapter Timestamps", icon: "⏱", badge: "Drop-off Mitigation Protocol" },
+        { key: "full_optimized_description", title: "5. Production Publishing Description & Links", icon: "", badge: "SEO Pre-formatted" },
+        { key: "tags_and_hashtags", title: "6. Categorized Tags & Meta Hashtags", icon: "#⃣", badge: "Distribution Ready" },
+        { key: "accessibility_alt_text_and_srt_summary", title: "7. Accessibility Alt-Text & SRT Caption Summary", icon: "", badge: "SRT & Alt Text Ready" },
+        { key: "brand_safety_and_compliance_check", title: "8. Brand Safety & Compliance Policy Audit", icon: "", badge: "FTC & Meta Safe" }
     ];
 
     let html = `
@@ -4576,7 +3818,7 @@ function renderCampaignMetadata(meta) {
                 <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: -0.01em;">${meta.campaign_title || 'Full Production Publishing Package'}</h3>
             </div>
             <div style="display:flex; align-items:center; gap: 10px;">
-                <span class="badge" style="background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; font-weight: bold; font-size: 0.88rem; padding: 6px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);">⭐ 8 Publishing Sections</span>
+                <span class="badge" style="background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; font-weight: bold; font-size: 0.88rem; padding: 6px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);">8 Publishing Sections</span>
             </div>
         </div>
 
@@ -4584,7 +3826,7 @@ function renderCampaignMetadata(meta) {
         <div class="creative-category" style="margin-bottom: 22px; padding: 20px; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
             <div class="creative-cat-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
                 <div style="display:flex; align-items:center; gap: 10px;">
-                    <div class="creative-cat-icon" style="font-size: 1.4rem;">🏆</div>
+                    <div class="creative-cat-icon" style="font-size: 1.4rem;"></div>
                     <div>
                         <div class="creative-cat-title" style="font-weight: 800; color: #fff; font-size: 1.05rem;">1. SEO Title Variants (Scored by Predicted CTR)</div>
                         <div style="font-size: 0.8rem; color: #94a3b8;">A/B variant options generated with CTR probability lift models</div>
@@ -4608,7 +3850,7 @@ function renderCampaignMetadata(meta) {
                     </div>
                     <div style="display:flex; align-items:center; gap: 8px;">
                         <span class="badge" style="background: rgba(99, 102, 241, 0.18); color: #a5b4fc; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px;">${cat.badge}</span>
-                        <button type="button" class="btn btn-secondary btn-sm btn-copy-cm-cat" data-cm-key="${cat.key}" style="font-size: 0.75rem; padding: 4px 10px;" title="Copy section snippet">📋 Copy Snippet</button>
+                        <button type="button" class="btn btn-secondary btn-sm btn-copy-cm-cat" data-cm-key="${cat.key}" style="font-size: 0.75rem; padding: 4px 10px;" title="Copy section snippet">Copy Snippet</button>
                     </div>
                 </div>
                 <div class="creative-cat-body" style="font-size: 0.94rem; line-height: 1.65; padding-top: 14px; color: #cbd5e1; white-space: pre-wrap;">

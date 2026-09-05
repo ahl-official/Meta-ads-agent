@@ -6,10 +6,12 @@ FastAPI Server & REST API Service:
 2. Serves static frontend dashboard for visual execution monitoring.
 """
 
+import asyncio
 import time
 import os
+import tempfile
 import uuid
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,9 +19,10 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import openai
 from openai import OpenAI
+import assemblyai as aai
 
 from rag_pipeline import SemanticChunker, EmbeddingManager, VectorStoreManager
 from ad_generator import AdGeneratorEngine
@@ -43,20 +46,21 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS
+# Enable CORS. No cookie/session auth exists in this app, so credentials aren't needed;
+# allow_origins=["*"] + allow_credentials=True is an invalid combination browsers reject anyway.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Global Engine Singletons
 chunker = SemanticChunker(target_min_tokens=500, target_max_tokens=800, overlap_tokens=100)
-embedding_manager = EmbeddingManager(model_name="text-embedding-3-small", vector_dim=1536)
+embedding_manager = EmbeddingManager(model_name="openai/text-embedding-3-small", vector_dim=1536)
 vector_store = VectorStoreManager()
-cost_tracker = CostTracker(default_model="gpt-4o-mini", default_embedding_model="text-embedding-3-small")
+cost_tracker = CostTracker(default_model="openai/gpt-4o-mini", default_embedding_model="openai/text-embedding-3-small")
 ad_engine = AdGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
 persona_engine = PersonaGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
 benefits_engine = BenefitsExtractorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
@@ -101,7 +105,7 @@ class PersonaGenerationRequest(BaseModel):
     ideal_customer: str = "Men & Women aged 25-55 experiencing early to mid-stage hair loss"
     pain_point: str = "Loss of confidence, fear of aging, frustrated with ineffective chemical treatments"
     solution: str = "Non-surgical, organic scalp revival system with guaranteed high-density follicle recovery"
-    persona_count: int = 4
+    persona_count: int = Field(default=4, ge=1, le=10)
     topic_filter: Optional[str] = None
 
 class CreativeDirectionRequest(BaseModel):
@@ -173,7 +177,8 @@ async def generate_personas(request: PersonaGenerationRequest):
 
     # Span 1: Vector Retrieval for Brand & Transcript Context
     t0 = time.time()
-    context_chunks = persona_engine.retrieve_context(
+    context_chunks = await asyncio.to_thread(
+        persona_engine.retrieve_context,
         query=f"{request.ideal_customer} {request.pain_point} {request.solution}",
         topic_filter=request.topic_filter,
         top_k=4
@@ -194,7 +199,8 @@ async def generate_personas(request: PersonaGenerationRequest):
 
     # Span 2: System Prompt Construction with 4 Brand Answers
     t0 = time.time()
-    system_prompt = persona_engine.build_system_prompt(
+    system_prompt = await asyncio.to_thread(
+        persona_engine.build_system_prompt,
         one_line_promise=request.one_line_promise,
         ideal_customer=request.ideal_customer,
         pain_point=request.pain_point,
@@ -216,7 +222,8 @@ async def generate_personas(request: PersonaGenerationRequest):
 
     # Span 3: Persona Generation (3-5 Detailed Personas)
     t0 = time.time()
-    results = persona_engine.generate_personas(
+    results = await asyncio.to_thread(
+        persona_engine.generate_personas,
         one_line_promise=request.one_line_promise,
         ideal_customer=request.ideal_customer,
         pain_point=request.pain_point,
@@ -307,7 +314,8 @@ async def generate_benefits(request: BenefitsExtractionRequest):
 
     # Span 1: Vector Retrieval for Product & Persona Context
     t0 = time.time()
-    context_chunks = benefits_engine.retrieve_context(
+    context_chunks = await asyncio.to_thread(
+        benefits_engine.retrieve_context,
         query=f"{request.product_name} {request.product_details}",
         topic_filter=request.topic_filter,
         top_k=4
@@ -328,7 +336,8 @@ async def generate_benefits(request: BenefitsExtractionRequest):
 
     # Span 2: System Prompt & Persona-Emotion Mapping Matrix
     t0 = time.time()
-    system_prompt = benefits_engine.build_system_prompt(
+    system_prompt = await asyncio.to_thread(
+        benefits_engine.build_system_prompt,
         product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries or [],
@@ -348,7 +357,8 @@ async def generate_benefits(request: BenefitsExtractionRequest):
 
     # Span 3: LLM 10 Core Benefits Extraction
     t0 = time.time()
-    results = benefits_engine.generate_10_benefits(
+    results = await asyncio.to_thread(
+        benefits_engine.generate_10_benefits,
         product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries,
@@ -421,7 +431,7 @@ class BenefitsAngleRequest(BaseModel):
     product_name: str = "American Hairline Scalp Revival System"
     product_details: str = "Non-surgical, organic scalp revival system with guaranteed high-density follicle recovery, zero side effects, and 90-day progress guarantee."
     persona_summaries: Optional[List[str]] = None
-    angles_per_benefit: int = 5
+    angles_per_benefit: int = Field(default=5, ge=1, le=10)
     topic_filter: Optional[str] = None
 
 
@@ -437,7 +447,8 @@ async def generate_angles(request: BenefitsAngleRequest):
 
     # Span 1: Vector Retrieval for Product & Persona Context
     t0 = time.time()
-    context_chunks = angle_engine.retrieve_context(
+    context_chunks = await asyncio.to_thread(
+        angle_engine.retrieve_context,
         query=f"{request.product_name} {request.product_details}",
         topic_filter=request.topic_filter,
         top_k=4
@@ -458,7 +469,8 @@ async def generate_angles(request: BenefitsAngleRequest):
 
     # Span 2: System Prompt & Copywriting Framework Matrix Injection
     t0 = time.time()
-    system_prompt = angle_engine.build_system_prompt(
+    system_prompt = await asyncio.to_thread(
+        angle_engine.build_system_prompt,
         product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries or [],
@@ -479,7 +491,8 @@ async def generate_angles(request: BenefitsAngleRequest):
 
     # Span 3: LLM Benefits & Ad Angle Matrix Generation
     t0 = time.time()
-    results = angle_engine.generate_benefits_and_angles(
+    results = await asyncio.to_thread(
+        angle_engine.generate_benefits_and_angles,
         product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries,
@@ -572,7 +585,8 @@ async def generate_video_scripts(request: VideoScriptRequest):
 
     # Span 1: Metadata-Filtered Vector Retrieval for Video Copywriting Rules
     t0 = time.time()
-    context_chunks = video_engine.retrieve_context(
+    context_chunks = await asyncio.to_thread(
+        video_engine.retrieve_context,
         query=f"{request.product_name} video ad script hook problem agitation reveal CTA visual direction",
         topic_filter=request.topic_filter,
         top_k=4
@@ -593,7 +607,8 @@ async def generate_video_scripts(request: VideoScriptRequest):
 
     # Span 2: System Prompt & Video Script Architecture Injection
     t0 = time.time()
-    system_prompt = video_engine.build_system_prompt(
+    system_prompt = await asyncio.to_thread(
+        video_engine.build_system_prompt,
         product_name=request.product_name,
         chosen_angle=request.chosen_angle,
         chosen_hook=request.chosen_hook,
@@ -616,7 +631,8 @@ async def generate_video_scripts(request: VideoScriptRequest):
 
     # Span 3: LLM Scene-by-Scene Video Script Generation
     t0 = time.time()
-    results = video_engine.generate_video_scripts(
+    results = await asyncio.to_thread(
+        video_engine.generate_video_scripts,
         product_name=request.product_name,
         chosen_angle=request.chosen_angle,
         chosen_hook=request.chosen_hook,
@@ -709,7 +725,8 @@ async def generate_ads(request: AdGenerationRequest):
 
     # Span 1: Vector Retrieval
     t0 = time.time()
-    context_chunks = ad_engine.retrieve_context(
+    context_chunks = await asyncio.to_thread(
+        ad_engine.retrieve_context,
         query=f"frameworks for {request.topic_filter} and high converting ads",
         module_filter=request.module_filter,
         topic_filter=request.topic_filter,
@@ -731,7 +748,7 @@ async def generate_ads(request: AdGenerationRequest):
 
     # Span 2: System Prompt & Context Injection
     t0 = time.time()
-    system_prompt = ad_engine.build_system_prompt(request.product_name, request.target_audience, context_text)
+    system_prompt = await asyncio.to_thread(ad_engine.build_system_prompt, request.product_name, request.target_audience, context_text)
     prompt_ms = (time.time() - t0) * 1000.0
 
     spans.append(ExecutionSpan(
@@ -746,7 +763,8 @@ async def generate_ads(request: AdGenerationRequest):
 
     # Span 3: Ad Generation (10 Variations)
     t0 = time.time()
-    results = ad_engine.generate_10_ad_variations(
+    results = await asyncio.to_thread(
+        ad_engine.generate_10_ad_variations,
         product_or_course_name=request.product_name,
         topic_filter=request.topic_filter,
         target_audience=request.target_audience
@@ -837,7 +855,7 @@ class FeedbackRequest(BaseModel):
     solution_value: str = ""
     call_to_action: str = ""
     full_ad_text: str = ""
-    rating: str  # "thumbs_up" or "thumbs_down"
+    rating: Literal["thumbs_up", "thumbs_down"]
 
 
 @app.post("/api/feedback")
@@ -903,15 +921,20 @@ async def upload_transcript(file: UploadFile = File(...)):
     if not text.strip():
         raise HTTPException(status_code=400, detail="Uploaded file contains no readable text.")
 
-    chunks = chunker.chunk_text(
+    chunks = await asyncio.to_thread(
+        chunker.chunk_text,
         text=text,
         source_file=filename,
         default_module="Uploaded Transcript",
         default_topic="Custom Topic"
     )
 
-    embeddings = embedding_manager.get_embeddings([c.text for c in chunks])
-    vector_store.add_chunks(chunks, embeddings)
+    embeddings = await asyncio.to_thread(embedding_manager.get_embeddings, [c.text for c in chunks])
+
+    try:
+        await asyncio.to_thread(vector_store.add_chunks, chunks, embeddings)
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
     return JSONResponse(content={
         "status": "SUCCESS",
@@ -920,35 +943,54 @@ async def upload_transcript(file: UploadFile = File(...)):
         "filename": filename
     })
 
+def _submit_to_assemblyai(file_path: str) -> str:
+    """Uploads the audio and queues the transcription job. Returns immediately
+    (does not wait for transcription to finish) so the request can't time out
+    on long recordings — the client polls /api/transcribe-audio/{id} instead."""
+    aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
+    transcript = aai.Transcriber().submit(file_path)
+    return transcript.id
+
+def _get_assemblyai_status(transcript_id: str) -> dict:
+    aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
+    transcript = aai.Transcript.get_by_id(transcript_id)
+    if transcript.status == aai.TranscriptStatus.error:
+        raise RuntimeError(transcript.error)
+    return {"state": transcript.status, "text": transcript.text if transcript.status == aai.TranscriptStatus.completed else None}
+
 @app.post("/api/transcribe-audio")
 async def transcribe_audio_file(file: UploadFile = File(...)):
     if not file.filename.endswith(('.mp3', '.m4a', '.wav')):
         raise HTTPException(status_code=400, detail="Invalid audio format. Please upload mp3, m4a, or wav.")
-        
+
+    ext = os.path.splitext(file.filename)[1].lower()
+    temp_file_path = None
     try:
         content_bytes = await file.read()
-        
-        # Save temp file for Whisper API
-        temp_file_path = f"temp_{int(time.time())}_{file.filename}"
-        with open(temp_file_path, "wb") as f:
+
+        # mkstemp generates a unique, non-user-controlled path (no traversal/collision risk)
+        fd, temp_file_path = tempfile.mkstemp(suffix=ext, prefix="transcribe_")
+        with os.fdopen(fd, "wb") as f:
             f.write(content_bytes)
-            
-        client = OpenAI()
-        with open(temp_file_path, "rb") as audio_file:
-            transcription = client.audio.transcriptions.create(
-                model="whisper-1", 
-                file=audio_file
-            )
-            
-        os.remove(temp_file_path)
-        
+
+        transcript_id = await asyncio.to_thread(_submit_to_assemblyai, temp_file_path)
+
         return JSONResponse(content={
-            "status": "SUCCESS",
-            "text": transcription.text
+            "status": "SUBMITTED",
+            "transcript_id": transcript_id
         })
     except Exception as e:
-        if os.path.exists(temp_file_path):
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if temp_file_path and os.path.exists(temp_file_path):
             os.remove(temp_file_path)
+
+@app.get("/api/transcribe-audio/{transcript_id}")
+async def get_transcription_status(transcript_id: str):
+    try:
+        result = await asyncio.to_thread(_get_assemblyai_status, transcript_id)
+        return JSONResponse(content={"status": "SUCCESS", **result})
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -956,14 +998,15 @@ async def transcribe_audio_file(file: UploadFile = File(...)):
 async def generate_creative_direction(request: CreativeDirectionRequest):
     t_start = time.time()
     trace_id = global_tracer.create_trace(
-        name="Agent 6: Creative Director Pipeline",
+        name="Agent 5: Creative Director Pipeline",
         input_parameters=request.model_dump()
     )
     
     spans = []
     
     gen_start = time.time()
-    creative_data, metrics, token_usage = creative_engine.generate_creative_direction(
+    creative_data, metrics, token_usage = await asyncio.to_thread(
+        creative_engine.generate_creative_direction,
         product_name=request.product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
@@ -1005,7 +1048,7 @@ async def generate_creative_direction(request: CreativeDirectionRequest):
     
     global_tracer.finalize_trace(
         trace_id=trace_id,
-        name="Agent 6: Creative Director Pipeline",
+        name="Agent 5: Creative Director Pipeline",
         input_parameters=request.model_dump(),
         spans=spans,
         token_report=token_report,
@@ -1025,14 +1068,15 @@ async def generate_creative_direction(request: CreativeDirectionRequest):
 async def generate_thumbnail_strategy(request: ThumbnailStrategyRequest):
     t_start = time.time()
     trace_id = global_tracer.create_trace(
-        name="Agent 7: Thumbnail Strategist Pipeline",
+        name="Agent 6: Thumbnail Strategist Pipeline",
         input_parameters=request.model_dump()
     )
     
     spans = []
     
     gen_start = time.time()
-    thumbnail_data, metrics, token_usage = thumbnail_engine.generate_thumbnail_strategy(
+    thumbnail_data, metrics, token_usage = await asyncio.to_thread(
+        thumbnail_engine.generate_thumbnail_strategy,
         product_name=request.product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
@@ -1075,7 +1119,7 @@ async def generate_thumbnail_strategy(request: ThumbnailStrategyRequest):
     
     global_tracer.finalize_trace(
         trace_id=trace_id,
-        name="Agent 7: Thumbnail Strategist Pipeline",
+        name="Agent 6: Thumbnail Strategist Pipeline",
         input_parameters=request.model_dump(),
         spans=spans,
         token_report=token_report,
@@ -1095,14 +1139,15 @@ async def generate_thumbnail_strategy(request: ThumbnailStrategyRequest):
 async def generate_thumbnail_design(request: ThumbnailDesignRequest):
     t_start = time.time()
     trace_id = global_tracer.create_trace(
-        name="Agent 8: Thumbnail Designer Pipeline",
+        name="Agent 7: Thumbnail Designer Pipeline",
         input_parameters=request.model_dump()
     )
     
     spans = []
     
     gen_start = time.time()
-    design_data, metrics, token_usage = designer_engine.generate_thumbnail_design(
+    design_data, metrics, token_usage = await asyncio.to_thread(
+        designer_engine.generate_thumbnail_design,
         product_name=request.product_name,
         script_title=request.script_title,
         concept_title=request.concept_title,
@@ -1146,7 +1191,7 @@ async def generate_thumbnail_design(request: ThumbnailDesignRequest):
     
     global_tracer.finalize_trace(
         trace_id=trace_id,
-        name="Agent 8: Thumbnail Designer Pipeline",
+        name="Agent 7: Thumbnail Designer Pipeline",
         input_parameters=request.model_dump(),
         spans=spans,
         token_report=token_report,
@@ -1166,14 +1211,15 @@ async def generate_thumbnail_design(request: ThumbnailDesignRequest):
 async def generate_title_strategy(request: TitleStrategyRequest):
     t_start = time.time()
     trace_id = global_tracer.create_trace(
-        name="Agent 9: Title Strategist Pipeline",
+        name="Agent 8: Title Strategist Pipeline",
         input_parameters=request.model_dump()
     )
     
     spans = []
     
     gen_start = time.time()
-    title_data, metrics, token_usage = title_engine.generate_title_strategy(
+    title_data, metrics, token_usage = await asyncio.to_thread(
+        title_engine.generate_title_strategy,
         product_name=request.product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
@@ -1217,7 +1263,7 @@ async def generate_title_strategy(request: TitleStrategyRequest):
     
     global_tracer.finalize_trace(
         trace_id=trace_id,
-        name="Agent 9: Title Strategist Pipeline",
+        name="Agent 8: Title Strategist Pipeline",
         input_parameters=request.model_dump(),
         spans=spans,
         token_report=token_report,
@@ -1237,14 +1283,15 @@ async def generate_title_strategy(request: TitleStrategyRequest):
 async def generate_content_brief(request: ContentBriefRequest):
     t_start = time.time()
     trace_id = global_tracer.create_trace(
-        name="Agent 10: Content Brief Master Pipeline",
+        name="Agent 9: Content Brief Master Pipeline",
         input_parameters=request.model_dump()
     )
     
     spans = []
     
     gen_start = time.time()
-    brief_data, metrics, token_usage = brief_engine.generate_content_brief(
+    brief_data, metrics, token_usage = await asyncio.to_thread(
+        brief_engine.generate_content_brief,
         product_name=request.product_name,
         target_persona=request.target_persona,
         campaign_objective=request.campaign_objective,
@@ -1288,7 +1335,7 @@ async def generate_content_brief(request: ContentBriefRequest):
     
     global_tracer.finalize_trace(
         trace_id=trace_id,
-        name="Agent 10: Content Brief Master Pipeline",
+        name="Agent 9: Content Brief Master Pipeline",
         input_parameters=request.model_dump(),
         spans=spans,
         token_report=token_report,
@@ -1308,14 +1355,15 @@ async def generate_content_brief(request: ContentBriefRequest):
 async def generate_campaign_metadata(request: CampaignMetadataRequest):
     t_start = time.time()
     trace_id = global_tracer.create_trace(
-        name="Agent 11: Campaign Metadata Master Pipeline",
+        name="Agent 10: Campaign Metadata Master Pipeline",
         input_parameters=request.model_dump()
     )
     
     spans = []
     
     gen_start = time.time()
-    meta_data, metrics, token_usage = metadata_engine.generate_campaign_metadata(
+    meta_data, metrics, token_usage = await asyncio.to_thread(
+        metadata_engine.generate_campaign_metadata,
         product_name=request.product_name,
         script_title=request.script_title,
         target_persona=request.target_persona,
@@ -1357,7 +1405,7 @@ async def generate_campaign_metadata(request: CampaignMetadataRequest):
     
     global_tracer.finalize_trace(
         trace_id=trace_id,
-        name="Agent 11: Campaign Metadata Master Pipeline",
+        name="Agent 10: Campaign Metadata Master Pipeline",
         input_parameters=request.model_dump(),
         spans=spans,
         token_report=token_report,

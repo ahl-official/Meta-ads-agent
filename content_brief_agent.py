@@ -4,6 +4,7 @@ from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 from openai import OpenAI
 import os
+from llm_retry import call_openai_with_retry
 
 class BriefMetrics(BaseModel):
     compliance_score: float
@@ -24,11 +25,14 @@ class ContentBriefOutput(BaseModel):
     creative_hook_retention_rules: str
 
 class ContentBriefEngine:
-    def __init__(self, vector_store=None, embedding_manager=None, model="gpt-4o-mini"):
+    def __init__(self, vector_store=None, embedding_manager=None, model="openai/gpt-4o-mini"):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
         self.model = model
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "dummy-key"))
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            print("[Warning] OPENROUTER_API_KEY is not set — ContentBriefEngine will silently fall back to templated (non-LLM) output.")
+        self.client = OpenAI(api_key=api_key or "dummy-key", base_url="https://openrouter.ai/api/v1")
 
     def generate_content_brief(
         self,
@@ -78,7 +82,8 @@ Generate the comprehensive Meta Ads Content Brief & Guardrails.
 """
 
         try:
-            response = self.client.chat.completions.create(
+            response = call_openai_with_retry(
+                self.client,
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},

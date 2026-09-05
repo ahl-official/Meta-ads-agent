@@ -4,6 +4,7 @@ from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 from openai import OpenAI
 import os
+from llm_retry import call_openai_with_retry
 
 class CreativeMetrics(BaseModel):
     brand_alignment_score: float
@@ -23,11 +24,14 @@ class CreativeDirection(BaseModel):
     director_shot_list: str
 
 class CreativeDirectorEngine:
-    def __init__(self, vector_store=None, embedding_manager=None, model="gpt-4o-mini"):
+    def __init__(self, vector_store=None, embedding_manager=None, model="openai/gpt-4o-mini"):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
         self.model = model
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "dummy-key"))
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            print("[Warning] OPENROUTER_API_KEY is not set — CreativeDirectorEngine will silently fall back to templated (non-LLM) output.")
+        self.client = OpenAI(api_key=api_key or "dummy-key", base_url="https://openrouter.ai/api/v1")
         
     def generate_creative_direction(
         self, 
@@ -73,7 +77,8 @@ Generate the comprehensive master creative direction brief without asterisks.
 """
         
         try:
-            response = self.client.chat.completions.create(
+            response = call_openai_with_retry(
+                self.client,
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -107,7 +112,7 @@ Generate the comprehensive master creative direction brief without asterisks.
                 
                 "post_production_and_vfx": "• Typography & On-Screen Text: Custom Helvetica Neue Bold typography, rendered in solid white (#FFFFFF) with a 40% opacity black drop shadow (#000000) for 100% legibility over dynamic video background.\n\n• Motion Graphics & Callouts: Kinetic text animations with 0.15-second pop-in scale-up effect synced precisely to vocal accents. Animated highlight box around key stats and clinical percentage callouts.\n\n• Transitions & Safe-Zone Alignment: Fast match-cuts and directional push-right transitions between scenes. All text and graphic badges kept strictly within the 1080x1920 central 1080x1350 vertical safe zone to prevent UI clipping on TikTok and Meta Reels.",
                 
-                "director_shot_list": "• Beat 1: Hook (0:00 - 0:03): High-speed Steadicam push-in onto talent looking in rearview mirror. Voiceover: 'Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors.' Text Overlay: 🚨 STOP SCROLLING. SFX: Low sub-bass drop & mirror glass friction.\n\n• Beat 2: Core Problem (0:03 - 0:10): Medium shot, talent turning around with authentic frustration. Voiceover: 'Generic shampoos mask symptoms while follicle root causes go unaddressed.' Visual: Split screen comparison of dormant vs active scalp follicles. SFX: Subtle vinyl static sound.\n\n• Beat 3: Agitation (0:10 - 0:20): Close-up macro lens shot on scalp detail. Voiceover: 'You waste thousands on temporary chemical fixes that leave your hair looking thinner every month.' Text Overlay: ❌ Temporary Sprays Don't Work.\n\n• Beat 4: Product Reveal & Solution (0:20 - 0:40): 120fps slow-motion hero reveal of the Scalp Revival System on illuminated brass pedestal. Talent applies serum smooth and effortlessly. Voiceover: 'Our non-surgical revival system reactivates dormant roots organically in 90 days.' Text Overlay: ✨ 90-Day Natural Revival. SFX: Crisp liquid riser.\n\n• Beat 5: Social Proof & Guarantee (0:40 - 0:55): Rapid cutaway carousel of verified before/after customer transformations with 94.2% satisfaction badge. Voiceover: 'Backed by a 100% risk-free 90-day money-back guarantee.'\n\n• Beat 6: Call To Action (0:55 - 1:00): End screen hero shot with clean button overlay. Talent points down to screen. Voiceover: 'Click below to claim your revival kit today.' Text Overlay: ➡️ CLICK BELOW TO SCALPIFY."
+                "director_shot_list": "• Beat 1: Hook (0:00 - 0:03): High-speed Steadicam push-in onto talent looking in rearview mirror. Voiceover: 'Stop scrolling if you catch yourself constantly checking your hairline in rearview mirrors.' Text Overlay: STOP SCROLLING. SFX: Low sub-bass drop & mirror glass friction.\n\n• Beat 2: Core Problem (0:03 - 0:10): Medium shot, talent turning around with authentic frustration. Voiceover: 'Generic shampoos mask symptoms while follicle root causes go unaddressed.' Visual: Split screen comparison of dormant vs active scalp follicles. SFX: Subtle vinyl static sound.\n\n• Beat 3: Agitation (0:10 - 0:20): Close-up macro lens shot on scalp detail. Voiceover: 'You waste thousands on temporary chemical fixes that leave your hair looking thinner every month.' Text Overlay: Temporary Sprays Don't Work.\n\n• Beat 4: Product Reveal & Solution (0:20 - 0:40): 120fps slow-motion hero reveal of the Scalp Revival System on illuminated brass pedestal. Talent applies serum smooth and effortlessly. Voiceover: 'Our non-surgical revival system reactivates dormant roots organically in 90 days.' Text Overlay: 90-Day Natural Revival. SFX: Crisp liquid riser.\n\n• Beat 5: Social Proof & Guarantee (0:40 - 0:55): Rapid cutaway carousel of verified before/after customer transformations with 94.2% satisfaction badge. Voiceover: 'Backed by a 100% risk-free 90-day money-back guarantee.'\n\n• Beat 6: Call To Action (0:55 - 1:00): End screen hero shot with clean button overlay. Talent points down to screen. Voiceover: 'Click below to claim your revival kit today.' Text Overlay: CLICK BELOW TO SCALPIFY."
             }
             prompt_tokens = 950
             completion_tokens = 1250

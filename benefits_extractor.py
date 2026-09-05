@@ -14,6 +14,7 @@ from pydantic import BaseModel
 
 from rag_pipeline import EmbeddingManager, VectorStoreManager
 from feedback_manager import feedback_mgr
+from llm_retry import call_openai_with_retry
 
 try:
     import openai
@@ -49,7 +50,7 @@ class BenefitsExtractorEngine:
     def __init__(self, vector_store: VectorStoreManager, embedding_manager: EmbeddingManager):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def build_system_prompt(self, product_name: str, product_details: str,
                             persona_summaries: List[str], retrieved_context: str) -> str:
@@ -58,7 +59,7 @@ class BenefitsExtractorEngine:
         """
         personas_str = "\n".join([f"- {p}" for p in persona_summaries]) if persona_summaries else "- General Target Audience / Persona Profiles"
         
-        return f"""You are an elite Benefits Extraction & Emotional Copywriting Agent (Agent 2 of 7 Meta Ads Suite).
+        return f"""You are an elite Benefits Extraction & Emotional Copywriting Agent (Agent 2 of 10 Meta Ads Suite).
 
 ### PRODUCT / SERVICE DETAILS ###
 Product Name: {product_name}
@@ -82,6 +83,9 @@ Provide JSON output containing a list of 10 benefit objects with these exact key
 5. "description": str (Clear 2-3 sentence explanation connecting product details to persona's emotional state)
 6. "feature_mapping": str (The specific product feature or mechanism that delivers this benefit)
 7. "ad_hook_idea": str (A high-converting ad hook headline utilizing this benefit)
+
+IMPORTANT: American Hairline serves the Indian market. If any benefit references a price, cost, or savings
+figure, it MUST be in Indian Rupees (₹) at realistic Indian price points — never US dollars.
 
 Respond strictly with valid JSON with key "benefits" containing the list of 10 benefit objects.
 """
@@ -119,9 +123,10 @@ Respond strictly with valid JSON with key "benefits" containing the list of 10 b
 
         if _OPENAI_AVAILABLE and self.api_key:
             try:
-                client = openai.OpenAI(api_key=self.api_key)
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
+                response = call_openai_with_retry(
+                    client,
+                    model="openai/gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": "Extract 10 core benefits mapped to target personas and underlying emotions."}
@@ -220,7 +225,7 @@ Respond strictly with valid JSON with key "benefits" containing the list of 10 b
                 underlying_emotion="Financial Security & Liberation from Dependence",
                 description="Break free from lifetime prescription drugs and expensive recurring clinic bills with a self-sustaining natural root recovery system.",
                 feature_mapping="Organic root stabilization and self-sustaining follicle nourishment",
-                ad_hook_idea="Tired of paying $150/month forever for temporary sprays? Here is how to lock in permanent density."
+                ad_hook_idea="Tired of paying ₹2,999/month forever for temporary sprays? Here is how to lock in permanent density."
             ),
             CoreBenefit(
                 benefit_id=6,

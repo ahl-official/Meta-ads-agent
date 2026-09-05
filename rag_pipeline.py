@@ -7,6 +7,7 @@ RAG Pipeline Module for Course Transcripts:
 3. Vector Store with Payload Metadata Filtering (Module-wise and Topic-wise retrieval).
 """
 
+import json
 import math
 import os
 import re
@@ -200,16 +201,17 @@ class SemanticChunker:
 
 class EmbeddingManager:
     """
-    Generates embeddings using OpenAI's `text-embedding-3-small` (1536 dims).
-    Includes deterministic fallback vector generation if OPENAI_API_KEY is not set.
+    Generates embeddings using OpenAI's `text-embedding-3-small` (1536 dims), routed
+    through OpenRouter rather than OpenAI directly.
+    Includes deterministic fallback vector generation if OPENROUTER_API_KEY is not set.
     """
 
-    def __init__(self, model_name: str = "text-embedding-3-small", vector_dim: int = 1536):
+    def __init__(self, model_name: str = "openai/text-embedding-3-small", vector_dim: int = 1536):
         self.model_name = model_name
         self.vector_dim = vector_dim
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
         if _OPENAI_AVAILABLE and self.api_key:
-            self.client = openai.OpenAI(api_key=self.api_key)
+            self.client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
         else:
             self.client = None
 
@@ -294,9 +296,28 @@ class VectorStoreManager:
             meta["text"] = chunk.text
             vectors.append({"id": chunk.chunk_id, "values": emb, "metadata": meta})
 
-        # Batch defensively in case a very large transcript produces many chunks
-        for i in range(0, len(vectors), 100):
-            self.index.upsert(vectors=vectors[i:i + 100])
+        # Batch by estimated payload size (Pinecone caps upsert requests at 4MB) rather
+        # than a fixed vector count — chunk text + embedding size varies enough per
+        # upload that a fixed count can silently exceed the API's request-size limit.
+        max_batch_bytes = 2_000_000  # well under the 4MB cap, leaves safety margin
+        batch: List[Dict[str, Any]] = []
+        batch_bytes = 0
+        for v in vectors:
+            v_bytes = len(json.dumps(v))
+            if batch and batch_bytes + v_bytes > max_batch_bytes:
+                self._upsert_batch(batch)
+                batch = []
+                batch_bytes = 0
+            batch.append(v)
+            batch_bytes += v_bytes
+        if batch:
+            self._upsert_batch(batch)
+
+    def _upsert_batch(self, batch: List[Dict[str, Any]]) -> None:
+        try:
+            self.index.upsert(vectors=batch)
+        except Exception as e:
+            raise RuntimeError(f"Failed to store {len(batch)} chunk(s) in the vector database: {e}") from e
 
     @staticmethod
     def _cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:

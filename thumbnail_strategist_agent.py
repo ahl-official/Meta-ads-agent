@@ -4,6 +4,7 @@ from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 from openai import OpenAI
 import os
+from llm_retry import call_openai_with_retry
 
 class ThumbnailMetrics(BaseModel):
     predicted_ctr_score: float
@@ -28,11 +29,14 @@ class ThumbnailStrategyOutput(BaseModel):
     concepts: List[ThumbnailConcept]
 
 class ThumbnailStrategistEngine:
-    def __init__(self, vector_store=None, embedding_manager=None, model="gpt-4o-mini"):
+    def __init__(self, vector_store=None, embedding_manager=None, model="openai/gpt-4o-mini"):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
         self.model = model
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "dummy-key"))
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            print("[Warning] OPENROUTER_API_KEY is not set — ThumbnailStrategistEngine will silently fall back to templated (non-LLM) output.")
+        self.client = OpenAI(api_key=api_key or "dummy-key", base_url="https://openrouter.ai/api/v1")
 
     def generate_thumbnail_strategy(
         self,
@@ -89,10 +93,10 @@ You MUST format your output as a JSON object matching this exact schema:
         }},
         {{
             "concept_id": 4,
-            "concept_title": "The $15,000 Receipt Shock (Cost Disparity Angle)",
+            "concept_title": "The ₹1,50,000 Receipt Shock (Cost Disparity Angle)",
             "is_recommended": false,
             "main_visual": "Subject holding a massive hospital surgery bill receipt stamped CANCELLED next to a sleek minimal system box.",
-            "thumbnail_copy": "Saved $12,400 Cash",
+            "thumbnail_copy": "Saved ₹1,20,000 Cash",
             "emotional_trigger": "Shock and financial empowerment by avoiding overpriced medical procedures.",
             "curiosity_gap": "How much did they actually save per year compared to permanent clinic maintenance?",
             "why_it_could_work": "Triggers high-intent buyers seeking maximum value without losing quality.",
@@ -171,6 +175,10 @@ CRITICAL INSTRUCTIONS:
 - Generate ALL 10 CONCEPTS with distinct titles, visuals, text copy, emotional triggers, curiosity gaps, reasons, and risk parameters.
 - Concept 1 MUST have `"is_recommended": true`. Concepts 2 through 10 must have `"is_recommended": false`.
 - Do NOT include any asterisks (**) in the output strings.
+- American Hairline serves the Indian market. Any concept referencing a price or cost figure (e.g. a
+  cost-disparity or receipt-shock angle) MUST use Indian Rupees (₹) at realistic Indian price points —
+  never US dollars. A surgical hair transplant comparison should reflect real Indian clinic pricing
+  (roughly ₹1,00,000 - ₹1,50,000), not a US-equivalent figure.
 """
 
         user_prompt = f"""
@@ -185,7 +193,8 @@ Generate the 10 distinct high-converting thumbnail concepts.
 """
 
         try:
-            response = self.client.chat.completions.create(
+            response = call_openai_with_retry(
+                self.client,
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -241,10 +250,10 @@ Generate the 10 distinct high-converting thumbnail concepts.
                     },
                     {
                         "concept_id": 4,
-                        "concept_title": "The $15,000 Receipt Shock",
+                        "concept_title": "The ₹1,50,000 Receipt Shock",
                         "is_recommended": False,
                         "main_visual": "Subject holding a massive hospital surgery bill receipt stamped CANCELLED next to a sleek minimal system box.",
-                        "thumbnail_copy": "Saved $12,400 Cash",
+                        "thumbnail_copy": "Saved ₹1,20,000 Cash",
                         "emotional_trigger": "Shock and financial empowerment by avoiding overpriced medical procedures.",
                         "curiosity_gap": "How much did they actually save per year compared to permanent clinic maintenance?",
                         "why_it_could_work": "Triggers high-intent buyers seeking maximum value without losing quality.",

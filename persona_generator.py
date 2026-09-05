@@ -16,6 +16,7 @@ from pydantic import BaseModel
 
 from rag_pipeline import EmbeddingManager, VectorStoreManager
 from feedback_manager import feedback_mgr
+from llm_retry import call_openai_with_retry
 
 try:
     import openai
@@ -66,7 +67,7 @@ class PersonaGeneratorEngine:
     def __init__(self, vector_store: VectorStoreManager, embedding_manager: EmbeddingManager):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def build_system_prompt(self, one_line_promise: str, ideal_customer: str, 
                             pain_point: str, solution: str, persona_count: int,
@@ -84,7 +85,7 @@ The user previously gave thumbs-up to these persona profiles. Use similar depth 
 ########################################
 """
 
-        return f"""You are an elite Brand & Persona Intelligence Agent (Agent 1 of 7 Meta Ads Suite).
+        return f"""You are an elite Brand & Persona Intelligence Agent (Agent 1 of 10 Meta Ads Suite).
 
 ### BRAND STRATEGY CORE INPUTS ###
 1. ONE-LINE PROMISE: {one_line_promise}
@@ -93,11 +94,21 @@ The user previously gave thumbs-up to these persona profiles. Use similar depth 
 4. BRAND SOLUTION: {solution}
 
 ### PERSONA GENERATION REQUIREMENTS ###
-Generate exactly 1 distinct, highly actionable general Customer Persona tailored strictly to American Hairline. 
-For THIS persona, you MUST provide detailed JSON containing these 6 core dimensions:
+Generate exactly {persona_count} distinct, highly actionable general Customer Persona(s) tailored strictly to American Hairline.
+For EACH persona, you MUST provide detailed JSON containing these fields:
+
+- "name": A short, specific, memorable persona name (e.g. "The Skeptical Professional"), not a generic label.
+- "avatar_title": A one-line descriptive title for this customer segment.
+- "target_angle": The single ad angle/hook framework this persona responds to best.
+- "summary": A 2-3 sentence overview of who this persona is and why they're targeted.
+
+Plus these 6 core dimensions:
 
 1. DEMOGRAPHICS:
    - Age Range, Gender, Estimated Income Range, Occupation, Location Type, Marital Status, Tech Savviness Level.
+   - IMPORTANT: American Hairline serves the Indian market. Estimated Income Range MUST be in Indian Rupees,
+     expressed in Lakhs Per Annum (e.g. "₹8 - 15 Lakhs / year"), and grounded in realistic Indian income
+     brackets for the persona's occupation and city tier — not a literal currency conversion of a US income figure.
 
 2. PSYCHOGRAPHICS:
    - Core Beliefs, Lifestyle & Daily Habits, Personal Values, Aspirations & Self-Image.
@@ -134,8 +145,6 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
     def generate_personas(self, one_line_promise: str, ideal_customer: str,
                           pain_point: str, solution: str, persona_count: int = 4,
                           topic_filter: Optional[str] = None) -> Dict[str, Any]:
-        
-        persona_count = 1
 
         # Retrieve RAG context matching brand inputs
         retrieval_query = f"{ideal_customer} {pain_point} {solution}"
@@ -150,9 +159,10 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
 
         if _OPENAI_AVAILABLE and self.api_key:
             try:
-                client = openai.OpenAI(api_key=self.api_key)
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
+                response = call_openai_with_retry(
+                    client,
+                    model="openai/gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": f"Generate {persona_count} detailed customer personas based on the brand answers."}
@@ -222,7 +232,7 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
                 "demographics": {
                     "Age": "25 - 55 years old",
                     "Gender": "All Genders",
-                    "Income": "$50,000 - $150,000 / year",
+                    "Income": "₹6 - 20 Lakhs / year",
                     "Occupation": "Professionals & Executives",
                     "Location": "Urban & Suburban",
                     "Marital Status": "Single or Married",
@@ -267,7 +277,7 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
                 "demographics": {
                     "Age": "25 - 38 years old",
                     "Gender": "Female / Female-Identifying",
-                    "Income": "$90,000 - $160,000 / year",
+                    "Income": "₹15 - 30 Lakhs / year",
                     "Occupation": "Corporate Executive / Consultant",
                     "Location": "Major Metropolitan Center",
                     "Marital Status": "Single / In a Relationship",
@@ -312,7 +322,7 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
                 "demographics": {
                     "Age": "38 - 52 years old",
                     "Gender": "Male",
-                    "Income": "$85,000 - $150,000 / year",
+                    "Income": "₹12 - 25 Lakhs / year",
                     "Occupation": "Engineer / Operations Manager / Specialist",
                     "Location": "Suburban",
                     "Marital Status": "Married with 2 children",
@@ -357,7 +367,7 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
                 "demographics": {
                     "Age": "24 - 36 years old",
                     "Gender": "Female",
-                    "Income": "$50,000 - $80,000 / year",
+                    "Income": "₹6 - 12 Lakhs / year",
                     "Occupation": "Specialist / Educator / Small Business Owner",
                     "Location": "Suburban / Urban",
                     "Marital Status": "Single / Partnered",
@@ -402,7 +412,7 @@ Respond strictly with valid JSON representing a list of {persona_count} persona 
                 "demographics": {
                     "Age": "32 - 48 years old",
                     "Gender": "All",
-                    "Income": "$120,000 - $250,000 / year",
+                    "Income": "₹25 - 60 Lakhs / year",
                     "Occupation": "Agency Owner / Growth Director / Entrepreneur",
                     "Location": "Metro Hub",
                     "Marital Status": "Married",

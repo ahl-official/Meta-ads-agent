@@ -4,6 +4,7 @@ from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 from openai import OpenAI
 import os
+from llm_retry import call_openai_with_retry
 
 class TitleMetrics(BaseModel):
     predicted_ctr_score: float
@@ -28,11 +29,14 @@ class TitleStrategistOutput(BaseModel):
     titles: List[VideoTitleConcept]
 
 class TitleStrategistEngine:
-    def __init__(self, vector_store=None, embedding_manager=None, model="gpt-4o-mini"):
+    def __init__(self, vector_store=None, embedding_manager=None, model="openai/gpt-4o-mini"):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
         self.model = model
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "dummy-key"))
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            print("[Warning] OPENROUTER_API_KEY is not set — TitleStrategistEngine will silently fall back to templated (non-LLM) output.")
+        self.client = OpenAI(api_key=api_key or "dummy-key", base_url="https://openrouter.ai/api/v1")
 
     def generate_title_strategy(
         self,
@@ -50,7 +54,7 @@ class TitleStrategistEngine:
             hybrid_instruction = """
 V2 HYBRID BATCH MODE ACTIVATED:
 You MUST generate hybrid title combinations mixing the top 2-3 winning psychological styles:
-- Hybrid Style 1: Fear / Risk Warning + Reassurance / Solution (e.g. "Stop Wasting $15,000 on Surgery Until You Test This 15-Min Protocol")
+- Hybrid Style 1: Fear / Risk Warning + Reassurance / Solution (e.g. "Stop Wasting ₹1,50,000 on Surgery Until You Test This 15-Min Protocol")
 - Hybrid Style 2: Contrarian Hot-Take + Specific Proof Data (e.g. "90% of Sprays Fail: Why 1,400 Men Switched to Non-Surgical Density")
 - Hybrid Style 3: Open Loop Curiosity + How-To Mechanism (e.g. "I Tested 10x Scalp Magnification for 90 Days: Here is How It Works")
 """
@@ -97,6 +101,10 @@ CRITICAL INSTRUCTIONS:
 - Ensure `data_backed_rationale` is MULTI-PARAGRAPH with detailed psychological breakdown, CTR data drivers, and audience search alignment.
 - Ensure `ab_benchmark_lift` provides a quantitative estimated lift metric.
 - Do NOT include any asterisks (**) in the output strings.
+- American Hairline serves the Indian market. Any title or rationale referencing a price or cost figure
+  (especially FOMO/Warning titles) MUST use Indian Rupees (₹) at realistic Indian price points — never US
+  dollars. A surgical hair transplant comparison should reflect real Indian clinic pricing (roughly
+  ₹1,00,000 - ₹1,50,000), not a US-equivalent figure.
 """
 
         user_prompt = f"""
@@ -111,7 +119,8 @@ Generate the 10 high-converting video titles with multi-paragraph data-backed ra
 """
 
         try:
-            response = self.client.chat.completions.create(
+            response = call_openai_with_retry(
+                self.client,
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -182,8 +191,8 @@ Generate the 10 high-converting video titles with multi-paragraph data-backed ra
                         "framework_type": "Hybrid: Fear of Loss + Financial Warning",
                         "character_count": 59,
                         "mobile_safe": True,
-                        "thumbnail_synergy_note": "High-urgency pairing with $15,000 receipt shock thumbnail.",
-                        "data_backed_rationale": "• Psychological Mechanism: Command-style pattern interrupt ('Stop Wasting Money') combined with high financial stakes ($15,000 surgery cost).\n• Search & Impression Velocity: Stop command titles trigger an immediate visual pause on fast-scrolling mobile social feeds, boosting 3-second hook rate.\n• Conversion Driver: Capitalizes on surgery anxiety and redirects high-ticket surgical search traffic to your non-surgical alternative.",
+                        "thumbnail_synergy_note": "High-urgency pairing with ₹1,50,000 receipt shock thumbnail.",
+                        "data_backed_rationale": "• Psychological Mechanism: Command-style pattern interrupt ('Stop Wasting Money') combined with high financial stakes (₹1,50,000 surgery cost).\n• Search & Impression Velocity: Stop command titles trigger an immediate visual pause on fast-scrolling mobile social feeds, boosting 3-second hook rate.\n• Conversion Driver: Capitalizes on surgery anxiety and redirects high-ticket surgical search traffic to your non-surgical alternative.",
                         "ab_benchmark_lift": "+26.8% CTR lift in Meta video ad feeds",
                         "predicted_ctr_score": 98.1
                     },

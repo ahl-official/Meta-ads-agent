@@ -15,6 +15,7 @@ from pydantic import BaseModel
 
 from rag_pipeline import EmbeddingManager, VectorStoreManager
 from feedback_manager import feedback_mgr
+from llm_retry import call_openai_with_retry
 
 try:
     import openai
@@ -72,7 +73,7 @@ class BenefitsAngleEngine:
     def __init__(self, vector_store: VectorStoreManager, embedding_manager: EmbeddingManager):
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def build_system_prompt(self, product_name: str, product_details: str,
                             persona_summaries: List[str], angles_per_benefit: int,
@@ -125,6 +126,11 @@ Each benefit object MUST contain:
   6. "target_persona": str (Mapped persona name)
   7. "call_to_action": str (Direct response CTA)
 
+IMPORTANT: American Hairline serves the Indian market. Any angle referencing a price, cost, discount, or
+savings figure (especially Gift, Scarcity, and Contrast angles) MUST use Indian Rupees (₹) at realistic
+Indian price points — never US dollars. A surgical hair transplant comparison should reflect real Indian
+clinic pricing (roughly ₹1,00,000 - ₹1,50,000), not a US-equivalent figure.
+
 Respond strictly with valid JSON with key "benefit_groups".
 """
 
@@ -164,9 +170,10 @@ Respond strictly with valid JSON with key "benefit_groups".
 
         if _OPENAI_AVAILABLE and self.api_key:
             try:
-                client = openai.OpenAI(api_key=self.api_key)
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
+                client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
+                response = call_openai_with_retry(
+                    client,
+                    model="openai/gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": f"Convert product features to benefits and generate {angles_per_benefit} ad angles per benefit across core frameworks."}
@@ -259,10 +266,10 @@ Respond strictly with valid JSON with key "benefit_groups".
                     },
                     {
                         "framework": "Gift Angle",
-                        "headline": "Free Scalp Density Scan + Bonus Hair Care Routine Kit ($150 Value)",
+                        "headline": "Free Scalp Density Scan + Bonus Hair Care Routine Kit (₹1,999 Value)",
                         "hook": "We're giving away 50 complimentary organic scalp vitality diagnostic kits this week.",
                         "concept": "Leverages reciprocity by offering a zero-cost initial scan and bonus routine guide to remove friction.",
-                        "cta": "Claim Your Free $150 Scalp Diagnostic Kit Now"
+                        "cta": "Claim Your Free ₹1,999 Scalp Diagnostic Kit Now"
                     },
                     {
                         "framework": "Proof Angle",
@@ -294,8 +301,8 @@ Respond strictly with valid JSON with key "benefit_groups".
                     },
                     {
                         "framework": "Contrast Angle",
-                        "headline": "$12,000 Surgical Transplants vs. 90-Day Organic Revival: The Real Comparison",
-                        "hook": "Before spending $10k+ and facing 3 weeks of painful downtime, compare these two paths.",
+                        "headline": "₹1,20,000 Surgical Transplants vs. 90-Day Organic Revival: The Real Comparison",
+                        "hook": "Before spending ₹1,00,000+ and facing 3 weeks of painful downtime, compare these two paths.",
                         "concept": "Side-by-side breakdown contrasting high cost/risk surgery with zero-downtime organic revival.",
                         "cta": "View Full Surgery vs. Organic Revival Comparison"
                     }
@@ -380,7 +387,7 @@ Respond strictly with valid JSON with key "benefit_groups".
                     },
                     {
                         "framework": "Gift & Reciprocity",
-                        "headline": "Includes Free Micro-Applicator & Pocket Travel Case ($45 Value)",
+                        "headline": "Includes Free Micro-Applicator & Pocket Travel Case (₹799 Value)",
                         "hook": "Order today and receive our precision serum applicator tool absolutely free.",
                         "concept": "Enhances routine speed by providing free custom applicator hardware.",
                         "cta": "Claim Your Free Precision Applicator Tool"
@@ -502,7 +509,7 @@ Respond strictly with valid JSON with key "benefit_groups".
                 "angle_pool": [
                     {
                         "framework": "Contrast & Comparison",
-                        "headline": "$15,000 Surgery vs. $49/mo Organic Protocol: The Financial Breakdown",
+                        "headline": "₹1,50,000 Surgery vs. ₹2,999/mo Organic Protocol: The Financial Breakdown",
                         "hook": "Why spend your entire savings on invasive surgery when you can restore density at a fraction of the cost?",
                         "concept": "Directly compares surgical debt with an affordable monthly self-care protocol.",
                         "cta": "View Full 90-Day Cost & Savings Breakdown"
@@ -524,13 +531,13 @@ Respond strictly with valid JSON with key "benefit_groups".
                     {
                         "framework": "Gift & Reciprocity",
                         "headline": "Lock In 40% Off Your First 90-Day Organic Revival Kit",
-                        "hook": "Save an extra $120 today with our introductory direct-to-consumer savings voucher.",
+                        "hook": "Save an extra ₹999 today with our introductory direct-to-consumer savings voucher.",
                         "concept": "Applies direct savings incentives to lower purchase resistance.",
                         "cta": "Claim Your 40% Off Introductory Voucher"
                     },
                     {
                         "framework": "Proof & Evidence",
-                        "headline": "Save Over $12,000 While Achieving Comparable Hair Density Results",
+                        "headline": "Save Over ₹1,20,000 While Achieving Comparable Hair Density Results",
                         "hook": "Independent consumer studies show 89% satisfaction rating equivalent to surgical density.",
                         "concept": "Uses financial statistics to validate high-value outcomes.",
                         "cta": "Read Independent Financial ROI Study"
@@ -566,7 +573,7 @@ Respond strictly with valid JSON with key "benefit_groups".
                     },
                     {
                         "framework": "Scarcity & Urgency",
-                        "headline": "First 100 Consultations Receive Free Hair Patch Maintenance Kit ($65 Value)",
+                        "headline": "First 100 Consultations Receive Free Hair Patch Maintenance Kit (₹999 Value)",
                         "hook": "Get a complete hairline care & maintenance kit free with your custom hair patch fitting.",
                         "concept": "Drives immediate consultations through bonus hair system maintenance kit.",
                         "cta": "Claim Free Hair System Care Kit"
