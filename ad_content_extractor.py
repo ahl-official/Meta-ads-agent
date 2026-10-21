@@ -1,8 +1,22 @@
 import json
+import os
 import re
 import urllib.request
 import urllib.parse
 from typing import Dict, Any
+
+try:
+    import yt_dlp
+    _YTDLP_AVAILABLE = True
+except ImportError:
+    _YTDLP_AVAILABLE = False
+
+try:
+    import assemblyai as aai
+    _AAI_AVAILABLE = True
+except ImportError:
+    aai = None
+    _AAI_AVAILABLE = False
 
 
 def _extract_meta(html: str, attr_name: str, attr_val: str) -> str:
@@ -20,7 +34,7 @@ def _extract_meta(html: str, attr_name: str, attr_val: str) -> str:
     return ""
 
 
-def extract_content_from_url(url: str, timeout: int = 8) -> Dict[str, Any]:
+def extract_content_from_url(url: str, timeout: int = 15) -> Dict[str, Any]:
     url = url.strip()
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "https://" + url
@@ -30,11 +44,66 @@ def extract_content_from_url(url: str, timeout: int = 8) -> Dict[str, Any]:
         "title": "",
         "description": "",
         "extracted_text": "",
+        "video_stream_url": "",
+        "audio_transcript": "",
         "source_type": "webpage",
         "status": "SUCCESS"
     }
 
-    # YouTube check
+    # 1. Advanced Extraction with yt-dlp (Meta Ad Library, Instagram, YouTube, TikTok)
+    is_video_platform = any(k in url.lower() for k in [
+        "facebook.com/ads", "fb.watch", "facebook.com", "instagram.com", "youtube.com", "youtu.be", "tiktok.com"
+    ])
+
+    if _YTDLP_AVAILABLE and is_video_platform:
+        try:
+            ydl_opts = {
+                'quiet': True,
+                'no_warnings': True,
+                'skip_download': True,
+                'extract_flat': False
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                if info:
+                    result["source_type"] = info.get("extractor", "social_ad")
+                    result["title"] = info.get("title", "")
+                    uploader = info.get("uploader", "")
+                    ad_description = info.get("description", "")
+                    video_url = info.get("url", "")
+                    result["video_stream_url"] = video_url
+
+                    parts = []
+                    if result["title"]:
+                        parts.append(f"AD / VIDEO TITLE:\n{result['title']}")
+                    if uploader:
+                        parts.append(f"ADVERTISER / BRAND:\n{uploader}")
+                    if ad_description:
+                        parts.append(f"PRIMARY AD COPY & CAPTION:\n{ad_description}")
+
+                    # Attempt speech-to-text audio transcription if AssemblyAI is configured
+                    aai_key = os.getenv("ASSEMBLYAI_API_KEY")
+                    if aai_key and _AAI_AVAILABLE and video_url:
+                        try:
+                            aai.settings.api_key = aai_key
+                            transcriber = aai.Transcriber()
+                            transcript_obj = transcriber.transcribe(video_url)
+                            if transcript_obj.status == aai.TranscriptStatus.completed and transcript_obj.text:
+                                result["audio_transcript"] = transcript_obj.text
+                                parts.append(f"SPOKEN VIDEO AUDIO TRANSCRIPT (AssemblyAI):\n\"{transcript_obj.text}\"")
+                        except Exception as aai_err:
+                            print(f"[Info] Video transcription via AssemblyAI skipped: {aai_err}")
+
+                    if not result["audio_transcript"]:
+                        parts.append("NOTE: Add ASSEMBLYAI_API_KEY in .env if you want automatic spoken audio voiceover transcription.")
+
+                    result["extracted_text"] = "\n\n".join(parts)
+                    result["status"] = "SUCCESS"
+                    return result
+        except Exception as yt_err:
+            print(f"[Info] yt-dlp extraction fallback ({yt_err})")
+
+    # 2. YouTube oEmbed Fallback
     if "youtube.com" in url or "youtu.be" in url:
         result["source_type"] = "youtube"
         try:
@@ -50,7 +119,7 @@ def extract_content_from_url(url: str, timeout: int = 8) -> Dict[str, Any]:
         except Exception as yt_err:
             print(f"[Info] YouTube oEmbed fallback ({yt_err})")
 
-    # Generic webpage
+    # 3. Generic Webpage / Landing Page Scraper
     try:
         req = urllib.request.Request(
             url,
@@ -62,7 +131,6 @@ def extract_content_from_url(url: str, timeout: int = 8) -> Dict[str, Any]:
         with urllib.request.urlopen(req, timeout=timeout) as response:
             html = response.read().decode("utf-8", errors="ignore")
 
-            # Extract Title
             title_match = re.search(r"<title[^>]*>(.*?)</title>", html, re.IGNORECASE | re.DOTALL)
             if title_match:
                 result["title"] = title_match.group(1).strip()
@@ -75,7 +143,6 @@ def extract_content_from_url(url: str, timeout: int = 8) -> Dict[str, Any]:
             meta_desc = _extract_meta(html, "name", "description")
             result["description"] = og_desc or meta_desc
 
-            # Clean body text
             clean_html = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", html, flags=re.IGNORECASE | re.DOTALL)
             clean_text = re.sub(r"<[^>]+>", " ", clean_html)
             clean_text = " ".join(clean_text.split())
