@@ -22,7 +22,12 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 import openai
 from openai import OpenAI
-import assemblyai as aai
+try:
+    import assemblyai as aai
+    _ASSEMBLYAI_AVAILABLE = True
+except ImportError:
+    aai = None
+    _ASSEMBLYAI_AVAILABLE = False
 
 from rag_pipeline import SemanticChunker, EmbeddingManager, VectorStoreManager
 from ad_generator import AdGeneratorEngine
@@ -36,6 +41,9 @@ from thumbnail_designer_agent import ThumbnailDesignerEngine
 from title_strategist_agent import TitleStrategistEngine
 from content_brief_agent import ContentBriefEngine
 from metadata_publisher_agent import MetadataPublisherEngine
+from own_ad_double_down_agent import OwnAdDoubleDownEngine
+from competitor_ad_remixer_agent import CompetitorAdRemixerEngine
+from ad_content_extractor import extract_content_from_url
 from cost_tracker import CostTracker, TokenUsageReport
 from tracer import global_tracer, ExecutionSpan
 
@@ -72,6 +80,8 @@ designer_engine = ThumbnailDesignerEngine(vector_store=vector_store, embedding_m
 title_engine = TitleStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
 brief_engine = ContentBriefEngine(vector_store=vector_store, embedding_manager=embedding_manager)
 metadata_engine = MetadataPublisherEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+own_ad_engine = OwnAdDoubleDownEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+competitor_engine = CompetitorAdRemixerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
 
 # Populate initial vector store with masterclass transcript
 INITIAL_SAMPLE_TRANSCRIPT = """
@@ -1424,6 +1434,306 @@ async def generate_campaign_metadata(request: CampaignMetadataRequest):
 
 
 
+
+
+# =====================================================================
+# AGENTS: OWN AD DOUBLE DOWN & COMPETITOR AD REMIXER
+# =====================================================================
+
+class ExtractAdContentRequest(BaseModel):
+    url: str
+
+class OwnAdDoubleDownRequest(BaseModel):
+    product_name: str = "American Hairline Scalp Revival System"
+    winner_content: str
+    winning_notes: str = ""
+    target_persona: str = "The Skeptical Solution Seeker (Marcus, 34)"
+    total_duration: str = "30 Seconds"
+    global_feedback: str = ""
+    topic_filter: Optional[str] = None
+
+class CompetitorAdRemixRequest(BaseModel):
+    competitor_name: str = "Leading Competitor Brand"
+    competitor_content: str
+    our_product_name: str = "American Hairline Scalp Revival System"
+    our_unique_mechanism: str = "Bio-active botanical peptide signaling that revitalizes dormant follicles without surgery or greasy residue"
+    target_persona: str = "The Skeptical Solution Seeker (Marcus, 34)"
+    total_duration: str = "30 Seconds"
+    global_feedback: str = ""
+    topic_filter: Optional[str] = None
+
+
+@app.post("/api/extract-ad-content")
+async def extract_ad_content(request: ExtractAdContentRequest):
+    """
+    Extracts ad copy, title, description, and readable text from YouTube or web URLs.
+    """
+    data = extract_content_from_url(request.url)
+    return JSONResponse(content=data)
+
+
+@app.post("/api/generate-own-ad-variations")
+async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
+    t_start = time.time()
+    trace_id = global_tracer.create_trace(
+        name="Agent: Own Ad Double Down Pipeline",
+        input_parameters=request.model_dump()
+    )
+
+    spans: List[ExecutionSpan] = []
+
+    # Span 1: Vector Retrieval for Brand Context & Proof Points
+    t0 = time.time()
+    context_chunks = await asyncio.to_thread(
+        own_ad_engine.retrieve_context,
+        query=f"{request.product_name} winning ad hooks proof benefits {request.winning_notes}",
+        topic_filter=request.topic_filter,
+        top_k=4
+    )
+    retrieval_ms = (time.time() - t0) * 1000.0
+    context_text = "\n\n".join([c["text"] for c in context_chunks]) if context_chunks else f"Standard Brand Context for {request.product_name}."
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_retrieval_{trace_id[:6]}",
+        name="Brand Knowledge & Proof Retrieval",
+        span_type="retrieval",
+        status="SUCCESS",
+        latency_ms=round(retrieval_ms, 2),
+        input_data={"product": request.product_name, "notes": request.winning_notes[:60]},
+        output_data={"retrieved_chunks": len(context_chunks)}
+    ))
+
+    # Span 2: System Prompt & Winner Deconstruction Construction
+    t0 = time.time()
+    system_prompt = await asyncio.to_thread(
+        own_ad_engine.build_system_prompt,
+        product_name=request.product_name,
+        winner_content=request.winner_content,
+        winning_notes=request.winning_notes,
+        target_persona=request.target_persona,
+        total_duration=request.total_duration,
+        retrieved_context=context_text
+    )
+    prompt_ms = (time.time() - t0) * 1000.0
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_prompt_{trace_id[:6]}",
+        name="Winner Deconstruction & Variation Prompt Injection",
+        span_type="prompt_injection",
+        status="SUCCESS",
+        latency_ms=round(prompt_ms, 2),
+        input_data={"duration": request.total_duration, "persona": request.target_persona},
+        output_data={"system_prompt_length": len(system_prompt)}
+    ))
+
+    # Span 3: LLM 5-Variation Generation
+    t0 = time.time()
+    results = await asyncio.to_thread(
+        own_ad_engine.generate_variations,
+        product_name=request.product_name,
+        winner_content=request.winner_content,
+        winning_notes=request.winning_notes,
+        target_persona=request.target_persona,
+        total_duration=request.total_duration,
+        global_feedback=request.global_feedback,
+        topic_filter=request.topic_filter
+    )
+    gen_ms = (time.time() - t0) * 1000.0
+
+    scripts = results["video_scripts"]
+    deconstruction = results["winner_deconstruction"]
+    metrics = results["success_metrics"]
+
+    full_output_text = "\n\n".join([f"Script {s.script_id}: {s.script_title} - Hook: {s.core_hook}" for s in scripts])
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_llm_{trace_id[:6]}",
+        name="LLM 5-Variation Double Down Script Generation",
+        span_type="llm_generation",
+        status="SUCCESS",
+        latency_ms=round(gen_ms, 2),
+        input_data={"model": "gpt-4o-mini", "variation_count": len(scripts)},
+        output_data={"scripts_generated": len(scripts), "target_duration": request.total_duration}
+    ))
+
+    # Span 4: Hook Strength & Policy Compliance Audit
+    t0 = time.time()
+    audit_ms = (time.time() - t0) * 1000.0
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_audit_{trace_id[:6]}",
+        name="Hook Velocity & Policy Compliance Audit",
+        span_type="safety_audit",
+        status="SUCCESS" if metrics.overall_script_quality >= 80.0 else "WARNING",
+        latency_ms=round(audit_ms, 2),
+        input_data={"scripts_audited": len(scripts)},
+        output_data={
+            "hook_strength_score": metrics.hook_strength_score,
+            "visual_clarity_score": metrics.visual_clarity_score,
+            "overall_script_quality": metrics.overall_script_quality
+        }
+    ))
+
+    # Cost calculation & Trace Finalize
+    total_latency_ms = (time.time() - t_start) * 1000.0
+    token_report = cost_tracker.calculate_cost(
+        prompt_text=system_prompt,
+        completion_text=full_output_text,
+        embedding_texts=[c["text"] for c in context_chunks],
+        latency_ms=total_latency_ms
+    )
+
+    trace_record = global_tracer.finalize_trace(
+        trace_id=trace_id,
+        name="Agent: Own Ad Double Down Pipeline",
+        input_parameters=request.model_dump(),
+        spans=spans,
+        token_report=token_report,
+        status="SUCCESS"
+    )
+
+    return JSONResponse(content={
+        "status": "SUCCESS",
+        "trace_id": trace_id,
+        "winner_deconstruction": deconstruction.model_dump() if deconstruction else {},
+        "video_scripts": [s.model_dump() for s in scripts],
+        "success_metrics": metrics.model_dump(),
+        "token_usage": token_report.model_dump(),
+        "trace_record": trace_record.model_dump()
+    })
+
+
+@app.post("/api/generate-competitor-remix")
+async def generate_competitor_remix(request: CompetitorAdRemixRequest):
+    t_start = time.time()
+    trace_id = global_tracer.create_trace(
+        name="Agent: Competitor Ad Remixer Pipeline",
+        input_parameters=request.model_dump()
+    )
+
+    spans: List[ExecutionSpan] = []
+
+    # Span 1: Vector Retrieval for Our Brand's Counter-USPs
+    t0 = time.time()
+    context_chunks = await asyncio.to_thread(
+        competitor_engine.retrieve_context,
+        query=f"{request.our_product_name} {request.our_unique_mechanism} competitive advantage",
+        topic_filter=request.topic_filter,
+        top_k=4
+    )
+    retrieval_ms = (time.time() - t0) * 1000.0
+    context_text = "\n\n".join([c["text"] for c in context_chunks]) if context_chunks else f"Standard Brand Context for {request.our_product_name}."
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_retrieval_{trace_id[:6]}",
+        name="Competitive Advantage Knowledge Retrieval",
+        span_type="retrieval",
+        status="SUCCESS",
+        latency_ms=round(retrieval_ms, 2),
+        input_data={"our_product": request.our_product_name, "competitor": request.competitor_name},
+        output_data={"retrieved_chunks": len(context_chunks)}
+    ))
+
+    # Span 2: System Prompt & Competitor Deconstruction Construction
+    t0 = time.time()
+    system_prompt = await asyncio.to_thread(
+        competitor_engine.build_system_prompt,
+        competitor_name=request.competitor_name,
+        competitor_content=request.competitor_content,
+        our_product_name=request.our_product_name,
+        our_unique_mechanism=request.our_unique_mechanism,
+        target_persona=request.target_persona,
+        total_duration=request.total_duration,
+        retrieved_context=context_text
+    )
+    prompt_ms = (time.time() - t0) * 1000.0
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_prompt_{trace_id[:6]}",
+        name="Competitor Deconstruction & Counter-Positioning Injection",
+        span_type="prompt_injection",
+        status="SUCCESS",
+        latency_ms=round(prompt_ms, 2),
+        input_data={"competitor": request.competitor_name, "our_product": request.our_product_name},
+        output_data={"system_prompt_length": len(system_prompt)}
+    ))
+
+    # Span 3: LLM 5-Remix Generation
+    t0 = time.time()
+    results = await asyncio.to_thread(
+        competitor_engine.generate_remixes,
+        competitor_name=request.competitor_name,
+        competitor_content=request.competitor_content,
+        our_product_name=request.our_product_name,
+        our_unique_mechanism=request.our_unique_mechanism,
+        target_persona=request.target_persona,
+        total_duration=request.total_duration,
+        global_feedback=request.global_feedback,
+        topic_filter=request.topic_filter
+    )
+    gen_ms = (time.time() - t0) * 1000.0
+
+    scripts = results["video_scripts"]
+    deconstruction = results["competitor_deconstruction"]
+    metrics = results["success_metrics"]
+
+    full_output_text = "\n\n".join([f"Script {s.script_id}: {s.script_title} - Hook: {s.core_hook}" for s in scripts])
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_llm_{trace_id[:6]}",
+        name="LLM 5-Remix Script Generation",
+        span_type="llm_generation",
+        status="SUCCESS",
+        latency_ms=round(gen_ms, 2),
+        input_data={"model": "gpt-4o-mini", "remix_count": len(scripts)},
+        output_data={"scripts_generated": len(scripts), "target_duration": request.total_duration}
+    ))
+
+    # Span 4: Policy & Brand Authenticity Audit
+    t0 = time.time()
+    audit_ms = (time.time() - t0) * 1000.0
+
+    spans.append(ExecutionSpan(
+        span_id=f"span_audit_{trace_id[:6]}",
+        name="Brand Authenticity & Policy Compliance Audit",
+        span_type="safety_audit",
+        status="SUCCESS" if metrics.overall_script_quality >= 80.0 else "WARNING",
+        latency_ms=round(audit_ms, 2),
+        input_data={"scripts_audited": len(scripts)},
+        output_data={
+            "hook_strength_score": metrics.hook_strength_score,
+            "policy_compliance_score": metrics.policy_compliance_score,
+            "overall_script_quality": metrics.overall_script_quality
+        }
+    ))
+
+    # Cost calculation & Trace Finalize
+    total_latency_ms = (time.time() - t_start) * 1000.0
+    token_report = cost_tracker.calculate_cost(
+        prompt_text=system_prompt,
+        completion_text=full_output_text,
+        embedding_texts=[c["text"] for c in context_chunks],
+        latency_ms=total_latency_ms
+    )
+
+    trace_record = global_tracer.finalize_trace(
+        trace_id=trace_id,
+        name="Agent: Competitor Ad Remixer Pipeline",
+        input_parameters=request.model_dump(),
+        spans=spans,
+        token_report=token_report,
+        status="SUCCESS"
+    )
+
+    return JSONResponse(content={
+        "status": "SUCCESS",
+        "trace_id": trace_id,
+        "competitor_deconstruction": deconstruction.model_dump() if deconstruction else {},
+        "video_scripts": [s.model_dump() for s in scripts],
+        "success_metrics": metrics.model_dump(),
+        "token_usage": token_report.model_dump(),
+        "trace_record": trace_record.model_dump()
+    })
 
 
 # Mount Static Files Dashboard

@@ -1,6 +1,7 @@
 
 // --- GLOBAL FEEDBACK LOGIC (SIR'S GLOBAL FEEDBACK) ---
 window.sirsGlobalFeedback = '';
+            updateGlobalFeedbackBadges();
 
 document.addEventListener('DOMContentLoaded', () => {
     const btnApplyFeedback = document.getElementById('btn-apply-global-feedback');
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnApplyFeedback) {
         btnApplyFeedback.addEventListener('click', () => {
             window.sirsGlobalFeedback = feedbackText.value.trim();
+            updateGlobalFeedbackBadges();
             if (window.sirsGlobalFeedback) {
                 feedbackStatus.style.display = 'block';
                 feedbackStatus.textContent = 'Feedback locked in. It will now be applied to all future agent generations.';
@@ -601,6 +603,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initBenefitsGenerator();
     initAnglesGenerator();
     initVideoScriptGenerator();
+    initOwnAdDoubleDown();
+    initCompetitorAdRemixer();
     initAudienceVault();
     initTraces();
     initUpload();
@@ -628,6 +632,8 @@ function initTabs() {
         'tab-benefits': 'Transcription Meta Ads • Agent 2',
         'tab-angles': 'Transcription Meta Ads • Agent 3',
         'tab-video': 'Transcription Meta Ads • Agent 4',
+        'tab-own-doubledown': 'Meta Ads Suite • Double Down on Own Winner',
+        'tab-competitor-remix': 'Meta Ads Suite • Competitor Ad Remixer',
         'tab-feedback': 'Transcription Meta Ads • Sir\'s Global Feedback',
         'tab-creative': 'Transcription Meta Ads • Agent 5',
         'tab-thumbnail': 'Transcription Meta Ads • Agent 6',
@@ -1683,30 +1689,66 @@ const INITIAL_VIDEO_SCRIPTS = [
 // ==========================================================================
 
 function updateDropdownsWithPersonas() {
-    const vTargetPersona = document.getElementById('v_target_persona');
-    if (vTargetPersona && window.generatedPersonas && window.generatedPersonas.length > 0) {
-        vTargetPersona.innerHTML = '';
-        window.generatedPersonas.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.name || p.full_persona_text;
-            opt.textContent = p.name || p.full_persona_text;
-            vTargetPersona.appendChild(opt);
-        });
-    }
+    const dropdownIds = ['v_target_persona', 'own_target_persona', 'comp_target_persona'];
+    dropdownIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.generatedPersonas && window.generatedPersonas.length > 0) {
+            const currentVal = el.value;
+            el.innerHTML = '';
+            window.generatedPersonas.forEach(p => {
+                const opt = document.createElement('option');
+                const val = p.name || p.full_persona_text;
+                opt.value = val;
+                opt.textContent = val;
+                if (val === currentVal) opt.selected = true;
+                el.appendChild(opt);
+            });
+            // Also append Saved Audience Vault groups if available
+            if (window.savedAudiences && window.savedAudiences.length > 0) {
+                const optGroup = document.createElement('optgroup');
+                optGroup.label = "Saved Audience Vault";
+                window.savedAudiences.forEach(aud => {
+                    const opt = document.createElement('option');
+                    opt.value = `${aud.title} (${aud.demographics || 'Audience Group'})`;
+                    opt.textContent = `🎯 ${aud.title}`;
+                    optGroup.appendChild(opt);
+                });
+                el.appendChild(optGroup);
+            }
+        }
+    });
 }
 
 
 function updateDropdownsWithPersonas() {
-    const vTargetPersona = document.getElementById('v_target_persona');
-    if (vTargetPersona && window.generatedPersonas && window.generatedPersonas.length > 0) {
-        vTargetPersona.innerHTML = '';
-        window.generatedPersonas.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.name || p.full_persona_text;
-            opt.textContent = p.name || p.full_persona_text;
-            vTargetPersona.appendChild(opt);
-        });
-    }
+    const dropdownIds = ['v_target_persona', 'own_target_persona', 'comp_target_persona'];
+    dropdownIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.generatedPersonas && window.generatedPersonas.length > 0) {
+            const currentVal = el.value;
+            el.innerHTML = '';
+            window.generatedPersonas.forEach(p => {
+                const opt = document.createElement('option');
+                const val = p.name || p.full_persona_text;
+                opt.value = val;
+                opt.textContent = val;
+                if (val === currentVal) opt.selected = true;
+                el.appendChild(opt);
+            });
+            // Also append Saved Audience Vault groups if available
+            if (window.savedAudiences && window.savedAudiences.length > 0) {
+                const optGroup = document.createElement('optgroup');
+                optGroup.label = "Saved Audience Vault";
+                window.savedAudiences.forEach(aud => {
+                    const opt = document.createElement('option');
+                    opt.value = `${aud.title} (${aud.demographics || 'Audience Group'})`;
+                    opt.textContent = `🎯 ${aud.title}`;
+                    optGroup.appendChild(opt);
+                });
+                el.appendChild(optGroup);
+            }
+        }
+    });
 }
 
 function initVideoScriptGenerator() {
@@ -3898,3 +3940,512 @@ function updateMetadataMetrics(metrics) {
 
 
 
+
+
+
+
+// =====================================================================
+// AGENTS: OWN AD DOUBLE DOWN & COMPETITOR AD REMIXER
+// =====================================================================
+
+function setupModeToggle(btnTextId, btnUrlId, btnUploadId, urlGroupId, uploadGroupId, activeClass) {
+    const btnText = document.getElementById(btnTextId);
+    const btnUrl = document.getElementById(btnUrlId);
+    const btnUpload = document.getElementById(btnUploadId);
+    const urlGroup = document.getElementById(urlGroupId);
+    const uploadGroup = document.getElementById(uploadGroupId);
+
+    if (!btnText || !btnUrl || !btnUpload) return;
+
+    function resetActive() {
+        [btnText, btnUrl, btnUpload].forEach(b => b.classList.remove('active'));
+    }
+
+    btnText.addEventListener('click', () => {
+        resetActive();
+        btnText.classList.add('active');
+        if (urlGroup) urlGroup.classList.add('hidden');
+        if (uploadGroup) uploadGroup.classList.add('hidden');
+    });
+
+    btnUrl.addEventListener('click', () => {
+        resetActive();
+        btnUrl.classList.add('active');
+        if (urlGroup) urlGroup.classList.remove('hidden');
+        if (uploadGroup) uploadGroup.classList.add('hidden');
+    });
+
+    btnUpload.addEventListener('click', () => {
+        resetActive();
+        btnUpload.classList.add('active');
+        if (urlGroup) urlGroup.classList.add('hidden');
+        if (uploadGroup) uploadGroup.classList.remove('hidden');
+    });
+}
+
+function initOwnAdDoubleDown() {
+    setupModeToggle('own-mode-text', 'own-mode-url', 'own-mode-upload', 'own-url-group', 'own-upload-group');
+
+    // URL Fetcher
+    const btnFetchUrl = document.getElementById('btn-fetch-own-url');
+    const inputUrl = document.getElementById('own_ad_url');
+    const urlStatus = document.getElementById('own-url-status');
+    const txtContent = document.getElementById('own_winner_content');
+
+    if (btnFetchUrl && inputUrl) {
+        btnFetchUrl.addEventListener('click', async () => {
+            const url = inputUrl.value.trim();
+            if (!url) {
+                alert('Please enter a valid URL.');
+                return;
+            }
+            btnFetchUrl.disabled = true;
+            btnFetchUrl.textContent = 'Fetching...';
+            if (urlStatus) urlStatus.textContent = 'Extracting content from link...';
+
+            try {
+                const res = await fetch('/api/extract-ad-content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (data.extracted_text) {
+                    txtContent.value = data.extracted_text;
+                    if (urlStatus) urlStatus.textContent = `Extracted: ${data.title || data.source_type} (${data.status})`;
+                }
+            } catch (err) {
+                console.error(err);
+                if (urlStatus) urlStatus.textContent = 'Could not automatically fetch text from URL. You can paste script below.';
+            } finally {
+                btnFetchUrl.disabled = false;
+                btnFetchUrl.textContent = 'Fetch Content';
+            }
+        });
+    }
+
+    // Media Upload
+    const fileInput = document.getElementById('own_media_file');
+    const progressEl = document.getElementById('own-upload-progress');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (progressEl) progressEl.classList.remove('hidden');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/transcribe-audio', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.transcript_id) {
+                    pollTranscription(data.transcript_id, txtContent, progressEl);
+                } else if (data.transcription) {
+                    txtContent.value = data.transcription;
+                    if (progressEl) progressEl.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                if (progressEl) progressEl.innerHTML = '<span style="color:#ef4444;">Upload error. Please try pasting transcript.</span>';
+            }
+        });
+    }
+
+    // Form Submit
+    const form = document.getElementById('own-doubledown-form');
+    const btnGen = document.getElementById('btn-generate-own');
+    const spinner = document.getElementById('own-spinner');
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btnGen.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+
+        const payload = {
+            product_name: document.getElementById('own_product_name').value,
+            winner_content: document.getElementById('own_winner_content').value,
+            winning_notes: document.getElementById('own_winning_notes').value,
+            target_persona: document.getElementById('own_target_persona').value,
+            total_duration: document.getElementById('own_total_duration').value,
+            global_feedback: window.sirsGlobalFeedback || ""
+        };
+
+        try {
+            const res = await fetch('/api/generate-own-ad-variations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (data.status === 'SUCCESS') {
+                // Update Metrics
+                const metricsBar = document.getElementById('own-metrics-bar');
+                if (metricsBar) {
+                    metricsBar.classList.remove('hidden');
+                    const m = data.success_metrics || {};
+                    document.getElementById('own-metric-quality').textContent = `${m.overall_script_quality || 95}%`;
+                    document.getElementById('own-metric-hook').textContent = `${m.hook_strength_score || 96}%`;
+                    document.getElementById('own-metric-policy').textContent = `${m.policy_compliance_score || 100}%`;
+                }
+
+                // Update Deconstruction
+                const decompBox = document.getElementById('own-deconstruction-container');
+                if (decompBox && data.winner_deconstruction) {
+                    decompBox.classList.remove('hidden');
+                    const wd = data.winner_deconstruction;
+                    document.getElementById('own-decomp-hook').textContent = wd.hook_mechanism || '';
+                    document.getElementById('own-decomp-retention').textContent = wd.retention_drivers || '';
+                    document.getElementById('own-decomp-emotion').textContent = wd.emotional_core || '';
+                    document.getElementById('own-decomp-conversion').textContent = wd.conversion_trigger || '';
+                }
+
+                // Render Scripts
+                renderDoubleDownScriptCards('own-scripts-container', data.video_scripts, '#EC4899', 'Own Double-Down');
+                if (typeof fetchSystemMetrics === 'function') fetchSystemMetrics();
+            } else {
+                alert(`Error generating variations: ${data.message || 'Unknown error'}`);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Failed to connect to generator service.');
+        } finally {
+            btnGen.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+        }
+    });
+}
+
+function initCompetitorAdRemixer() {
+    setupModeToggle('comp-mode-text', 'comp-mode-url', 'comp-mode-upload', 'comp-url-group', 'comp-upload-group');
+
+    // URL Fetcher
+    const btnFetchUrl = document.getElementById('btn-fetch-comp-url');
+    const inputUrl = document.getElementById('comp_ad_url');
+    const urlStatus = document.getElementById('comp-url-status');
+    const txtContent = document.getElementById('comp_ad_content');
+
+    if (btnFetchUrl && inputUrl) {
+        btnFetchUrl.addEventListener('click', async () => {
+            const url = inputUrl.value.trim();
+            if (!url) {
+                alert('Please enter a competitor ad URL.');
+                return;
+            }
+            btnFetchUrl.disabled = true;
+            btnFetchUrl.textContent = 'Fetching...';
+            if (urlStatus) urlStatus.textContent = 'Extracting competitor page / video content...';
+
+            try {
+                const res = await fetch('/api/extract-ad-content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (data.extracted_text) {
+                    txtContent.value = data.extracted_text;
+                    if (urlStatus) urlStatus.textContent = `Extracted: ${data.title || data.source_type} (${data.status})`;
+                }
+            } catch (err) {
+                console.error(err);
+                if (urlStatus) urlStatus.textContent = 'Could not fetch automatically. You can paste competitor script directly below.';
+            } finally {
+                btnFetchUrl.disabled = false;
+                btnFetchUrl.textContent = 'Fetch Content';
+            }
+        });
+    }
+
+    // Media Upload
+    const fileInput = document.getElementById('comp_media_file');
+    const progressEl = document.getElementById('comp-upload-progress');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (progressEl) progressEl.classList.remove('hidden');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/transcribe-audio', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.transcript_id) {
+                    pollTranscription(data.transcript_id, txtContent, progressEl);
+                } else if (data.transcription) {
+                    txtContent.value = data.transcription;
+                    if (progressEl) progressEl.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                if (progressEl) progressEl.innerHTML = '<span style="color:#ef4444;">Upload error. Please try pasting transcript.</span>';
+            }
+        });
+    }
+
+    // Form Submit
+    const form = document.getElementById('competitor-remix-form');
+    const btnGen = document.getElementById('btn-generate-comp');
+    const spinner = document.getElementById('comp-spinner');
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btnGen.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+
+        const payload = {
+            competitor_name: document.getElementById('comp_brand_name').value,
+            competitor_content: document.getElementById('comp_ad_content').value,
+            our_product_name: document.getElementById('comp_our_product').value,
+            our_unique_mechanism: document.getElementById('comp_our_mechanism').value,
+            target_persona: document.getElementById('comp_target_persona').value,
+            total_duration: document.getElementById('comp_total_duration').value,
+            global_feedback: window.sirsGlobalFeedback || ""
+        };
+
+        try {
+            const res = await fetch('/api/generate-competitor-remix', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (data.status === 'SUCCESS') {
+                // Update Metrics
+                const metricsBar = document.getElementById('comp-metrics-bar');
+                if (metricsBar) {
+                    metricsBar.classList.remove('hidden');
+                    const m = data.success_metrics || {};
+                    document.getElementById('comp-metric-quality').textContent = `${m.overall_script_quality || 96}%`;
+                    document.getElementById('comp-metric-hook').textContent = `${m.hook_strength_score || 97}%`;
+                    document.getElementById('comp-metric-policy').textContent = `${m.policy_compliance_score || 100}%`;
+                }
+
+                // Update Deconstruction
+                const decompBox = document.getElementById('comp-deconstruction-container');
+                if (decompBox && data.competitor_deconstruction) {
+                    decompBox.classList.remove('hidden');
+                    const cd = data.competitor_deconstruction;
+                    document.getElementById('comp-decomp-hook').textContent = cd.hook_strategy || '';
+                    document.getElementById('comp-decomp-framework').textContent = cd.persuasion_framework || '';
+                    document.getElementById('comp-decomp-vulnerability').textContent = cd.vulnerability_gap || '';
+                    document.getElementById('comp-decomp-counter').textContent = cd.our_counter_positioning || '';
+                }
+
+                // Render Scripts
+                renderDoubleDownScriptCards('comp-scripts-container', data.video_scripts, '#8B5CF6', 'Competitor Remix');
+                if (typeof fetchSystemMetrics === 'function') fetchSystemMetrics();
+            } else {
+                alert(`Error generating remixes: ${data.message || 'Unknown error'}`);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Failed to connect to remixer service.');
+        } finally {
+            btnGen.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+        }
+    });
+}
+
+function pollTranscription(transcriptId, targetTextarea, progressEl) {
+    const interval = setInterval(async () => {
+        try {
+            const res = await fetch(`/api/transcribe-audio/${transcriptId}`);
+            const data = await res.json();
+            if (data.status === 'completed' && data.text) {
+                clearInterval(interval);
+                targetTextarea.value = data.text;
+                if (progressEl) progressEl.classList.add('hidden');
+            } else if (data.status === 'error') {
+                clearInterval(interval);
+                if (progressEl) progressEl.innerHTML = '<span style="color:#ef4444;">Transcription failed. Please paste text directly.</span>';
+            }
+        } catch (err) {
+            clearInterval(interval);
+            console.error('Polling error:', err);
+        }
+    }, 3000);
+}
+
+function renderDoubleDownScriptCards(containerId, scripts, accentColor, badgeLabel) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!scripts || scripts.length === 0) {
+        container.innerHTML = '<div style="padding:40px; text-align:center; color:#94A3B8;">No script variations generated.</div>';
+        return;
+    }
+
+    scripts.forEach((s, idx) => {
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background: #111827;
+            border: 1px solid #1F2937;
+            border-top: 3px solid ${accentColor};
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        `;
+
+        // Storyboard SVG
+        const storyboardHtml = s.preview_storyboard_svg ? `
+            <div style="margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid #1E293B;">
+                ${s.preview_storyboard_svg}
+            </div>
+        ` : '';
+
+        // Scenes HTML
+        const scenesHtml = (s.scenes || []).map(sc => `
+            <div style="background:#090D16; border:1px solid #1E293B; border-radius:8px; padding:12px; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #1A2333; padding-bottom:6px;">
+                    <span style="font-weight:700; color:#F8FAFC; font-size:12px;">SCENE ${sc.scene_number}: <span style="color:${accentColor};">${sc.scene_type}</span></span>
+                    <span style="background:rgba(255,255,255,0.06); color:#94A3B8; padding:2px 8px; border-radius:4px; font-size:11px;">⏱️ ${sc.duration_seconds}</span>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <b style="color:#38BDF8; font-size:11px; text-transform:uppercase; display:block; margin-bottom:2px;">🎙️ Spoken Script:</b>
+                    <p style="margin:0; color:#E2E8F0; font-size:13px; line-height:1.5;">"${sc.spoken_script}"</p>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:8px; margin-top:8px; font-size:11px;">
+                    <div style="background:#0F172A; padding:6px 10px; border-radius:6px;">
+                        <span style="color:#94A3B8; font-weight:600;">🎬 Visual Direction:</span>
+                        <div style="color:#CBD5E1; margin-top:2px;">${sc.visual_direction}</div>
+                    </div>
+                    <div style="background:#0F172A; padding:6px 10px; border-radius:6px;">
+                        <span style="color:#94A3B8; font-weight:600;">📱 On-Screen Graphic:</span>
+                        <div style="color:#38BDF8; font-weight:600; margin-top:2px;">${sc.on_screen_text}</div>
+                    </div>
+                    <div style="background:#0F172A; padding:6px 10px; border-radius:6px;">
+                        <span style="color:#94A3B8; font-weight:600;">🎵 Audio / SFX:</span>
+                        <div style="color:#F59E0B; margin-top:2px;">${sc.audio_cues}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // Full script copy text
+        const fullScriptText = `TITLE: ${s.script_title} (${s.framework_structure})
+DURATION: ${s.total_duration_est} | AUDIENCE: ${s.target_persona}
+CORE HOOK: ${s.core_hook}
+
+=== SCENE BREAKDOWN ===
+${(s.scenes || []).map(sc => `
+SCENE ${sc.scene_number} (${sc.duration_seconds}) - [${sc.scene_type}]
+SPOKEN: "${sc.spoken_script}"
+VISUAL: ${sc.visual_direction}
+ON-SCREEN: ${sc.on_screen_text}
+AUDIO/SFX: ${sc.audio_cues}
+`).join('')}
+
+CASTING NOTES: ${s.actor_casting_notes || 'Natural and relatable tone'}
+B-ROLL: ${(s.b_roll_shot_list || []).join(', ')}
+DISCLAIMER: ${s.ftc_disclaimer_note || '*Results may vary.'}
+`.trim();
+
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                        <span style="background:${accentColor}33; color:${accentColor}; padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700;">VARIATION #${s.script_id || (idx+1)}</span>
+                        <span style="background:rgba(255,255,255,0.08); color:#CBD5E1; padding:3px 8px; border-radius:6px; font-size:11px;">${s.framework_structure}</span>
+                        <span style="color:#94A3B8; font-size:11px;">⏱️ ${s.total_duration_est}</span>
+                    </div>
+                    <h3 style="margin:4px 0 0 0; color:#F8FAFC; font-size:16px; font-weight:700;">${s.script_title}</h3>
+                </div>
+                <button type="button" class="btn btn-secondary copy-full-script-btn" style="padding:6px 12px; font-size:12px;">
+                    📋 Copy Full Script
+                </button>
+            </div>
+
+            <!-- Hook Feature Box -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid ${accentColor}44; border-radius:8px; padding:12px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b style="color:${accentColor}; font-size:11px; text-transform:uppercase;">🎯 0-3s Scroll-Stopping Hook:</b>
+                    <button type="button" class="copy-hook-btn" style="background:none; border:none; color:#38BDF8; cursor:pointer; font-size:11px; font-weight:600;">Copy Hook</button>
+                </div>
+                <div style="color:#F8FAFC; font-size:13px; font-weight:600; margin-top:4px;">"${s.core_hook}"</div>
+            </div>
+
+            ${storyboardHtml}
+
+            <!-- Scenes Container -->
+            <div style="margin-top:16px;">
+                <h4 style="color:#94A3B8; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Scene-by-Scene Storyboard & Dialogue</h4>
+                ${scenesHtml}
+            </div>
+
+            <!-- Footer Details -->
+            <div style="margin-top:14px; padding-top:10px; border-top:1px solid #1E293B; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:11px; color:#94A3B8;">
+                <div><b>Casting:</b> ${s.actor_casting_notes || 'Authentic direct tone'}</div>
+                <div style="color:#64748B;">${s.ftc_disclaimer_note || '*Results may vary.'}</div>
+            </div>
+        `;
+
+        // Attach Copy Handlers
+        const btnCopyFull = card.querySelector('.copy-full-script-btn');
+        btnCopyFull.addEventListener('click', () => {
+            navigator.clipboard.writeText(fullScriptText).then(() => {
+                const orig = btnCopyFull.textContent;
+                btnCopyFull.textContent = '✅ Copied!';
+                btnCopyFull.style.borderColor = '#10B981';
+                setTimeout(() => {
+                    btnCopyFull.textContent = orig;
+                    btnCopyFull.style.borderColor = '';
+                }, 2500);
+            });
+        });
+
+        const btnCopyHook = card.querySelector('.copy-hook-btn');
+        btnCopyHook.addEventListener('click', () => {
+            navigator.clipboard.writeText(s.core_hook).then(() => {
+                const orig = btnCopyHook.textContent;
+                btnCopyHook.textContent = 'Copied!';
+                setTimeout(() => { btnCopyHook.textContent = orig; }, 2000);
+            });
+        });
+
+        container.appendChild(card);
+    });
+}
+
+
+
+function updateGlobalFeedbackBadges() {
+    const feedback = window.sirsGlobalFeedback ? window.sirsGlobalFeedback.trim() : "";
+    const ownBadge = document.getElementById('own-feedback-display');
+    const compBadge = document.getElementById('comp-feedback-display');
+
+    if (ownBadge) {
+        if (feedback) {
+            ownBadge.innerHTML = `<b style="color:#EC4899;">ACTIVE:</b> "${feedback.substring(0, 85)}${feedback.length > 85 ? '...' : ''}"`;
+        } else {
+            ownBadge.textContent = "No global feedback applied yet (using default brand rules).";
+        }
+    }
+
+    if (compBadge) {
+        if (feedback) {
+            compBadge.innerHTML = `<b style="color:#A78BFA;">ACTIVE:</b> "${feedback.substring(0, 85)}${feedback.length > 85 ? '...' : ''}"`;
+        } else {
+            compBadge.textContent = "No global feedback applied yet (using default brand rules).";
+        }
+    }
+}

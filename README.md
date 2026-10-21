@@ -22,6 +22,8 @@ An AI pipeline that turns a raw course/product transcript into a full Meta ad ca
 | Title strategy | [title_strategist_agent.py](title_strategist_agent.py) |
 | Content brief | [content_brief_agent.py](content_brief_agent.py) |
 | Campaign metadata (SEO/publishing) | [metadata_publisher_agent.py](metadata_publisher_agent.py) |
+| Own ad double down (5 variations) | [own_ad_double_down_agent.py](own_ad_double_down_agent.py) |
+| Competitor ad remixer (5 remixes) | [competitor_ad_remixer_agent.py](competitor_ad_remixer_agent.py) |
 
 RAG core: [rag_pipeline.py](rag_pipeline.py) (chunking, embeddings, Pinecone-backed vector store). Supporting infra: [llm_retry.py](llm_retry.py) (shared retry/backoff wrapper for every OpenAI-compatible call), [cost_tracker.py](cost_tracker.py) (token/cost accounting), [tracer.py](tracer.py) (execution trace logging for the dashboard, optional LangSmith integration), [feedback_manager.py](feedback_manager.py) (Redis-backed feedback store).
 

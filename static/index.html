@@ -54,12 +54,14 @@
             <button class="tab-btn" data-tab="tab-benefits">Agent 2: Benefits Extraction Agent</button>
             <button class="tab-btn" data-tab="tab-angles">Agent 3: Ad Angle Generation Agent</button>
             <button class="tab-btn" data-tab="tab-video">Agent 4: Video Ads Script Agent</button>
-            <button class="tab-btn" data-tab="tab-creative">Agent 5: Creative Director</button>
+                                    <button class="tab-btn" data-tab="tab-creative">Agent 5: Creative Director</button>
             <button class="tab-btn" data-tab="tab-thumbnail">Agent 6: Thumbnail Strategist</button>
             <button class="tab-btn" data-tab="tab-designer">Agent 7: Thumbnail Designer</button>
             <button class="tab-btn" data-tab="tab-titles">Agent 8: Title Strategist</button>
             <button class="tab-btn" data-tab="tab-brief">Agent 9: Content Brief Master</button>
             <button class="tab-btn" data-tab="tab-metadata">Agent 10: Metadata & Publishing Master</button>
+            <button class="tab-btn" data-tab="tab-own-doubledown" style="border-left: 2px solid #EC4899;">🔥 Double Down: Own Winner</button>
+            <button class="tab-btn" data-tab="tab-competitor-remix" style="border-left: 2px solid #8B5CF6;">⚡ Competitor Ad Remixer</button>
 
             <button class="tab-btn" data-tab="tab-feedback">Sir's Global Feedback</button>
             <button class="tab-btn" data-tab="tab-vault">Saved Audience Groups Vault</button>
@@ -804,6 +806,9 @@
                     </div>
                 </div>
             </section>
+
+            
+
 
             <!-- TAB 5: AGENT 5 CREATIVE DIRECTOR -->
             <section id="tab-creative" class="tab-pane">
@@ -1679,6 +1684,313 @@
                     </div>
                 </div>
             </section>
+
+<!-- TAB: OWN AD DOUBLE DOWN AGENT -->
+            <section id="tab-own-doubledown" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                            <span style="background:rgba(236, 72, 153, 0.2); color:#EC4899; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:700;">WINNER SCALE ENGINE</span>
+                        </div>
+                        <h2 class="card-title">🔥 Double Down on Winning Ad</h2>
+                        <p class="card-description">Takes your top-performing ad or video, deconstructs why it stopped the scroll & converted, and generates 5 high-velocity script variations with full scene directions.</p>
+
+                        <form id="own-doubledown-form">
+                            <!-- Input Mode Selector -->
+                            <div class="form-group">
+                                <label>INPUT METHOD FOR WINNING AD</label>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; margin-top:4px;">
+                                    <button type="button" class="btn btn-secondary mode-btn active" id="own-mode-text" style="padding:6px 8px; font-size:11px;">📝 Paste Script</button>
+                                    <button type="button" class="btn btn-secondary mode-btn" id="own-mode-url" style="padding:6px 8px; font-size:11px;">🔗 Ad / Video URL</button>
+                                    <button type="button" class="btn btn-secondary mode-btn" id="own-mode-upload" style="padding:6px 8px; font-size:11px;">🎙️ Upload Media</button>
+                                </div>
+                            </div>
+
+                            <!-- URL Input Box -->
+                            <div class="form-group hidden" id="own-url-group">
+                                <label for="own_ad_url">WINNING AD OR VIDEO URL</label>
+                                <div style="display:flex; gap:6px;">
+                                    <input type="url" id="own_ad_url" class="form-control" placeholder="https://youtube.com/watch?v=... or Meta ad link" style="flex:1;">
+                                    <button type="button" id="btn-fetch-own-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px;">Fetch Content</button>
+                                </div>
+                                <span id="own-url-status" style="font-size:11px; color:#94A3B8; margin-top:3px; display:block;"></span>
+                            </div>
+
+                            <!-- Media Upload Box -->
+                            <div class="form-group hidden" id="own-upload-group">
+                                <label for="own_media_file">UPLOAD VIDEO / AUDIO FOR TRANSCRIPTION</label>
+                                <input type="file" id="own_media_file" class="form-control" accept="video/*,audio/*">
+                                <div id="own-upload-progress" class="hidden" style="margin-top:6px; font-size:12px; color:#38BDF8;">
+                                    <span class="spinner" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></span>
+                                    Transcribing via AssemblyAI...
+                                </div>
+                            </div>
+
+                            <!-- Winning Ad Text / Script -->
+                            <div class="form-group">
+                                <label for="own_winner_content">WINNING AD SCRIPT / TRANSCRIPT / BREAKDOWN *</label>
+                                <textarea id="own_winner_content" class="form-control" rows="5" required placeholder="Paste winning ad voiceover, script, or breakdown here... (e.g. 'Stop checking your hairline in your car rearview mirror—here is what actually fixes it.')">Stop checking your hairline in your car rearview mirror—here is what actually fixes it. You have tried shampoos, oils, and messy foam solutions that leave your scalp itchy and greasy. Meanwhile, harsh overhead lighting makes your scalp look twice as thin as it feels. American Hairline Scalp Revival System uses targeted peptide micro-delivery to nourish dormant roots directly without surgery or greasiness. Order today with our 90-day density guarantee!</textarea>
+                            </div>
+
+                            <!-- Why It Worked Notes -->
+                            <div class="form-group">
+                                <label for="own_winning_notes">WHY IT WORKED / KEY PERFORMANCE NOTES</label>
+                                <input type="text" id="own_winning_notes" class="form-control" placeholder="e.g., 55% 3-sec thumbstop, rearview mirror hook resonated, high conversion" value="High thumbstop on rearview mirror hook, strong emotional relief on 90-day guarantee">
+                            </div>
+
+                            <!-- Product Name -->
+                            <div class="form-group">
+                                <label for="own_product_name">PRODUCT / OFFER NAME</label>
+                                <input type="text" id="own_product_name" class="form-control" value="American Hairline Scalp Revival System" required>
+                            </div>
+
+                            <!-- Target Persona / Audience -->
+                            <div class="form-group">
+                                <label for="own_target_persona">TARGET CUSTOMER PERSONA / AUDIENCE</label>
+                                <select id="own_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Marcus, 34)" selected>The Skeptical Solution Seeker (Marcus, 34)</option>
+                                    <option value="The High-Stakes Career Achiever (Sarah, 29)">The High-Stakes Career Achiever (Sarah, 29)</option>
+                                    <option value="The Organic Wellness Purist (Elena, 42)">The Organic Wellness Purist (Elena, 42)</option>
+                                    <option value="The Pragmatic Family Provider (David, 48)">The Pragmatic Family Provider (David, 48)</option>
+                                    <option value="Audience Vault: High-Intent Hair Revival Lookalikes">Audience Vault: High-Intent Hair Revival Lookalikes</option>
+                                </select>
+                            </div>
+
+                            <!-- Live Sir Global Feedback Banner -->
+                            <div class="form-group" style="margin-bottom:14px;">
+                                <div id="own-global-feedback-badge" style="background:rgba(236,72,153,0.08); border:1px dashed #EC4899; padding:8px 10px; border-radius:6px; font-size:11px; color:#CBD5E1;">
+                                    <span style="color:#EC4899; font-weight:700;">✨ Sir's Global Feedback:</span> <span id="own-feedback-display">No global feedback applied yet (using default brand rules).</span>
+                                </div>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="form-group">
+                                <label for="own_total_duration">DESIRED VIDEO DURATION</label>
+                                <select id="own_total_duration" class="form-select-dropdown">
+                                    <option value="30 Seconds" selected>30 Seconds (High Velocity)</option>
+                                    <option value="45 Seconds">45 Seconds (Deeper Story & Proof)</option>
+                                    <option value="60 Seconds">60 Seconds (Full Breakdown)</option>
+                                </select>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" id="btn-generate-own" class="btn btn-primary btn-generate" style="background: linear-gradient(135deg, #EC4899, #BE185D);">
+                                <span class="btn-text">🚀 Generate 5 Double-Down Variations</span>
+                                <span id="own-spinner" class="spinner hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="card showcase-area">
+                        <!-- Metrics Header -->
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <h3 class="card-title">Double-Down Creative Suite</h3>
+                                <p class="card-description">5 diverse iterations scaling the winning ad mechanics across different psychological angles.</p>
+                            </div>
+                            <div id="own-metrics-bar" class="hidden" style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <span class="metric-chip"><span class="metric-label">Quality Score</span> <b id="own-metric-quality" class="text-emerald">95.2%</b></span>
+                                <span class="metric-chip"><span class="metric-label">Hook Strength</span> <b id="own-metric-hook" class="text-indigo">96.8%</b></span>
+                                <span class="metric-chip"><span class="metric-label">Meta Policy</span> <b id="own-metric-policy" class="text-purple">100%</b></span>
+                            </div>
+                        </div>
+
+                        <!-- Deconstruction Summary Box -->
+                        <div id="own-deconstruction-container" class="hidden" style="margin-bottom:20px; background:#111827; border:1px solid #1F2937; border-radius:10px; padding:16px;">
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                                <span style="font-size:16px;">🔍</span>
+                                <h4 style="margin:0; font-size:14px; font-weight:700; color:#F8FAFC;">Winner Reverse-Engineering Blueprint</h4>
+                            </div>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; font-size:12px;">
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #EC4899;">
+                                    <b style="color:#EC4899; display:block; margin-bottom:4px;">Hook Mechanism</b>
+                                    <span id="own-decomp-hook" style="color:#CBD5E1;">-</span>
+                                </div>
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #38BDF8;">
+                                    <b style="color:#38BDF8; display:block; margin-bottom:4px;">Retention Drivers</b>
+                                    <span id="own-decomp-retention" style="color:#CBD5E1;">-</span>
+                                </div>
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #F59E0B;">
+                                    <b style="color:#F59E0B; display:block; margin-bottom:4px;">Emotional Core</b>
+                                    <span id="own-decomp-emotion" style="color:#CBD5E1;">-</span>
+                                </div>
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #10B981;">
+                                    <b style="color:#10B981; display:block; margin-bottom:4px;">Conversion Trigger</b>
+                                    <span id="own-decomp-conversion" style="color:#CBD5E1;">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scripts Container -->
+                        <div id="own-scripts-container">
+                            <div class="empty-state" style="text-align:center; padding:50px 20px; color:#64748B;">
+                                <div style="font-size:42px; margin-bottom:10px;">🎯</div>
+                                <h4 style="color:#E2E8F0; margin-bottom:6px;">Ready to Scale Your Winning Creative</h4>
+                                <p style="max-width:450px; margin:0 auto; font-size:13px;">Provide your top-performing ad or video above and click Generate to produce 5 diverse variations with full scene-by-scene storyboards.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: COMPETITOR AD REMIXER AGENT -->
+            <section id="tab-competitor-remix" class="tab-pane">
+                <div class="grid-layout">
+                    <!-- Control Panel Sidebar -->
+                    <div class="card control-panel">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                            <span style="background:rgba(139, 92, 246, 0.2); color:#A78BFA; padding:4px 8px; border-radius:6px; font-size:12px; font-weight:700;">COMPETITIVE INTELLIGENCE</span>
+                        </div>
+                        <h2 class="card-title">⚡ Competitor Ad Remixer</h2>
+                        <p class="card-description">Deconstructs a competitor's winning ad framework and ethically remixes its persuasion blueprint into 5 high-converting video scripts customized 100% to our brand voice & mechanism.</p>
+
+                        <form id="competitor-remix-form">
+                            <!-- Competitor Name -->
+                            <div class="form-group">
+                                <label for="comp_brand_name">COMPETITOR BRAND NAME / REFERENCE *</label>
+                                <input type="text" id="comp_brand_name" class="form-control" value="Leading Hair Care Competitor" required placeholder="e.g. Hims, Nutrafol, Keeps, Rogaine">
+                            </div>
+
+                            <!-- Input Mode Selector -->
+                            <div class="form-group">
+                                <label>COMPETITOR AD INPUT METHOD</label>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; margin-top:4px;">
+                                    <button type="button" class="btn btn-secondary comp-mode-btn active" id="comp-mode-text" style="padding:6px 8px; font-size:11px;">📝 Paste Script</button>
+                                    <button type="button" class="btn btn-secondary comp-mode-btn" id="comp-mode-url" style="padding:6px 8px; font-size:11px;">🔗 Competitor URL</button>
+                                    <button type="button" class="btn btn-secondary comp-mode-btn" id="comp-mode-upload" style="padding:6px 8px; font-size:11px;">🎙️ Upload Media</button>
+                                </div>
+                            </div>
+
+                            <!-- URL Input Box -->
+                            <div class="form-group hidden" id="comp-url-group">
+                                <label for="comp_ad_url">COMPETITOR AD / VIDEO URL</label>
+                                <div style="display:flex; gap:6px;">
+                                    <input type="url" id="comp_ad_url" class="form-control" placeholder="https://... Meta ad library or video link" style="flex:1;">
+                                    <button type="button" id="btn-fetch-comp-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px;">Fetch Content</button>
+                                </div>
+                                <span id="comp-url-status" style="font-size:11px; color:#94A3B8; margin-top:3px; display:block;"></span>
+                            </div>
+
+                            <!-- Media Upload Box -->
+                            <div class="form-group hidden" id="comp-upload-group">
+                                <label for="comp_media_file">UPLOAD COMPETITOR VIDEO / AUDIO</label>
+                                <input type="file" id="comp_media_file" class="form-control" accept="video/*,audio/*">
+                                <div id="comp-upload-progress" class="hidden" style="margin-top:6px; font-size:12px; color:#A78BFA;">
+                                    <span class="spinner" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></span>
+                                    Transcribing via AssemblyAI...
+                                </div>
+                            </div>
+
+                            <!-- Competitor Ad Content / Script -->
+                            <div class="form-group">
+                                <label for="comp_ad_content">COMPETITOR SCRIPT / TRANSCRIPT / BREAKDOWN *</label>
+                                <textarea id="comp_ad_content" class="form-control" rows="5" required placeholder="Paste competitor's ad copy, voiceover, or video breakdown here... (e.g. 'Men in their 20s are secretly using this foam to hide temple receding before it gets worse...')">Men in their 20s and 30s are secretly using this chemical foam every morning to hide temple receding before it gets worse. Sign up for our monthly subscription delivery, start your free doctor consultation, and get your first can for $20.</textarea>
+                            </div>
+
+                            <!-- Our Product Name -->
+                            <div class="form-group">
+                                <label for="comp_our_product">OUR PRODUCT NAME</label>
+                                <input type="text" id="comp_our_product" class="form-control" value="American Hairline Scalp Revival System" required>
+                            </div>
+
+                            <!-- Our Unique Mechanism / Advantage -->
+                            <div class="form-group">
+                                <label for="comp_our_mechanism">OUR UNIQUE MECHANISM / ADVANTAGE</label>
+                                <textarea id="comp_our_mechanism" class="form-control" rows="2" placeholder="What makes our solution superior to this competitor?">Bio-active botanical peptide signaling that revitalizes dormant roots in 15-second clean absorption with zero greasy residue and an unconditional 90-day money-back guarantee.</textarea>
+                            </div>
+
+                            <!-- Target Persona / Audience -->
+                            <div class="form-group">
+                                <label for="comp_target_persona">TARGET CUSTOMER PERSONA / AUDIENCE</label>
+                                <select id="comp_target_persona" class="form-select-dropdown" required>
+                                    <option value="The Skeptical Solution Seeker (Marcus, 34)" selected>The Skeptical Solution Seeker (Marcus, 34)</option>
+                                    <option value="The High-Stakes Career Achiever (Sarah, 29)">The High-Stakes Career Achiever (Sarah, 29)</option>
+                                    <option value="The Organic Wellness Purist (Elena, 42)">The Organic Wellness Purist (Elena, 42)</option>
+                                    <option value="The Pragmatic Family Provider (David, 48)">The Pragmatic Family Provider (David, 48)</option>
+                                    <option value="Audience Vault: High-Intent Hair Revival Lookalikes">Audience Vault: High-Intent Hair Revival Lookalikes</option>
+                                </select>
+                            </div>
+
+                            <!-- Live Sir Global Feedback Banner -->
+                            <div class="form-group" style="margin-bottom:14px;">
+                                <div id="comp-global-feedback-badge" style="background:rgba(139,92,246,0.08); border:1px dashed #8B5CF6; padding:8px 10px; border-radius:6px; font-size:11px; color:#CBD5E1;">
+                                    <span style="color:#A78BFA; font-weight:700;">✨ Sir's Global Feedback:</span> <span id="comp-feedback-display">No global feedback applied yet (using default brand rules).</span>
+                                </div>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="form-group">
+                                <label for="comp_total_duration">DESIRED VIDEO DURATION</label>
+                                <select id="comp_total_duration" class="form-select-dropdown">
+                                    <option value="30 Seconds" selected>30 Seconds (High Velocity)</option>
+                                    <option value="45 Seconds">45 Seconds (Deeper Story & Proof)</option>
+                                    <option value="60 Seconds">60 Seconds (Full Breakdown)</option>
+                                </select>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" id="btn-generate-comp" class="btn btn-primary btn-generate" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9);">
+                                <span class="btn-text">⚡ Generate 5 Brand Remixes</span>
+                                <span id="comp-spinner" class="spinner hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Showcase Area -->
+                    <div class="card showcase-area">
+                        <!-- Metrics Header -->
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <h3 class="card-title">Competitor Remix & Counter-Strategy Suite</h3>
+                                <p class="card-description">5 customized video scripts adapting winning competitor frameworks into 100% brand-authentic assets.</p>
+                            </div>
+                            <div id="comp-metrics-bar" class="hidden" style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <span class="metric-chip"><span class="metric-label">Quality Score</span> <b id="comp-metric-quality" class="text-emerald">96.4%</b></span>
+                                <span class="metric-chip"><span class="metric-label">Persuasion Fidelity</span> <b id="comp-metric-hook" class="text-indigo">97.1%</b></span>
+                                <span class="metric-chip"><span class="metric-label">Policy & Compliance</span> <b id="comp-metric-policy" class="text-purple">100%</b></span>
+                            </div>
+                        </div>
+
+                        <!-- Deconstruction Summary Box -->
+                        <div id="comp-deconstruction-container" class="hidden" style="margin-bottom:20px; background:#111827; border:1px solid #1F2937; border-radius:10px; padding:16px;">
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                                <span style="font-size:16px;">⚔️</span>
+                                <h4 style="margin:0; font-size:14px; font-weight:700; color:#F8FAFC;">Competitor Persuasion Blueprint & Counter-Attack</h4>
+                            </div>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; font-size:12px;">
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #8B5CF6;">
+                                    <b style="color:#A78BFA; display:block; margin-bottom:4px;">Competitor Hook Pattern</b>
+                                    <span id="comp-decomp-hook" style="color:#CBD5E1;">-</span>
+                                </div>
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #38BDF8;">
+                                    <b style="color:#38BDF8; display:block; margin-bottom:4px;">Persuasion Framework</b>
+                                    <span id="comp-decomp-framework" style="color:#CBD5E1;">-</span>
+                                </div>
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #EF4444;">
+                                    <b style="color:#F87171; display:block; margin-bottom:4px;">Competitor Vulnerability</b>
+                                    <span id="comp-decomp-vulnerability" style="color:#CBD5E1;">-</span>
+                                </div>
+                                <div style="background:#0F172A; padding:10px; border-radius:8px; border-left:3px solid #10B981;">
+                                    <b style="color:#34D399; display:block; margin-bottom:4px;">Our Counter-Positioning</b>
+                                    <span id="comp-decomp-counter" style="color:#CBD5E1;">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scripts Container -->
+                        <div id="comp-scripts-container">
+                            <div class="empty-state" style="text-align:center; padding:50px 20px; color:#64748B;">
+                                <div style="font-size:42px; margin-bottom:10px;">⚡</div>
+                                <h4 style="color:#E2E8F0; margin-bottom:6px;">Ready to Ethically Remix Winning Competitor Ads</h4>
+                                <p style="max-width:450px; margin:0 auto; font-size:13px;">Provide a competitor ad or video above to reverse-engineer its persuasion structure and generate 5 customized, compliant scripts for your brand.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
 
             <!-- TAB 3: LANGSMITH TRACE INSPECTOR -->
             <section id="tab-tracer" class="tab-pane">

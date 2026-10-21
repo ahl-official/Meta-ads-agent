@@ -2856,3 +2856,36 @@ body {
 }
 
 
+
+/* Double Down & Competitor Remixer Controls */
+.mode-btn, .comp-mode-btn {
+    border: 1px solid #1F2937;
+    background: #0F172A;
+    color: #94A3B8;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.mode-btn:hover, .comp-mode-btn:hover {
+    color: #F8FAFC;
+    border-color: #38BDF8;
+}
+
+.mode-btn.active {
+    background: rgba(236, 72, 153, 0.2) !important;
+    border-color: #EC4899 !important;
+    color: #F472B6 !important;
+    font-weight: 700;
+}
+
+.comp-mode-btn.active {
+    background: rgba(139, 92, 246, 0.2) !important;
+    border-color: #8B5CF6 !important;
+    color: #A78BFA !important;
+    font-weight: 700;
+}
+
+.tab-btn-highlight {
+    font-weight: 600;
+}
