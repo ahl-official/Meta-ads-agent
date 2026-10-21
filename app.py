@@ -1482,6 +1482,18 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
 
     spans: List[ExecutionSpan] = []
 
+    # Check if winning ad content is a URL - if so, auto-extract & transcribe audio
+    winner_content = request.winner_content
+    if winner_content and (winner_content.strip().startswith("http://") or winner_content.strip().startswith("https://") or "facebook.com/ads" in winner_content):
+        try:
+            print(f"[Auto-Extractor] Detected URL in winner_content, extracting & transcribing audio...")
+            extracted = await asyncio.to_thread(extract_content_from_url, winner_content.strip())
+            if extracted.get("extracted_text"):
+                winner_content = extracted["extracted_text"]
+                print(f"[Auto-Extractor] Successfully extracted content. Transcript length: {len(extracted.get('audio_transcript', ''))}")
+        except Exception as e:
+            print(f"[Warning] Backend auto-extraction error: {e}")
+
     # Span 1: Vector Retrieval for Brand Context & Proof Points
     t0 = time.time()
     context_chunks = await asyncio.to_thread(
@@ -1508,7 +1520,7 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     system_prompt = await asyncio.to_thread(
         own_ad_engine.build_system_prompt,
         product_name=request.product_name,
-        winner_content=request.winner_content,
+        winner_content=winner_content,
         winning_notes=request.winning_notes,
         target_persona=request.target_persona,
         total_duration=request.total_duration,
@@ -1531,7 +1543,7 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     results = await asyncio.to_thread(
         own_ad_engine.generate_variations,
         product_name=request.product_name,
-        winner_content=request.winner_content,
+        winner_content=winner_content,
         winning_notes=request.winning_notes,
         target_persona=request.target_persona,
         total_duration=request.total_duration,
@@ -1613,6 +1625,18 @@ async def generate_competitor_remix(request: CompetitorAdRemixRequest):
 
     spans: List[ExecutionSpan] = []
 
+    # Check if competitor content is a URL - if so, auto-extract & transcribe audio
+    competitor_content = request.competitor_content
+    if competitor_content and (competitor_content.strip().startswith("http://") or competitor_content.strip().startswith("https://") or "facebook.com/ads" in competitor_content):
+        try:
+            print(f"[Auto-Extractor] Detected URL in competitor_content, extracting & transcribing audio...")
+            extracted = await asyncio.to_thread(extract_content_from_url, competitor_content.strip())
+            if extracted.get("extracted_text"):
+                competitor_content = extracted["extracted_text"]
+                print(f"[Auto-Extractor] Successfully extracted content. Transcript length: {len(extracted.get('audio_transcript', ''))}")
+        except Exception as e:
+            print(f"[Warning] Backend auto-extraction error: {e}")
+
     # Span 1: Vector Retrieval for Our Brand's Counter-USPs
     t0 = time.time()
     context_chunks = await asyncio.to_thread(
@@ -1639,7 +1663,7 @@ async def generate_competitor_remix(request: CompetitorAdRemixRequest):
     system_prompt = await asyncio.to_thread(
         competitor_engine.build_system_prompt,
         competitor_name=request.competitor_name,
-        competitor_content=request.competitor_content,
+        competitor_content=competitor_content,
         our_product_name=request.our_product_name,
         our_unique_mechanism=request.our_unique_mechanism,
         target_persona=request.target_persona,
@@ -1663,7 +1687,7 @@ async def generate_competitor_remix(request: CompetitorAdRemixRequest):
     results = await asyncio.to_thread(
         competitor_engine.generate_remixes,
         competitor_name=request.competitor_name,
-        competitor_content=request.competitor_content,
+        competitor_content=competitor_content,
         our_product_name=request.our_product_name,
         our_unique_mechanism=request.our_unique_mechanism,
         target_persona=request.target_persona,

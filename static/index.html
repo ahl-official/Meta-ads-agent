@@ -1709,12 +1709,17 @@
 
                             <!-- URL Input Box -->
                             <div class="form-group hidden" id="own-url-group">
-                                <label for="own_ad_url">WINNING AD OR VIDEO URL</label>
+                                <label for="own_ad_url">WINNING AD OR VIDEO URL (META AD LIBRARY, FB, IG, YOUTUBE)</label>
                                 <div style="display:flex; gap:6px;">
-                                    <input type="url" id="own_ad_url" class="form-control" placeholder="https://youtube.com/watch?v=... or Meta ad link" style="flex:1;">
-                                    <button type="button" id="btn-fetch-own-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px;">Fetch Content</button>
+                                    <input type="url" id="own_ad_url" class="form-control" placeholder="https://www.facebook.com/ads/library/?id=... or video link" style="flex:1;">
+                                    <button type="button" id="btn-fetch-own-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px; font-weight:600;">🎙️ Transcribe Audio</button>
                                 </div>
-                                <span id="own-url-status" style="font-size:11px; color:#94A3B8; margin-top:3px; display:block;"></span>
+                                <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                                    <button type="button" id="btn-fetch-and-gen-own" class="btn btn-primary" style="padding:6px 14px; font-size:12px; font-weight:700; background:linear-gradient(135deg, #EC4899, #BE185D); border:none; border-radius:6px; cursor:pointer;">
+                                        ⚡ Transcribe & Generate 5 Variations Now
+                                    </button>
+                                    <span id="own-url-status" style="font-size:11px; color:#94A3B8; display:block;"></span>
+                                </div>
                             </div>
 
                             <!-- Media Upload Box -->
@@ -1865,12 +1870,17 @@
 
                             <!-- URL Input Box -->
                             <div class="form-group hidden" id="comp-url-group">
-                                <label for="comp_ad_url">COMPETITOR AD / VIDEO URL</label>
+                                <label for="comp_ad_url">COMPETITOR AD / VIDEO URL (META AD LIBRARY, FB, IG)</label>
                                 <div style="display:flex; gap:6px;">
-                                    <input type="url" id="comp_ad_url" class="form-control" placeholder="https://... Meta ad library or video link" style="flex:1;">
-                                    <button type="button" id="btn-fetch-comp-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px;">Fetch Content</button>
+                                    <input type="url" id="comp_ad_url" class="form-control" placeholder="https://www.facebook.com/ads/library/?id=... or competitor video link" style="flex:1;">
+                                    <button type="button" id="btn-fetch-comp-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px; font-weight:600;">🎙️ Transcribe Audio</button>
                                 </div>
-                                <span id="comp-url-status" style="font-size:11px; color:#94A3B8; margin-top:3px; display:block;"></span>
+                                <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                                    <button type="button" id="btn-fetch-and-gen-comp" class="btn btn-primary" style="padding:6px 14px; font-size:12px; font-weight:700; background:linear-gradient(135deg, #8B5CF6, #6D28D9); border:none; border-radius:6px; cursor:pointer;">
+                                        ⚡ Transcribe & Generate 5 Remixes Now
+                                    </button>
+                                    <span id="comp-url-status" style="font-size:11px; color:#94A3B8; display:block;"></span>
+                                </div>
                             </div>
 
                             <!-- Media Upload Box -->

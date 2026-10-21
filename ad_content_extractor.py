@@ -1,9 +1,17 @@
 import json
 import os
 import re
+import base64
+import tempfile
 import urllib.request
 import urllib.parse
 from typing import Dict, Any
+
+try:
+    import requests
+    _REQUESTS_AVAILABLE = True
+except ImportError:
+    _REQUESTS_AVAILABLE = False
 
 try:
     import yt_dlp
@@ -34,7 +42,89 @@ def _extract_meta(html: str, attr_name: str, attr_val: str) -> str:
     return ""
 
 
-def extract_content_from_url(url: str, timeout: int = 15) -> Dict[str, Any]:
+def transcribe_audio_file(file_path: str) -> str:
+    """
+    Transcribes audio/video file using Gemini API (gemini-3.8-flash) or AssemblyAI.
+    """
+    if not os.path.exists(file_path):
+        return ""
+
+    # 1. Try Gemini Multimodal Speech Transcription
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        # Check parent/sibling .env locations
+        for env_path in [
+            r"C:\Users\HP\Desktop\Saniya\content-factory-work\content-factory\.env",
+            r"C:\Users\HP\Desktop\Saniya\System tracking\.env"
+        ]:
+            if os.path.exists(env_path):
+                try:
+                    with open(env_path, "r", encoding="utf-8") as ef:
+                        for line in ef:
+                            if line.startswith("GEMINI_API_KEY="):
+                                gemini_key = line.split("=", 1)[1].strip().strip('"\'')
+                                break
+                except Exception:
+                    pass
+            if gemini_key:
+                break
+
+    if gemini_key and _REQUESTS_AVAILABLE:
+        try:
+            with open(file_path, "rb") as f:
+                b64_audio = base64.b64encode(f.read()).decode("utf-8")
+
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={gemini_key}"
+            payload = {
+                "contents": [{
+                    "parts": [
+                        {
+                            "text": (
+                                "You are an expert audio transcriptionist. Listen to this video audio and transcribe "
+                                "every spoken word verbatim in the spoken language (English, Hindi, or Hinglish). "
+                                "Do not add commentary, notes, or intros. Return only the spoken dialogue transcript."
+                            )
+                        },
+                        {"inline_data": {"mime_type": "video/mp4", "data": b64_audio}}
+                    ]
+                }],
+                "generationConfig": {
+                    "temperature": 0.1
+                }
+            }
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=60)
+            if res.status_code == 200:
+                res_data = res.json()
+                candidates = res_data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts and "text" in parts[0]:
+                        transcript = parts[0]["text"].strip()
+                        if transcript:
+                            print(f"[Extractor] Successfully transcribed audio via Gemini ({len(transcript.split())} words)")
+                            return transcript
+            else:
+                print(f"[Extractor] Gemini API transcription returned status {res.status_code}: {res.text[:200]}")
+        except Exception as g_err:
+            print(f"[Extractor] Gemini transcription error: {g_err}")
+
+    # 2. Try AssemblyAI Fallback
+    aai_key = os.getenv("ASSEMBLYAI_API_KEY")
+    if aai_key and _AAI_AVAILABLE:
+        try:
+            aai.settings.api_key = aai_key
+            transcriber = aai.Transcriber()
+            transcript_obj = transcriber.transcribe(file_path)
+            if transcript_obj.status == aai.TranscriptStatus.completed and transcript_obj.text:
+                print(f"[Extractor] Successfully transcribed audio via AssemblyAI ({len(transcript_obj.text.split())} words)")
+                return transcript_obj.text.strip()
+        except Exception as aai_err:
+            print(f"[Extractor] AssemblyAI transcription error: {aai_err}")
+
+    return ""
+
+
+def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
     url = url.strip()
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "https://" + url
@@ -50,58 +140,90 @@ def extract_content_from_url(url: str, timeout: int = 15) -> Dict[str, Any]:
         "status": "SUCCESS"
     }
 
-    # 1. Advanced Extraction with yt-dlp (Meta Ad Library, Instagram, YouTube, TikTok)
+    # 1. Advanced Extraction with yt-dlp & AI Speech Transcription (Meta Ad Library, Facebook, Instagram, YouTube, TikTok)
     is_video_platform = any(k in url.lower() for k in [
         "facebook.com/ads", "fb.watch", "facebook.com", "instagram.com", "youtube.com", "youtu.be", "tiktok.com"
     ])
 
     if _YTDLP_AVAILABLE and is_video_platform:
+        downloaded_file = None
         try:
+            # Download audio/lightweight video stream for transcription
+            temp_dir = tempfile.gettempdir()
+            out_tmpl = os.path.join(temp_dir, "ad_audio_%(id)s.%(ext)s")
             ydl_opts = {
-                'quiet': True,
-                'no_warnings': True,
-                'skip_download': True,
-                'extract_flat': False
+                "quiet": True,
+                "no_warnings": True,
+                "format": "bestaudio/best[height<=480]/best",
+                "outtmpl": out_tmpl,
+                "max_filesize": 35 * 1024 * 1024,
+                "socket_timeout": timeout
             }
+
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
+                info = ydl.extract_info(url, download=True)
                 if info:
                     result["source_type"] = info.get("extractor", "social_ad")
                     result["title"] = info.get("title", "")
                     uploader = info.get("uploader", "")
                     ad_description = info.get("description", "")
-                    video_url = info.get("url", "")
-                    result["video_stream_url"] = video_url
+                    result["video_stream_url"] = info.get("url", "")
 
+                    downloaded_file = ydl.prepare_filename(info)
+                    if not os.path.exists(downloaded_file):
+                        # Find matching file in temp_dir
+                        base_prefix = os.path.join(temp_dir, f"ad_audio_{info.get('id', '')}")
+                        for ext in [".mp4", ".m4a", ".webm", ".mkv"]:
+                            cand = base_prefix + ext
+                            if os.path.exists(cand):
+                                downloaded_file = cand
+                                break
+
+                    # Transcribe downloaded media
+                    if downloaded_file and os.path.exists(downloaded_file):
+                        transcript = transcribe_audio_file(downloaded_file)
+                        if transcript:
+                            result["audio_transcript"] = transcript
+
+                    # Build structured extracted content
                     parts = []
-                    if result["title"]:
+                    if result["audio_transcript"]:
+                        parts.append(f"SPOKEN VIDEO SCRIPT (AI TRANSCRIBED VERBATIM):\n\"{result['audio_transcript']}\"")
+                    elif result["title"]:
                         parts.append(f"AD / VIDEO TITLE:\n{result['title']}")
+
                     if uploader:
                         parts.append(f"ADVERTISER / BRAND:\n{uploader}")
+
                     if ad_description:
                         parts.append(f"PRIMARY AD COPY & CAPTION:\n{ad_description}")
 
-                    # Attempt speech-to-text audio transcription if AssemblyAI is configured
-                    aai_key = os.getenv("ASSEMBLYAI_API_KEY")
-                    if aai_key and _AAI_AVAILABLE and video_url:
-                        try:
-                            aai.settings.api_key = aai_key
-                            transcriber = aai.Transcriber()
-                            transcript_obj = transcriber.transcribe(video_url)
-                            if transcript_obj.status == aai.TranscriptStatus.completed and transcript_obj.text:
-                                result["audio_transcript"] = transcript_obj.text
-                                parts.append(f"SPOKEN VIDEO AUDIO TRANSCRIPT (AssemblyAI):\n\"{transcript_obj.text}\"")
-                        except Exception as aai_err:
-                            print(f"[Info] Video transcription via AssemblyAI skipped: {aai_err}")
-
                     if not result["audio_transcript"]:
-                        parts.append("NOTE: Add ASSEMBLYAI_API_KEY in .env if you want automatic spoken audio voiceover transcription.")
+                        parts.append("[Note: No spoken dialogue detected or audio track was instrumental]")
 
                     result["extracted_text"] = "\n\n".join(parts)
                     result["status"] = "SUCCESS"
                     return result
         except Exception as yt_err:
-            print(f"[Info] yt-dlp extraction fallback ({yt_err})")
+            print(f"[Extractor] yt-dlp extraction fallback: {yt_err}")
+            # Try flat extract if download failed
+            try:
+                with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl_flat:
+                    info_flat = ydl_flat.extract_info(url, download=False)
+                    if info_flat:
+                        result["title"] = info_flat.get("title", "")
+                        ad_desc = info_flat.get("description", "")
+                        result["extracted_text"] = f"AD TITLE: {result['title']}\n\nAD CAPTION: {ad_desc}"
+                        result["status"] = "SUCCESS"
+                        return result
+            except Exception:
+                pass
+        finally:
+            if downloaded_file and os.path.exists(downloaded_file):
+                try:
+                    os.remove(downloaded_file)
+                except Exception:
+                    pass
 
     # 2. YouTube oEmbed Fallback
     if "youtube.com" in url or "youtu.be" in url:
@@ -117,7 +239,7 @@ def extract_content_from_url(url: str, timeout: int = 15) -> Dict[str, Any]:
                     result["extracted_text"] = f"YouTube Video: {result['title']} by {data.get('author_name', '')}."
                     return result
         except Exception as yt_err:
-            print(f"[Info] YouTube oEmbed fallback ({yt_err})")
+            print(f"[Extractor] YouTube oEmbed fallback: {yt_err}")
 
     # 3. Generic Webpage / Landing Page Scraper
     try:
@@ -159,7 +281,7 @@ def extract_content_from_url(url: str, timeout: int = 15) -> Dict[str, Any]:
             result["extracted_text"] = "\n\n".join(summary_parts) if summary_parts else f"URL Source: {url}"
             return result
     except Exception as e:
-        print(f"[Warning] Failed to fetch URL {url}: {e}")
+        print(f"[Extractor] Failed to fetch URL {url}: {e}")
         result["status"] = "FALLBACK"
         result["extracted_text"] = f"Reference Link: {url}\n(Provide ad script/transcript text if link is protected or behind a login.)"
         return result

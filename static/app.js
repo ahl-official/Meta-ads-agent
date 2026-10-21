@@ -3986,41 +3986,72 @@ function setupModeToggle(btnTextId, btnUrlId, btnUploadId, urlGroupId, uploadGro
 function initOwnAdDoubleDown() {
     setupModeToggle('own-mode-text', 'own-mode-url', 'own-mode-upload', 'own-url-group', 'own-upload-group');
 
-    // URL Fetcher
+    // URL Fetcher & Auto-Transcriber
     const btnFetchUrl = document.getElementById('btn-fetch-own-url');
+    const btnFetchAndGen = document.getElementById('btn-fetch-and-gen-own');
     const inputUrl = document.getElementById('own_ad_url');
     const urlStatus = document.getElementById('own-url-status');
     const txtContent = document.getElementById('own_winner_content');
+
+    async function extractAndTranscribeOwnUrl(targetUrl) {
+        if (!targetUrl) return null;
+        if (urlStatus) {
+            urlStatus.innerHTML = '<span style="color:#EC4899; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading ad audio & transcribing with Gemini AI...</span>';
+        }
+        try {
+            const res = await fetch('/api/extract-ad-content', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: targetUrl })
+            });
+            const data = await res.json();
+            if (data.extracted_text) {
+                txtContent.value = data.extracted_text;
+                if (data.audio_transcript) {
+                    const words = data.audio_transcript.trim().split(/\s+/).length;
+                    if (urlStatus) urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue extracted)!</span>`;
+                } else if (urlStatus) {
+                    urlStatus.innerHTML = `<span style="color:#38BDF8; font-weight:600;">✅ Extracted: ${data.title || data.source_type}</span>`;
+                }
+                return data.extracted_text;
+            }
+        } catch (err) {
+            console.error(err);
+            if (urlStatus) urlStatus.innerHTML = '<span style="color:#F59E0B;">Could not auto-transcribe URL. You can paste script below.</span>';
+        }
+        return null;
+    }
 
     if (btnFetchUrl && inputUrl) {
         btnFetchUrl.addEventListener('click', async () => {
             const url = inputUrl.value.trim();
             if (!url) {
-                alert('Please enter a valid URL.');
+                alert('Please enter a valid Meta Ad Library or video link.');
                 return;
             }
             btnFetchUrl.disabled = true;
-            btnFetchUrl.textContent = 'Fetching...';
-            if (urlStatus) urlStatus.textContent = 'Extracting content from link...';
+            btnFetchUrl.textContent = '🎙️ Transcribing...';
+            await extractAndTranscribeOwnUrl(url);
+            btnFetchUrl.disabled = false;
+            btnFetchUrl.textContent = '🎙️ Transcribe Audio';
+        });
+    }
 
-            try {
-                const res = await fetch('/api/extract-ad-content', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                const data = await res.json();
-                if (data.extracted_text) {
-                    txtContent.value = data.extracted_text;
-                    if (urlStatus) urlStatus.textContent = `Extracted: ${data.title || data.source_type} (${data.status})`;
-                }
-            } catch (err) {
-                console.error(err);
-                if (urlStatus) urlStatus.textContent = 'Could not automatically fetch text from URL. You can paste script below.';
-            } finally {
-                btnFetchUrl.disabled = false;
-                btnFetchUrl.textContent = 'Fetch Content';
+    if (btnFetchAndGen && inputUrl) {
+        btnFetchAndGen.addEventListener('click', async () => {
+            const url = inputUrl.value.trim();
+            if (!url) {
+                alert('Please enter a Meta Ad Library or video link first.');
+                return;
             }
+            btnFetchAndGen.disabled = true;
+            btnFetchAndGen.textContent = '🎙️ Transcribing & Generating...';
+            await extractAndTranscribeOwnUrl(url);
+            btnFetchAndGen.disabled = false;
+            btnFetchAndGen.textContent = '⚡ Transcribe & Generate 5 Variations Now';
+            // Trigger form submission
+            const form = document.getElementById('own-doubledown-form');
+            if (form) form.requestSubmit();
         });
     }
 
@@ -4068,9 +4099,21 @@ function initOwnAdDoubleDown() {
         btnGen.disabled = true;
         if (spinner) spinner.classList.remove('hidden');
 
+        // Check if URL was entered and needs automatic transcription before generation
+        let contentVal = document.getElementById('own_winner_content').value.trim();
+        const urlFieldVal = inputUrl ? inputUrl.value.trim() : '';
+
+        if (urlFieldVal && (!contentVal || contentVal.startsWith('http') || !contentVal.includes('SPOKEN VIDEO SCRIPT'))) {
+            const fetched = await extractAndTranscribeOwnUrl(urlFieldVal);
+            if (fetched) contentVal = fetched;
+        } else if (contentVal.startsWith('http://') || contentVal.startsWith('https://') || contentVal.includes('facebook.com/ads')) {
+            const fetched = await extractAndTranscribeOwnUrl(contentVal);
+            if (fetched) contentVal = fetched;
+        }
+
         const payload = {
             product_name: document.getElementById('own_product_name').value,
-            winner_content: document.getElementById('own_winner_content').value,
+            winner_content: contentVal,
             winning_notes: document.getElementById('own_winning_notes').value,
             target_persona: document.getElementById('own_target_persona').value,
             total_duration: document.getElementById('own_total_duration').value,
@@ -4126,11 +4169,41 @@ function initOwnAdDoubleDown() {
 function initCompetitorAdRemixer() {
     setupModeToggle('comp-mode-text', 'comp-mode-url', 'comp-mode-upload', 'comp-url-group', 'comp-upload-group');
 
-    // URL Fetcher
+    // URL Fetcher & Auto-Transcriber
     const btnFetchUrl = document.getElementById('btn-fetch-comp-url');
+    const btnFetchAndGen = document.getElementById('btn-fetch-and-gen-comp');
     const inputUrl = document.getElementById('comp_ad_url');
     const urlStatus = document.getElementById('comp-url-status');
     const txtContent = document.getElementById('comp_ad_content');
+
+    async function extractAndTranscribeCompUrl(targetUrl) {
+        if (!targetUrl) return null;
+        if (urlStatus) {
+            urlStatus.innerHTML = '<span style="color:#A78BFA; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading competitor ad audio & transcribing with Gemini AI...</span>';
+        }
+        try {
+            const res = await fetch('/api/extract-ad-content', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: targetUrl })
+            });
+            const data = await res.json();
+            if (data.extracted_text) {
+                txtContent.value = data.extracted_text;
+                if (data.audio_transcript) {
+                    const words = data.audio_transcript.trim().split(/\s+/).length;
+                    if (urlStatus) urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue extracted)!</span>`;
+                } else if (urlStatus) {
+                    urlStatus.innerHTML = `<span style="color:#38BDF8; font-weight:600;">✅ Extracted: ${data.title || data.source_type}</span>`;
+                }
+                return data.extracted_text;
+            }
+        } catch (err) {
+            console.error(err);
+            if (urlStatus) urlStatus.innerHTML = '<span style="color:#F59E0B;">Could not auto-transcribe competitor URL. You can paste script below.</span>';
+        }
+        return null;
+    }
 
     if (btnFetchUrl && inputUrl) {
         btnFetchUrl.addEventListener('click', async () => {
@@ -4140,27 +4213,28 @@ function initCompetitorAdRemixer() {
                 return;
             }
             btnFetchUrl.disabled = true;
-            btnFetchUrl.textContent = 'Fetching...';
-            if (urlStatus) urlStatus.textContent = 'Extracting competitor page / video content...';
+            btnFetchUrl.textContent = '🎙️ Transcribing...';
+            await extractAndTranscribeCompUrl(url);
+            btnFetchUrl.disabled = false;
+            btnFetchUrl.textContent = '🎙️ Transcribe Audio';
+        });
+    }
 
-            try {
-                const res = await fetch('/api/extract-ad-content', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                const data = await res.json();
-                if (data.extracted_text) {
-                    txtContent.value = data.extracted_text;
-                    if (urlStatus) urlStatus.textContent = `Extracted: ${data.title || data.source_type} (${data.status})`;
-                }
-            } catch (err) {
-                console.error(err);
-                if (urlStatus) urlStatus.textContent = 'Could not fetch automatically. You can paste competitor script directly below.';
-            } finally {
-                btnFetchUrl.disabled = false;
-                btnFetchUrl.textContent = 'Fetch Content';
+    if (btnFetchAndGen && inputUrl) {
+        btnFetchAndGen.addEventListener('click', async () => {
+            const url = inputUrl.value.trim();
+            if (!url) {
+                alert('Please enter a competitor ad link first.');
+                return;
             }
+            btnFetchAndGen.disabled = true;
+            btnFetchAndGen.textContent = '🎙️ Transcribing & Generating...';
+            await extractAndTranscribeCompUrl(url);
+            btnFetchAndGen.disabled = false;
+            btnFetchAndGen.textContent = '⚡ Transcribe & Generate 5 Remixes Now';
+            // Trigger form submission
+            const form = document.getElementById('competitor-remix-form');
+            if (form) form.requestSubmit();
         });
     }
 
@@ -4208,9 +4282,21 @@ function initCompetitorAdRemixer() {
         btnGen.disabled = true;
         if (spinner) spinner.classList.remove('hidden');
 
+        // Check if URL was entered and needs automatic transcription before generation
+        let contentVal = document.getElementById('comp_ad_content').value.trim();
+        const urlFieldVal = inputUrl ? inputUrl.value.trim() : '';
+
+        if (urlFieldVal && (!contentVal || contentVal.startsWith('http') || !contentVal.includes('SPOKEN VIDEO SCRIPT'))) {
+            const fetched = await extractAndTranscribeCompUrl(urlFieldVal);
+            if (fetched) contentVal = fetched;
+        } else if (contentVal.startsWith('http://') || contentVal.startsWith('https://') || contentVal.includes('facebook.com/ads')) {
+            const fetched = await extractAndTranscribeCompUrl(contentVal);
+            if (fetched) contentVal = fetched;
+        }
+
         const payload = {
             competitor_name: document.getElementById('comp_brand_name').value,
-            competitor_content: document.getElementById('comp_ad_content').value,
+            competitor_content: contentVal,
             our_product_name: document.getElementById('comp_our_product').value,
             our_unique_mechanism: document.getElementById('comp_our_mechanism').value,
             target_persona: document.getElementById('comp_target_persona').value,
