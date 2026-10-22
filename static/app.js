@@ -4169,8 +4169,15 @@ function initOwnAdDoubleDown() {
                         transcriptBadge.textContent = `✅ Transcribed (${words} words)`;
                     }
                     if (progressEl) {
-                        progressEl.innerHTML = '<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Successfully via Gemini!</span>';
-                        setTimeout(() => progressEl.classList.add('hidden'), 3500);
+                        progressEl.innerHTML = `
+                            <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
+                                <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✅ Video Analyzed & Transcribed (${words} words)!</div>
+                                <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and visual hooks loaded in the box below.</div>
+                                <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); border:none; cursor:pointer;" onclick="document.getElementById('own-doubledown-form').requestSubmit();">
+                                    🚀 Generate 5 Double Downs from This Video Now
+                                </button>
+                            </div>
+                        `;
                     }
                 }
             } catch (err) {
@@ -4448,8 +4455,15 @@ function initCompetitorAdRemixer() {
                         transcriptBadge.textContent = `✅ Transcribed (${words} words)`;
                     }
                     if (progressEl) {
-                        progressEl.innerHTML = '<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Successfully via Gemini!</span>';
-                        setTimeout(() => progressEl.classList.add('hidden'), 3500);
+                        progressEl.innerHTML = `
+                            <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
+                                <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✅ Competitor Video Analyzed (${words} words)!</div>
+                                <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and visual hooks loaded in the box below.</div>
+                                <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); border:none; cursor:pointer;" onclick="document.getElementById('competitor-remix-form').requestSubmit();">
+                                    🚀 Generate 5 Remix Variations from This Video Now
+                                </button>
+                            </div>
+                        `;
                     }
                 }
             } catch (err) {

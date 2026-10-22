@@ -87,14 +87,60 @@ def _extract_meta(html: str, attr_name: str, attr_val: str) -> str:
     return ""
 
 
+def _upload_file_to_gemini(file_path: str, mime_type: str, gemini_key: str):
+    file_size = os.path.getsize(file_path)
+    upload_url_init = f"https://generativelanguage.googleapis.com/upload/v1beta/files?key={gemini_key}"
+    headers = {
+        "X-Goog-Upload-Protocol": "resumable",
+        "X-Goog-Upload-Command": "start",
+        "X-Goog-Upload-Header-Content-Length": str(file_size),
+        "X-Goog-Upload-Header-Content-Type": mime_type,
+        "Content-Type": "application/json"
+    }
+    metadata = {
+        "file": {
+            "display_name": os.path.basename(file_path)
+        }
+    }
+    init_res = requests.post(upload_url_init, headers=headers, json=metadata, timeout=15)
+    upload_url = init_res.headers.get("X-Goog-Upload-URL")
+    if not upload_url:
+        return None, None
+        
+    with open(file_path, "rb") as f:
+        data = f.read()
+    
+    upload_headers = {
+        "Content-Length": str(file_size),
+        "X-Goog-Upload-Offset": "0",
+        "X-Goog-Upload-Command": "upload, finalize"
+    }
+    upload_res = requests.post(upload_url, headers=upload_headers, data=data, timeout=120)
+    file_info = upload_res.json().get("file", {})
+    file_uri = file_info.get("uri")
+    file_name = file_info.get("name")
+    state = file_info.get("state")
+    
+    # Wait for processing if video
+    retries = 0
+    while state == "PROCESSING" and retries < 25:
+        time.sleep(2)
+        get_res = requests.get(f"https://generativelanguage.googleapis.com/v1beta/{file_name}?key={gemini_key}", timeout=10)
+        state = get_res.json().get("state")
+        retries += 1
+        
+    return file_uri, file_name
+
+
 def transcribe_audio_file(file_path: str) -> str:
     """
-    Transcribes audio/video file using Gemini API with ultra-fast models and automatic failover.
+    Transcribes and analyzes audio/video file using Gemini Multimodal File API.
+    Extracts spoken dialogue verbatim AND visual hook/creative breakdown.
     """
     if not os.path.exists(file_path):
         return ""
 
-    # 1. Try Gemini Multimodal Speech Transcription
+    # 1. Obtain Gemini API Key
     gemini_key = os.getenv("GEMINI_API_KEY")
     if not gemini_key:
         for env_path in [
@@ -115,10 +161,6 @@ def transcribe_audio_file(file_path: str) -> str:
 
     if gemini_key and _REQUESTS_AVAILABLE:
         try:
-            with open(file_path, "rb") as f:
-                b64_audio = base64.b64encode(f.read()).decode("utf-8")
-
-            # Detect accurate mime-type
             import mimetypes
             mime_type, _ = mimetypes.guess_type(file_path)
             if not mime_type:
@@ -136,53 +178,83 @@ def transcribe_audio_file(file_path: str) -> str:
                 else:
                     mime_type = 'video/mp4'
 
-            # Try fastest active Gemini models with 40s timeout
-            models_to_try = [
-                "gemini-3-flash-preview",
-                "gemini-3.6-flash",
-                "gemini-3.5-flash"
-            ]
+            prompt_text = (
+                "You are an expert Meta Ads creative director and video analyst. "
+                "Analyze this ad video/audio thoroughly for winning ad reproduction:\n\n"
+                "1. VERBATIM SPOKEN DIALOGUE / TRANSCRIPT:\n"
+                "Transcribe every spoken word verbatim in the spoken language (English, Hindi, or Hinglish). "
+                "If the ad has no speech (visual only with music), clearly write: '[Visual Ad - No Spoken Dialogue]'.\n\n"
+                "2. VISUAL HOOK & SCENE BREAKDOWN:\n"
+                "- Opening Hook (0-3s): Describe the exact visual hook, actor action, or pattern interrupt.\n"
+                "- Agitation & Pain: How the customer's problem or frustration is visually depicted.\n"
+                "- Product / Solution Reveal: How the product/offer is demonstrated.\n"
+                "- Text Overlays & Badges: Any on-screen text, offers, or proof elements.\n"
+                "- Call to Action (CTA): The final offer and closing scene.\n\n"
+                "Format your response clearly starting with the transcript and followed by the breakdown."
+            )
 
-            payload = {
-                "contents": [{
-                    "parts": [
-                        {
-                            "text": (
-                                "You are an expert audio transcriptionist. Listen to this video audio and transcribe "
-                                "every spoken word verbatim in the spoken language (English, Hindi, or Hinglish). "
-                                "Do not add commentary, notes, or intros. Return only the verbatim spoken dialogue transcript."
-                            )
-                        },
-                        {"inline_data": {"mime_type": mime_type, "data": b64_audio}}
+            file_size = os.path.getsize(file_path)
+            is_video = mime_type.startswith("video/") or file_size > 15 * 1024 * 1024
+
+            if is_video:
+                print(f"[Extractor] Uploading {file_size / (1024*1024):.1f}MB video to Gemini File API...")
+                file_uri, file_name = _upload_file_to_gemini(file_path, mime_type, gemini_key)
+                if file_uri:
+                    parts = [
+                        {"text": prompt_text},
+                        {"file_data": {"mime_type": mime_type, "file_uri": file_uri}}
                     ]
-                }],
-                "generationConfig": {
-                    "temperature": 0.1
+                else:
+                    parts = None
+            else:
+                # Small audio files can be sent inline directly
+                with open(file_path, "rb") as f:
+                    b64_audio = base64.b64encode(f.read()).decode("utf-8")
+                parts = [
+                    {"text": prompt_text},
+                    {"inline_data": {"mime_type": mime_type, "data": b64_audio}}
+                ]
+
+            if parts:
+                payload = {
+                    "contents": [{"parts": parts}],
+                    "generationConfig": {"temperature": 0.2}
                 }
-            }
 
-            for model_name in models_to_try:
-                try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
-                    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=40)
-                    if res.status_code == 200:
-                        res_data = res.json()
-                        candidates = res_data.get("candidates", [])
-                        if candidates:
-                            parts = candidates[0].get("content", {}).get("parts", [])
-                            if parts and "text" in parts[0]:
-                                transcript = parts[0]["text"].strip()
-                                if transcript:
-                                    print(f"[Extractor] Successfully transcribed audio via {model_name} ({len(transcript.split())} words)")
-                                    return transcript
-                    else:
-                        print(f"[Extractor] {model_name} returned status {res.status_code}, trying next model...")
-                except Exception as m_err:
-                    print(f"[Extractor] {model_name} error: {m_err}, trying next model...")
+                models_to_try = [
+                    "gemini-3-flash-preview",
+                    "gemini-3.6-flash",
+                    "gemini-3.5-flash"
+                ]
+
+                for model_name in models_to_try:
+                    for retry_attempt in range(2):
+                        try:
+                            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
+                            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=50)
+                            if res.status_code == 200:
+                                res_data = res.json()
+                                candidates = res_data.get("candidates", [])
+                                if candidates:
+                                    res_parts = candidates[0].get("content", {}).get("parts", [])
+                                    if res_parts and "text" in res_parts[0]:
+                                        transcript = res_parts[0]["text"].strip()
+                                        if transcript:
+                                            print(f"[Extractor] Successfully analyzed video via {model_name} ({len(transcript.split())} words)")
+                                            return transcript
+                            elif res.status_code in [429, 503]:
+                                print(f"[Extractor] {model_name} returned {res.status_code}, waiting 2s before failover...")
+                                time.sleep(2)
+                            else:
+                                print(f"[Extractor] {model_name} status {res.status_code}: {res.text[:120]}")
+                                break
+                        except Exception as m_err:
+                            print(f"[Extractor] {model_name} error: {m_err}")
+                            time.sleep(1)
         except Exception as g_err:
-            print(f"[Extractor] Gemini transcription error: {g_err}")
+            print(f"[Extractor] Gemini multimodal processing error: {g_err}")
 
-    # 2. Try AssemblyAI Fallback
+    # 2. Try AssemblyAI Fallback    # 2. Try AssemblyAI Fallback
     aai_key = os.getenv("ASSEMBLYAI_API_KEY")
     if aai_key and _AAI_AVAILABLE:
         try:
