@@ -118,12 +118,29 @@ def transcribe_audio_file(file_path: str) -> str:
             with open(file_path, "rb") as f:
                 b64_audio = base64.b64encode(f.read()).decode("utf-8")
 
-            # gemini-3.6-flash is currently fastest & 100% active (200 OK in ~6s)
+            # Detect accurate mime-type
+            import mimetypes
+            mime_type, _ = mimetypes.guess_type(file_path)
+            if not mime_type:
+                ext_l = os.path.splitext(file_path)[1].lower()
+                if ext_l in ['.mp3']:
+                    mime_type = 'audio/mp3'
+                elif ext_l in ['.m4a', '.aac']:
+                    mime_type = 'audio/mp4'
+                elif ext_l in ['.wav']:
+                    mime_type = 'audio/wav'
+                elif ext_l in ['.webm']:
+                    mime_type = 'video/webm'
+                elif ext_l in ['.mov']:
+                    mime_type = 'video/quicktime'
+                else:
+                    mime_type = 'video/mp4'
+
+            # Try fastest active Gemini models with 40s timeout
             models_to_try = [
-                "gemini-3.6-flash",
                 "gemini-3-flash-preview",
-                "gemini-3.5-flash",
-                "gemini-flash-latest"
+                "gemini-3.6-flash",
+                "gemini-3.5-flash"
             ]
 
             payload = {
@@ -136,7 +153,7 @@ def transcribe_audio_file(file_path: str) -> str:
                                 "Do not add commentary, notes, or intros. Return only the verbatim spoken dialogue transcript."
                             )
                         },
-                        {"inline_data": {"mime_type": "video/mp4", "data": b64_audio}}
+                        {"inline_data": {"mime_type": mime_type, "data": b64_audio}}
                     ]
                 }],
                 "generationConfig": {
@@ -147,7 +164,7 @@ def transcribe_audio_file(file_path: str) -> str:
             for model_name in models_to_try:
                 try:
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
-                    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=20)
+                    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=40)
                     if res.status_code == 200:
                         res_data = res.json()
                         candidates = res_data.get("candidates", [])

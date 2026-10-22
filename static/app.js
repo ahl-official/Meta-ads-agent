@@ -4138,7 +4138,10 @@ function initOwnAdDoubleDown() {
             const file = e.target.files[0];
             if (!file) return;
 
-            if (progressEl) progressEl.classList.remove('hidden');
+            if (progressEl) {
+                progressEl.classList.remove('hidden');
+                progressEl.innerHTML = '<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Transcribing audio via Gemini AI...';
+            }
             const formData = new FormData();
             formData.append('file', file);
 
@@ -4148,15 +4151,31 @@ function initOwnAdDoubleDown() {
                     body: formData
                 });
                 const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || 'Upload failed');
+                }
                 if (data.transcript_id) {
                     pollTranscription(data.transcript_id, txtContent, progressEl);
                 } else if (data.transcription) {
                     txtContent.value = data.transcription;
-                    if (progressEl) progressEl.classList.add('hidden');
+                    txtContent.style.border = "2px solid #10B981";
+                    txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
+                    setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
+                    if (transcriptBadge) {
+                        transcriptBadge.style.display = "inline-block";
+                        transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                        transcriptBadge.style.color = "#10B981";
+                        const words = data.transcription.trim().split(/\s+/).length;
+                        transcriptBadge.textContent = `✅ Transcribed (${words} words)`;
+                    }
+                    if (progressEl) {
+                        progressEl.innerHTML = '<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Successfully via Gemini!</span>';
+                        setTimeout(() => progressEl.classList.add('hidden'), 3500);
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                if (progressEl) progressEl.innerHTML = '<span style="color:#ef4444;">Upload error. Please try pasting transcript.</span>';
+                if (progressEl) progressEl.innerHTML = `<span style="color:#ef4444;">Upload error: ${err.message || 'Please try pasting transcript.'}</span>`;
             }
         });
     }
@@ -4398,7 +4417,10 @@ function initCompetitorAdRemixer() {
             const file = e.target.files[0];
             if (!file) return;
 
-            if (progressEl) progressEl.classList.remove('hidden');
+            if (progressEl) {
+                progressEl.classList.remove('hidden');
+                progressEl.innerHTML = '<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Transcribing audio via Gemini AI...';
+            }
             const formData = new FormData();
             formData.append('file', file);
 
@@ -4408,15 +4430,31 @@ function initCompetitorAdRemixer() {
                     body: formData
                 });
                 const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || 'Upload failed');
+                }
                 if (data.transcript_id) {
                     pollTranscription(data.transcript_id, txtContent, progressEl);
                 } else if (data.transcription) {
                     txtContent.value = data.transcription;
-                    if (progressEl) progressEl.classList.add('hidden');
+                    txtContent.style.border = "2px solid #10B981";
+                    txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
+                    setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
+                    if (transcriptBadge) {
+                        transcriptBadge.style.display = "inline-block";
+                        transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                        transcriptBadge.style.color = "#10B981";
+                        const words = data.transcription.trim().split(/\s+/).length;
+                        transcriptBadge.textContent = `✅ Transcribed (${words} words)`;
+                    }
+                    if (progressEl) {
+                        progressEl.innerHTML = '<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Successfully via Gemini!</span>';
+                        setTimeout(() => progressEl.classList.add('hidden'), 3500);
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                if (progressEl) progressEl.innerHTML = '<span style="color:#ef4444;">Upload error. Please try pasting transcript.</span>';
+                if (progressEl) progressEl.innerHTML = `<span style="color:#ef4444;">Upload error: ${err.message || 'Please try pasting transcript.'}</span>`;
             }
         });
     }

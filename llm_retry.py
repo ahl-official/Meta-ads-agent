@@ -1,23 +1,20 @@
 """
 llm_retry.py
 
-Shared retry/backoff wrapper for OpenAI chat completion calls, used across all
-agent engines so a single rate-limit or transient network error doesn't
-immediately fall back to templated (non-LLM) output. Every agent already
-catches the final failure and degrades gracefully; this only adds retries
-before that fallback kicks in.
+Shared retry/backoff wrapper for OpenAI chat completion calls and direct Gemini fallback,
+used across all agent engines so rate-limit, credit exhaustion (402), or transient errors
+seamlessly fall over to Gemini rather than hardcoded static templates.
 """
 
 import logging
+import os
 import time
+from typing import Optional, List
 
 from openai import APIConnectionError, APITimeoutError, InternalServerError, RateLimitError
 
 logger = logging.getLogger("meta_ads_agent")
 
-# All OpenAI-compatible calls in this app route through OpenRouter rather than
-# OpenAI directly. Same models (prefixed "openai/"), same per-token pricing,
-# single account/key to manage.
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
@@ -26,9 +23,6 @@ def call_openai_with_retry(client, max_tries: int = 3, base_wait_seconds: float 
     Calls client.chat.completions.create(**create_kwargs) with retries on
     transient failures (rate limits, timeouts, connection errors, 5xx).
     Honors the Retry-After header on rate limit responses when present.
-
-    Raises the last exception once attempts are exhausted, so each caller's
-    existing except-block fallback logic runs exactly as it did before.
     """
     last_exc = None
     for attempt in range(1, max_tries + 1):
@@ -53,3 +47,77 @@ def call_openai_with_retry(client, max_tries: int = 3, base_wait_seconds: float 
             time.sleep(wait)
 
     raise last_exc
+
+
+def call_gemini_json(system_prompt: str, user_prompt: str, timeout: int = 40) -> Optional[str]:
+    """
+    Direct Gemini API caller with automatic model failover and JSON output guarantee.
+    Used when OpenRouter credits are exhausted (402) or as primary/fallback LLM engine.
+    """
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        for env_path in [
+            r"C:\Users\HP\Desktop\Saniya\content-factory-work\content-factory\.env",
+            r"C:\Users\HP\Desktop\Saniya\System tracking\.env"
+        ]:
+            if os.path.exists(env_path):
+                try:
+                    with open(env_path, "r", encoding="utf-8") as ef:
+                        for line in ef:
+                            if line.startswith("GEMINI_API_KEY="):
+                                gemini_key = line.split("=", 1)[1].strip().strip('"\'')
+                                break
+                except Exception:
+                    pass
+            if gemini_key:
+                break
+
+    if not gemini_key:
+        logger.warning("[Gemini] No GEMINI_API_KEY found.")
+        return None
+
+    models_to_try = [
+        "gemini-3-flash-preview",
+        "gemini-3.6-flash",
+        "gemini-3.5-flash"
+    ]
+
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    {"text": f"SYSTEM INSTRUCTIONS:\n{system_prompt}\n\nUSER REQUEST:\n{user_prompt}"}
+                ]
+            }
+        ],
+        "generationConfig": {
+            "response_mime_type": "application/json",
+            "temperature": 0.7
+        }
+    }
+
+    try:
+        import requests
+    except ImportError:
+        logger.error("[Gemini] requests library not available.")
+        return None
+
+    for model_name in models_to_try:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=timeout)
+            if res.status_code == 200:
+                res_data = res.json()
+                candidates = res_data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts and "text" in parts[0]:
+                        logger.info(f"[Gemini] Successfully generated JSON via {model_name}")
+                        return parts[0]["text"]
+            else:
+                logger.warning(f"[Gemini] {model_name} returned status {res.status_code}, trying next model...")
+        except Exception as e:
+            logger.warning(f"[Gemini] {model_name} error: {e}, trying next model...")
+
+    return None

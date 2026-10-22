@@ -43,7 +43,7 @@ from content_brief_agent import ContentBriefEngine
 from metadata_publisher_agent import MetadataPublisherEngine
 from own_ad_double_down_agent import OwnAdDoubleDownEngine
 from competitor_ad_remixer_agent import CompetitorAdRemixerEngine
-from ad_content_extractor import extract_content_from_url
+from ad_content_extractor import extract_content_from_url, transcribe_audio_file as transcribe_media_via_gemini
 from cost_tracker import CostTracker, TokenUsageReport
 from tracer import global_tracer, ExecutionSpan
 
@@ -968,32 +968,55 @@ def _get_assemblyai_status(transcript_id: str) -> dict:
         raise RuntimeError(transcript.error)
     return {"state": transcript.status, "text": transcript.text if transcript.status == aai.TranscriptStatus.completed else None}
 
-@app.post("/api/transcribe-audio")
-async def transcribe_audio_file(file: UploadFile = File(...)):
-    if not file.filename.endswith(('.mp3', '.m4a', '.wav')):
-        raise HTTPException(status_code=400, detail="Invalid audio format. Please upload mp3, m4a, or wav.")
+SUPPORTED_MEDIA_EXTS = ('.mp4', '.mov', '.mkv', '.webm', '.avi', '.mp3', '.m4a', '.wav', '.aac', '.flac', '.ogg')
 
-    ext = os.path.splitext(file.filename)[1].lower()
+@app.post("/api/transcribe-audio")
+async def transcribe_audio_endpoint(file: UploadFile = File(...)):
+    filename = file.filename or "media.mp4"
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in SUPPORTED_MEDIA_EXTS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Unsupported format '{ext}'. Please upload video (.mp4, .mov, .webm) or audio (.mp3, .m4a, .wav)."
+        )
+
     temp_file_path = None
     try:
         content_bytes = await file.read()
-
-        # mkstemp generates a unique, non-user-controlled path (no traversal/collision risk)
-        fd, temp_file_path = tempfile.mkstemp(suffix=ext, prefix="transcribe_")
+        fd, temp_file_path = tempfile.mkstemp(suffix=ext, prefix="media_transcribe_")
         with os.fdopen(fd, "wb") as f:
             f.write(content_bytes)
 
-        transcript_id = await asyncio.to_thread(_submit_to_assemblyai, temp_file_path)
+        # Transcribe directly via Gemini
+        transcript = await asyncio.to_thread(transcribe_media_via_gemini, temp_file_path)
+
+        if not transcript or not transcript.strip():
+            # If Gemini couldn't find speech, fallback to AssemblyAI if key exists
+            if os.getenv("ASSEMBLYAI_API_KEY"):
+                try:
+                    transcript_id = await asyncio.to_thread(_submit_to_assemblyai, temp_file_path)
+                    return JSONResponse(content={
+                        "status": "SUBMITTED",
+                        "transcript_id": transcript_id
+                    })
+                except Exception:
+                    pass
+            raise HTTPException(status_code=422, detail="Could not extract spoken dialogue from uploaded file. The video may contain no speech or only background music.")
 
         return JSONResponse(content={
-            "status": "SUBMITTED",
-            "transcript_id": transcript_id
+            "status": "SUCCESS",
+            "transcription": transcript.strip()
         })
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         if temp_file_path and os.path.exists(temp_file_path):
-            os.remove(temp_file_path)
+            try:
+                os.remove(temp_file_path)
+            except Exception:
+                pass
 
 @app.get("/api/transcribe-audio/{transcript_id}")
 async def get_transcription_status(transcript_id: str):

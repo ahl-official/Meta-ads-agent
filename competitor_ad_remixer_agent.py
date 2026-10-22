@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 
 from rag_pipeline import EmbeddingManager, VectorStoreManager
 from feedback_manager import feedback_mgr
-from llm_retry import call_openai_with_retry
+from llm_retry import call_openai_with_retry, call_gemini_json
 from video_script_agent import VideoScene, VideoAdScript, VideoScriptQualityMetrics
 
 try:
@@ -169,6 +169,8 @@ Respond STRICTLY with valid JSON with this structure:
         deconstruction = None
         scripts: List[VideoAdScript] = []
 
+        user_prompt = f"Deconstruct competitor '{competitor_name}' and generate 5 customized, brand-aligned video scripts for '{our_product_name}'."
+
         if _OPENAI_AVAILABLE and self.api_key:
             try:
                 client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
@@ -177,19 +179,41 @@ Respond STRICTLY with valid JSON with this structure:
                     model="openai/gpt-4o-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": f"Deconstruct competitor '{competitor_name}' and generate 5 customized, brand-aligned video scripts for '{our_product_name}'."}
+                        {"role": "user", "content": user_prompt}
                     ],
                     response_format={"type": "json_object"},
                     temperature=0.7
                 )
                 raw_content = response.choices[0].message.content
                 parsed = self._parse_json_response(raw_content, competitor_name, our_product_name, target_persona, total_duration)
-                deconstruction = parsed["deconstruction"]
-                scripts = parsed["scripts"]
+                deconstruction = parsed.get("deconstruction")
+                scripts = parsed.get("scripts", [])
             except Exception as e:
-                print(f"[Info] OpenAI API call fallback ({e}). Using templated competitor remix generator.")
-                deconstruction, scripts = self._generate_templated_remix(competitor_name, competitor_content, our_product_name, our_unique_mechanism, target_persona, total_duration)
-        else:
+                print(f"[Info] OpenRouter call failed ({e}). Attempting Gemini LLM failover...")
+                gemini_raw = call_gemini_json(system_prompt, user_prompt)
+                if gemini_raw:
+                    try:
+                        parsed = self._parse_json_response(gemini_raw, competitor_name, our_product_name, target_persona, total_duration)
+                        deconstruction = parsed.get("deconstruction")
+                        scripts = parsed.get("scripts", [])
+                        print("[Info] Successfully generated 5 remix variations via Gemini!")
+                    except Exception as g_err:
+                        print(f"[Info] Gemini parsing error: {g_err}")
+
+        if not scripts:
+            print("[Info] Trying Gemini API directly...")
+            gemini_raw = call_gemini_json(system_prompt, user_prompt)
+            if gemini_raw:
+                try:
+                    parsed = self._parse_json_response(gemini_raw, competitor_name, our_product_name, target_persona, total_duration)
+                    deconstruction = parsed.get("deconstruction")
+                    scripts = parsed.get("scripts", [])
+                    print("[Info] Successfully generated 5 remix variations via Gemini directly!")
+                except Exception as g_err:
+                    print(f"[Info] Gemini direct parsing error: {g_err}")
+
+        if not scripts:
+            print("[Info] LLM providers exhausted. Using templated competitor remix generator as emergency fallback.")
             deconstruction, scripts = self._generate_templated_remix(competitor_name, competitor_content, our_product_name, our_unique_mechanism, target_persona, total_duration)
 
         for s in scripts:
