@@ -345,21 +345,21 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
                         if transcript:
                             result["audio_transcript"] = transcript
 
-                    # Build structured extracted content
+                    # Build structured extracted content with full video analysis
                     parts = []
-                    if result["audio_transcript"]:
-                        parts.append(f"SPOKEN VIDEO SCRIPT (AI TRANSCRIBED VERBATIM):\n\"{result['audio_transcript']}\"")
-                    elif result["title"]:
-                        parts.append(f"AD / VIDEO TITLE:\n{result['title']}")
-
                     if uploader:
                         parts.append(f"ADVERTISER / BRAND:\n{uploader}")
 
                     if ad_description:
                         parts.append(f"PRIMARY AD COPY & CAPTION:\n{ad_description}")
 
-                    if not result["audio_transcript"]:
-                        parts.append("[Note: No spoken dialogue detected or audio track was instrumental]")
+                    if result["audio_transcript"]:
+                        parts.append(result["audio_transcript"])
+                    elif result["title"]:
+                        parts.append(f"AD / VIDEO TITLE:\n{result['title']}")
+
+                    if not result["audio_transcript"] and not ad_description:
+                        parts.append("[Note: No spoken dialogue or visual breakdown detected]")
 
                     result["extracted_text"] = "\n\n".join(parts)
                     result["status"] = "SUCCESS"

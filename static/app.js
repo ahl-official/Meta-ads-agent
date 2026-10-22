@@ -4158,6 +4158,7 @@ function initOwnAdDoubleDown() {
                 if (data.transcript_id) {
                     pollTranscription(data.transcript_id, txtContent, progressEl);
                 } else if (data.transcription) {
+                    const words = data.transcription ? data.transcription.trim().split(/\s+/).length : 0;
                     txtContent.value = data.transcription;
                     txtContent.style.border = "2px solid #10B981";
                     txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
@@ -4166,8 +4167,7 @@ function initOwnAdDoubleDown() {
                         transcriptBadge.style.display = "inline-block";
                         transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
                         transcriptBadge.style.color = "#10B981";
-                        const words = data.transcription.trim().split(/\s+/).length;
-                        transcriptBadge.textContent = `✅ Transcribed (${words} words)`;
+                        transcriptBadge.textContent = `✅ Analyzed (${words} words)`;
                     }
                     if (progressEl) {
                         progressEl.innerHTML = `
@@ -4445,6 +4445,7 @@ function initCompetitorAdRemixer() {
                 if (data.transcript_id) {
                     pollTranscription(data.transcript_id, txtContent, progressEl);
                 } else if (data.transcription) {
+                    const words = data.transcription ? data.transcription.trim().split(/\s+/).length : 0;
                     txtContent.value = data.transcription;
                     txtContent.style.border = "2px solid #10B981";
                     txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
@@ -4453,8 +4454,7 @@ function initCompetitorAdRemixer() {
                         transcriptBadge.style.display = "inline-block";
                         transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
                         transcriptBadge.style.color = "#10B981";
-                        const words = data.transcription.trim().split(/\s+/).length;
-                        transcriptBadge.textContent = `✅ Transcribed (${words} words)`;
+                        transcriptBadge.textContent = `✅ Analyzed (${words} words)`;
                     }
                     if (progressEl) {
                         progressEl.innerHTML = `
