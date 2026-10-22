@@ -606,6 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initOwnAdDoubleDown();
     initCompetitorAdRemixer();
     initAudienceVault();
+    initCreativeBucket();
     initTraces();
     initUpload();
     fetchSystemMetrics();
@@ -660,7 +661,9 @@ function initTabs() {
                 brandTitle.textContent = tabTitleMap[targetTab];
             }
 
-            if (targetTab === 'tab-tracer') {
+            if (targetTab === 'tab-bucket') {
+                if (typeof loadAndRenderBucket === 'function') loadAndRenderBucket();
+            } else if (targetTab === 'tab-tracer') {
                 fetchTraces();
             } else if (targetTab === 'tab-vault') {
                 renderAudienceVault();
@@ -4254,6 +4257,7 @@ function initOwnAdDoubleDown() {
                 }
 
                 renderDoubleDownScriptCards('own-scripts-container', data.video_scripts, '#EC4899', 'Own Double-Down');
+                if (typeof loadAndRenderBucket === 'function') loadAndRenderBucket();
                 if (typeof fetchSystemMetrics === 'function') fetchSystemMetrics();
             } else {
                 alert(`Error generating variations: ${data.message || 'Unknown error'}`);
@@ -4542,6 +4546,7 @@ function initCompetitorAdRemixer() {
                 }
 
                 renderDoubleDownScriptCards('comp-scripts-container', data.video_scripts, '#8B5CF6', 'Competitor Remix');
+                if (typeof loadAndRenderBucket === 'function') loadAndRenderBucket();
                 if (typeof fetchSystemMetrics === 'function') fetchSystemMetrics();
             } else {
                 alert(`Error generating remixes: ${data.message || 'Unknown error'}`);
@@ -4740,4 +4745,350 @@ function updateGlobalFeedbackBadges() {
             compBadge.textContent = "No global feedback applied yet (using default brand rules).";
         }
     }
+}
+
+
+// ============================================================================
+// Creative Variations Bucket Management
+// ============================================================================
+window._variationsBucket = [];
+let _bucketCurrentFilter = 'all';
+
+function initCreativeBucket() {
+    loadAndRenderBucket();
+
+    // Quick jump buttons from Double Down & Competitor Remixer headers
+    document.querySelectorAll('.btn-switch-to-bucket').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const bucketTabBtn = document.querySelector('.tab-btn[data-tab="tab-bucket"]');
+            if (bucketTabBtn) bucketTabBtn.click();
+        });
+    });
+
+    // Search filter input
+    const searchInput = document.getElementById('bucket-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            renderBucketList();
+        });
+    }
+
+    // Filter pill buttons (All, Own, Comp)
+    const filterPills = document.querySelectorAll('.bucket-filter-btn');
+    filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            filterPills.forEach(p => {
+                p.classList.remove('active');
+                p.style.background = '#1E293B';
+                p.style.color = '#94A3B8';
+            });
+            pill.classList.add('active');
+            pill.style.background = 'var(--primary)';
+            pill.style.color = '#FFF';
+            _bucketCurrentFilter = pill.dataset.filter || 'all';
+            renderBucketList();
+        });
+    });
+
+    // Export all button
+    const btnExport = document.getElementById('btn-export-bucket');
+    if (btnExport) {
+        btnExport.addEventListener('click', () => {
+            if (window._variationsBucket.length === 0) {
+                alert('Variations bucket is empty.');
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window._variationsBucket, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `meta_ads_creative_bucket_${Date.now()}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        });
+    }
+
+    // Clear bucket button
+    const btnClear = document.getElementById('btn-clear-bucket');
+    if (btnClear) {
+        btnClear.addEventListener('click', async () => {
+            if (window._variationsBucket.length === 0) return;
+            if (confirm('Are you sure you want to clear your entire Creative Variations Bucket?')) {
+                try {
+                    await fetch('/api/variations-bucket', { method: 'DELETE' });
+                    window._variationsBucket = [];
+                    updateBucketCounters();
+                    renderBucketList();
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        });
+    }
+}
+
+async function loadAndRenderBucket() {
+    try {
+        const res = await fetch('/api/variations-bucket');
+        const data = await res.json();
+        if (data.status === 'SUCCESS' && Array.isArray(data.bucket)) {
+            window._variationsBucket = data.bucket;
+            updateBucketCounters();
+            renderBucketList();
+        }
+    } catch (err) {
+        console.error('Failed to load variations bucket:', err);
+    }
+}
+
+function updateBucketCounters() {
+    const total = window._variationsBucket.length;
+    const ownCount = window._variationsBucket.filter(b => b.strategy_type === 'own_doubledown').length;
+    const compCount = window._variationsBucket.filter(b => b.strategy_type === 'competitor_remix').length;
+
+    const navBadge = document.getElementById('nav-bucket-count');
+    if (navBadge) navBadge.textContent = total;
+
+    const allPill = document.getElementById('bucket-filter-all-count');
+    if (allPill) allPill.textContent = total;
+
+    const ownPill = document.getElementById('bucket-filter-own-count');
+    if (ownPill) ownPill.textContent = ownCount;
+
+    const compPill = document.getElementById('bucket-filter-comp-count');
+    if (compPill) compPill.textContent = compCount;
+
+    document.querySelectorAll('.bucket-count-badge').forEach(el => {
+        el.textContent = total;
+    });
+}
+
+function toggleBucketScriptAccordion(id) {
+    const content = document.getElementById(`content_${id}`);
+    const chevron = document.getElementById(`chevron_${id}`);
+    if (!content) return;
+    if (content.style.display === 'none' || !content.style.display) {
+        content.style.display = 'block';
+        if (chevron) chevron.textContent = '▲';
+    } else {
+        content.style.display = 'none';
+        if (chevron) chevron.textContent = '▼';
+    }
+}
+
+async function deleteBucketBatch(batchId) {
+    if (!confirm('Delete this generated batch from the bucket?')) return;
+    try {
+        const res = await fetch(`/api/variations-bucket/${batchId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.status === 'SUCCESS') {
+            window._variationsBucket = window._variationsBucket.filter(b => b.id !== batchId);
+            updateBucketCounters();
+            renderBucketList();
+        }
+    } catch (e) {
+        console.error('Delete error:', e);
+    }
+}
+
+function copyTextToClipboard(text, successMsg = 'Copied to clipboard!') {
+    navigator.clipboard.writeText(text).then(() => {
+        alert(successMsg);
+    }).catch(err => {
+        console.error('Copy error:', err);
+    });
+}
+
+function downloadTextAsFile(filename, text) {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/markdown;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+function generateScriptMarkdown(s, batch) {
+    let md = `# ${s.script_title || 'Script Variation'}\n\n`;
+    md += `**Framework Structure:** ${s.framework_structure || s.core_angle || '-'}\n`;
+    md += `**Target Persona:** ${s.target_persona || batch.target_persona || '-'}\n`;
+    md += `**Duration:** ${s.total_duration_est || batch.total_duration || '30s'}\n`;
+    md += `**Core Hook:** "${s.core_hook || '-'}"\n\n`;
+    md += `## Scene Breakdown:\n\n`;
+    (s.scenes || []).forEach(sc => {
+        md += `### SCENE ${sc.scene_number}: ${sc.scene_type} (${sc.duration_seconds})\n`;
+        md += `**Spoken Script:** "${sc.spoken_script}"\n`;
+        md += `**Visual Direction:** ${sc.visual_direction}\n`;
+        md += `**On-Screen Text:** ${sc.on_screen_text}\n`;
+        md += `**Audio/SFX:** ${sc.audio_cues}\n\n`;
+    });
+    if (s.actor_casting_notes) md += `**Actor Notes:** ${s.actor_casting_notes}\n`;
+    if (s.ftc_disclaimer_note) md += `**FTC Disclaimer:** ${s.ftc_disclaimer_note}\n`;
+    return md;
+}
+
+function generateBatchMarkdown(batch) {
+    let md = `# Creative Set: ${batch.product_name || batch.title || 'Creative Suite'}\n`;
+    md += `**Generated:** ${batch.timestamp || 'Recent'} | **Strategy:** ${batch.strategy_type}\n`;
+    md += `**Target Persona:** ${batch.target_persona || '-'}\n\n`;
+    (batch.video_scripts || []).forEach((s, idx) => {
+        md += `---\n\n## Variation ${idx + 1}: ${s.script_title}\n`;
+        md += generateScriptMarkdown(s, batch) + '\n\n';
+    });
+    return md;
+}
+
+function renderBucketList() {
+    const container = document.getElementById('bucket-items-container');
+    if (!container) return;
+
+    const searchInput = document.getElementById('bucket-search');
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    let items = window._variationsBucket || [];
+
+    if (_bucketCurrentFilter !== 'all') {
+        items = items.filter(b => b.strategy_type === _bucketCurrentFilter);
+    }
+
+    if (query) {
+        items = items.filter(b => {
+            const prod = (b.product_name || b.title || '').toLowerCase();
+            const persona = (b.target_persona || '').toLowerCase();
+            const scriptsMatch = (b.video_scripts || []).some(s => 
+                (s.script_title || '').toLowerCase().includes(query) || 
+                (s.core_hook || '').toLowerCase().includes(query) ||
+                (s.scenes || []).some(sc => (sc.spoken_script || '').toLowerCase().includes(query))
+            );
+            return prod.includes(query) || persona.includes(query) || scriptsMatch;
+        });
+    }
+
+    if (items.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="text-align:center; padding:60px 20px; color:#64748B;">
+                <div style="font-size:44px; margin-bottom:12px;">🗃️</div>
+                <h4 style="color:#E2E8F0; margin-bottom:6px; font-size:16px;">${query ? 'No matching variations found' : 'Your Variations Bucket is Empty'}</h4>
+                <p style="max-width:480px; margin:0 auto; font-size:13px; line-height:1.5;">
+                    ${query ? 'Try a different search term or clear the filter.' : 'Generate 5 double-down variations from winning ads or remix competitor ads. They are permanently archived here for instant reference and exporting.'}
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = '';
+
+    items.forEach((batch) => {
+        const isOwn = batch.strategy_type === 'own_doubledown';
+        const accent = isOwn ? '#EC4899' : '#8B5CF6';
+        const badgeText = isOwn ? '🔥 Own Double-Down' : '⚔️ Competitor Remix';
+        const scripts = batch.video_scripts || [];
+        const deconstruction = batch.winner_deconstruction || batch.competitor_deconstruction || {};
+
+        const batchCard = document.createElement('div');
+        batchCard.className = 'bucket-batch-card';
+        batchCard.style.cssText = `
+            background: #111827;
+            border: 1px solid #1F2937;
+            border-left: 4px solid ${accent};
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        `;
+
+        let deconstructSummaryHtml = '';
+        if (deconstruction && (deconstruction.hook_mechanism || deconstruction.hook_strategy)) {
+            const hook = deconstruction.hook_mechanism || deconstruction.hook_strategy || '';
+            const core = deconstruction.emotional_core || deconstruction.vulnerability_exploited || '';
+            const trigger = deconstruction.conversion_trigger || deconstruction.our_superior_mechanism || '';
+            deconstructSummaryHtml = `
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:8px; margin: 14px 0; background:rgba(0,0,0,0.25); padding:10px 14px; border-radius:8px; font-size:12px;">
+                    <div><b style="color:${accent};">Hook Mechanism:</b> <span style="color:#CBD5E1;">${hook}</span></div>
+                    <div><b style="color:#38BDF8;">Emotional Core:</b> <span style="color:#CBD5E1;">${core}</span></div>
+                    <div><b style="color:#10B981;">Conversion Trigger:</b> <span style="color:#CBD5E1;">${trigger}</span></div>
+                </div>
+            `;
+        }
+
+        let scriptsAccordionHtml = scripts.map((s, sIdx) => {
+            const scenesListHtml = (s.scenes || []).map(sc => `
+                <div style="background:#090D16; border:1px solid #1E293B; border-radius:8px; padding:10px 14px; margin-bottom:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:11px;">
+                        <span style="font-weight:700; color:#F8FAFC;">SCENE ${sc.scene_number}: <span style="color:${accent};">${sc.scene_type}</span></span>
+                        <span style="color:#94A3B8;">⏱️ ${sc.duration_seconds}</span>
+                    </div>
+                    <div style="color:#E2E8F0; font-size:12px; line-height:1.4; margin-bottom:6px;">"${sc.spoken_script}"</div>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:6px; font-size:11px; color:#94A3B8; border-top:1px solid #1E293B; padding-top:6px;">
+                        <div>👁️ <b>Visual:</b> ${sc.visual_direction || '-'}</div>
+                        <div>📝 <b>Text Overlay:</b> ${sc.on_screen_text || '-'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            const fullScriptMarkdown = generateScriptMarkdown(s, batch);
+
+            return `
+                <div style="background:#0F172A; border:1px solid #1E293B; border-radius:8px; margin-top:10px; overflow:hidden;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; background:rgba(255,255,255,0.02);" onclick="toggleBucketScriptAccordion('${batch.id}_script_${sIdx}')">
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <span style="background:${accent}; color:#FFF; font-weight:700; font-size:11px; padding:2px 8px; border-radius:4px;">VAR ${s.script_id || sIdx + 1}</span>
+                            <b style="color:#F8FAFC; font-size:13px;">${s.script_title || 'Variation'}</b>
+                            <span style="color:#94A3B8; font-size:12px;">(${s.total_duration_est || batch.total_duration || '30s'})</span>
+                            <span style="color:#38BDF8; font-size:12px; font-style:italic;">"${(s.core_hook || '').substring(0, 60)}${(s.core_hook || '').length > 60 ? '...' : ''}"</span>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button type="button" class="btn btn-secondary" style="font-size:11px; padding:4px 10px; background:#1E293B; border-color:#334155; color:#E2E8F0;" onclick="event.stopPropagation(); copyTextToClipboard(${JSON.stringify(fullScriptMarkdown)}, 'Copied Script #${sIdx + 1} to clipboard!');">📋 Copy</button>
+                            <span id="chevron_${batch.id}_script_${sIdx}" style="color:#94A3B8; font-size:12px; transition:transform 0.2s;">▼</span>
+                        </div>
+                    </div>
+                    <div id="content_${batch.id}_script_${sIdx}" style="display:none; padding:16px; border-top:1px solid #1E293B;">
+                        ${s.preview_storyboard_svg ? `<div style="margin-bottom:12px; border-radius:8px; overflow:hidden; border:1px solid #1E293B;">${s.preview_storyboard_svg}</div>` : ''}
+                        <div style="margin-bottom:10px;">
+                            <b style="color:${accent}; font-size:11px; text-transform:uppercase;">Core Angle & Strategy:</b>
+                            <p style="margin:2px 0 0 0; color:#CBD5E1; font-size:12px;">${s.framework_structure || s.core_angle || '-'}</p>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <b style="color:#38BDF8; font-size:11px; text-transform:uppercase;">🎣 Primary Opening Hook:</b>
+                            <p style="margin:2px 0 0 0; color:#F8FAFC; font-size:13px; font-weight:600;">"${s.core_hook || '-'}"</p>
+                        </div>
+                        <b style="color:#F8FAFC; font-size:12px; display:block; margin-bottom:8px;">Scene-by-Scene Production Direction:</b>
+                        ${scenesListHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const batchMarkdown = generateBatchMarkdown(batch);
+
+        batchCard.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+                        <span style="background:${accent}22; color:${accent}; border:1px solid ${accent}44; font-weight:700; font-size:11px; padding:3px 10px; border-radius:6px;">${badgeText}</span>
+                        <span style="color:#94A3B8; font-size:12px;">📅 ${batch.timestamp || 'Recent'}</span>
+                        <span style="color:#64748B; font-size:12px;">•</span>
+                        <span style="color:#CBD5E1; font-size:12px;">👤 ${batch.target_persona || 'General Audience'}</span>
+                    </div>
+                    <h3 style="margin:0; font-size:17px; font-weight:700; color:#F8FAFC;">${batch.product_name || batch.title || 'Creative Set'}</h3>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <button type="button" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; background:#1E293B; border-color:#334155; color:#E2E8F0;" onclick="copyTextToClipboard(${JSON.stringify(batchMarkdown)}, 'Copied all 5 variations to clipboard!');">📋 Copy All 5</button>
+                    <button type="button" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; background:#1E293B; border-color:#334155; color:#E2E8F0;" onclick="downloadTextAsFile('${(batch.product_name || 'creative_variations').replace(/[^a-zA-Z0-9]/g, '_')}_all5.md', ${JSON.stringify(batchMarkdown)});">📥 Download</button>
+                    <button type="button" class="btn btn-secondary" style="font-size:11px; padding:6px 10px; color:#EF4444; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.06);" onclick="deleteBucketBatch('${batch.id}');">🗑️</button>
+                </div>
+            </div>
+            ${deconstructSummaryHtml}
+            <div style="margin-top:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b style="color:#E2E8F0; font-size:13px;">5 High-Converting Script Variations:</b>
+                    <span style="color:#94A3B8; font-size:11px;">Click any variation to expand scenes & direction</span>
+                </div>
+                ${scriptsAccordionHtml}
+            </div>
+        `;
+
+        container.appendChild(batchCard);
+    });
 }

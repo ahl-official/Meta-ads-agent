@@ -7,6 +7,7 @@ FastAPI Server & REST API Service:
 """
 
 import asyncio
+import json
 import time
 import os
 import tempfile
@@ -1495,6 +1496,65 @@ async def extract_ad_content(request: ExtractAdContentRequest):
     return JSONResponse(content=data)
 
 
+
+# ============================================================================
+# Variations Bucket (Persistent Creative Vault)
+# ============================================================================
+VARIATIONS_BUCKET_FILE = os.path.join(os.path.dirname(__file__), "variations_bucket.json")
+
+def _load_variations_bucket() -> List[Dict[str, Any]]:
+    if os.path.exists(VARIATIONS_BUCKET_FILE):
+        try:
+            with open(VARIATIONS_BUCKET_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def _save_variations_bucket(bucket: List[Dict[str, Any]]):
+    try:
+        with open(VARIATIONS_BUCKET_FILE, "w", encoding="utf-8") as f:
+            json.dump(bucket, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"[Bucket] Error saving variations bucket: {e}")
+
+def _add_batch_to_bucket(batch_data: Dict[str, Any]) -> str:
+    bucket = _load_variations_bucket()
+    batch_id = batch_data.get("id") or f"batch_{int(time.time()*1000)}"
+    batch_data["id"] = batch_id
+    if not batch_data.get("timestamp"):
+        import datetime
+        batch_data["timestamp"] = datetime.datetime.now().strftime("%d %b %Y, %I:%M %p")
+    
+    # Prepend new batch so newest appears first
+    bucket.insert(0, batch_data)
+    _save_variations_bucket(bucket)
+    return batch_id
+
+@app.get("/api/variations-bucket")
+async def get_variations_bucket():
+    bucket = await asyncio.to_thread(_load_variations_bucket)
+    return JSONResponse(content={"status": "SUCCESS", "bucket": bucket, "total": len(bucket)})
+
+@app.post("/api/variations-bucket")
+async def add_to_variations_bucket(batch: Dict[str, Any]):
+    batch_id = await asyncio.to_thread(_add_batch_to_bucket, batch)
+    bucket = await asyncio.to_thread(_load_variations_bucket)
+    return JSONResponse(content={"status": "SUCCESS", "id": batch_id, "total": len(bucket)})
+
+@app.delete("/api/variations-bucket/{batch_id}")
+async def delete_from_variations_bucket(batch_id: str):
+    bucket = await asyncio.to_thread(_load_variations_bucket)
+    new_bucket = [b for b in bucket if b.get("id") != batch_id]
+    await asyncio.to_thread(_save_variations_bucket, new_bucket)
+    return JSONResponse(content={"status": "SUCCESS", "message": f"Deleted batch {batch_id}", "total": len(new_bucket)})
+
+@app.delete("/api/variations-bucket")
+async def clear_variations_bucket():
+    await asyncio.to_thread(_save_variations_bucket, [])
+    return JSONResponse(content={"status": "SUCCESS", "message": "Cleared variations bucket", "total": 0})
+
+
 @app.post("/api/generate-own-ad-variations")
 async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     t_start = time.time()
@@ -1630,6 +1690,27 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
         token_report=token_report,
         status="SUCCESS"
     )
+
+    # Auto-save batch into Variations Bucket
+    try:
+        import datetime
+        batch_data = {
+            "id": f"batch_{int(time.time()*1000)}",
+            "timestamp": datetime.datetime.now().strftime("%d %b %Y, %I:%M %p"),
+            "strategy_type": "own_doubledown",
+            "title": f"Own Double Down: {product_name}",
+            "product_name": product_name,
+            "target_persona": request.target_persona,
+            "total_duration": request.total_duration,
+            "winning_notes": winning_notes,
+            "video_scripts": [s.model_dump() for s in scripts],
+            "winner_deconstruction": deconstruction.model_dump() if deconstruction else {},
+            "success_metrics": metrics.model_dump() if metrics else {},
+            "trace_id": trace_id
+        }
+        _add_batch_to_bucket(batch_data)
+    except Exception as b_err:
+        print(f"[Bucket] Auto-save error: {b_err}")
 
     return JSONResponse(content={
         "status": "SUCCESS",
@@ -1776,6 +1857,28 @@ async def generate_competitor_remix(request: CompetitorAdRemixRequest):
         token_report=token_report,
         status="SUCCESS"
     )
+
+    # Auto-save batch into Variations Bucket
+    try:
+        import datetime
+        batch_data = {
+            "id": f"batch_{int(time.time()*1000)}",
+            "timestamp": datetime.datetime.now().strftime("%d %b %Y, %I:%M %p"),
+            "strategy_type": "competitor_remix",
+            "title": f"Competitor Remix: {request.competitor_name} vs {request.our_product_name}",
+            "competitor_name": request.competitor_name,
+            "our_product_name": request.our_product_name,
+            "our_unique_mechanism": request.our_unique_mechanism,
+            "target_persona": request.target_persona,
+            "total_duration": request.total_duration,
+            "video_scripts": [s.model_dump() for s in scripts],
+            "competitor_deconstruction": deconstruction.model_dump() if deconstruction else {},
+            "success_metrics": metrics.model_dump() if metrics else {},
+            "trace_id": trace_id
+        }
+        _add_batch_to_bucket(batch_data)
+    except Exception as b_err:
+        print(f"[Bucket] Auto-save error: {b_err}")
 
     return JSONResponse(content={
         "status": "SUCCESS",

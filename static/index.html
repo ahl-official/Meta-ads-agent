@@ -62,6 +62,7 @@
             <button class="tab-btn" data-tab="tab-metadata">Agent 10: Metadata & Publishing Master</button>
             <button class="tab-btn" data-tab="tab-own-doubledown" style="border-left: 2px solid #EC4899;">🔥 Double Down: Own Winner</button>
             <button class="tab-btn" data-tab="tab-competitor-remix" style="border-left: 2px solid #8B5CF6;">⚡ Competitor Ad Remixer</button>
+            <button class="tab-btn" data-tab="tab-bucket" style="border-left: 2px solid #F59E0B;">🗃️ Creative Bucket <span class="badge" id="nav-bucket-count" style="background:#F59E0B; color:#0F172A; font-weight:700; border-radius:10px; padding:1px 6px; font-size:11px; margin-left:4px;">0</span></button>
 
             <button class="tab-btn" data-tab="tab-feedback">Sir's Global Feedback</button>
             <button class="tab-btn" data-tab="tab-vault">Saved Audience Groups Vault</button>
@@ -1806,7 +1807,7 @@
                         <!-- Metrics Header -->
                         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                             <div>
-                                <h3 class="card-title">Double-Down Creative Suite</h3>
+                                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><h3 class="card-title" style="margin:0;">Double-Down Creative Suite</h3><button type="button" class="btn btn-secondary btn-switch-to-bucket" style="font-size:12px; padding:5px 12px; display:inline-flex; align-items:center; gap:6px; background:#1E293B; border-color:#334155; color:#F8FAFC; cursor:pointer;"><span>🗃️ View Bucket (<span class="bucket-count-badge">0</span>)</span></button></div>
                                 <p class="card-description">5 diverse iterations scaling the winning ad mechanics across different psychological angles.</p>
                             </div>
                             <div id="own-metrics-bar" class="hidden" style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -2194,6 +2195,49 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        
+            <!-- TAB: VARIATIONS BUCKET (SAVED CREATIVE VAULT) -->
+            <section id="tab-bucket" class="tab-pane">
+                <div class="card full-width vault-container" style="background:#0F172A; border:1px solid #1E293B; border-radius:12px; padding:24px;">
+                    <div class="vault-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:20px; border-bottom:1px solid #1E293B; padding-bottom:16px;">
+                        <div>
+                            <div class="vault-title-row" style="display:flex; align-items:center; gap:10px;">
+                                <span class="vault-icon" style="font-size:26px;">🗃️</span>
+                                <h2 class="card-title" style="margin:0; font-size:22px; color:#F8FAFC;">Creative Variations Bucket</h2>
+                            </div>
+                            <p class="card-description" style="margin-top:6px; color:#94A3B8; font-size:13px; max-width:700px;">
+                                Persistent archive of all AI-generated Double Downs & Competitor Remixes. Review past iterations, expand scene-by-scene scripts, copy storyboards, and export anytime.
+                            </p>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <button class="btn btn-secondary" id="btn-export-bucket" style="font-size:12px; padding:8px 14px; background:#1E293B; border:1px solid #334155; color:#E2E8F0; cursor:pointer;">📥 Export All (JSON)</button>
+                            <button class="btn btn-secondary" id="btn-clear-bucket" style="font-size:12px; padding:8px 14px; color:#EF4444; border:1px solid rgba(239, 68, 68, 0.4); background:rgba(239, 68, 68, 0.08); cursor:pointer;">🗑️ Clear Bucket</button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Controls -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:280px;">
+                            <input type="text" id="bucket-search" class="form-control" placeholder="🔍 Search saved scripts by product, hook, angle, or keyword..." style="background:#111827; border:1px solid #1F2937; border-radius:8px; padding:10px 14px; color:#F8FAFC; width:100%;">
+                        </div>
+                        <div style="display:flex; gap:6px;" id="bucket-filter-pills">
+                            <button type="button" class="btn btn-secondary bucket-filter-btn active" data-filter="all" style="padding:6px 14px; font-size:12px; border-radius:6px; cursor:pointer; background:var(--primary); color:#FFF;">All (<span id="bucket-filter-all-count">0</span>)</button>
+                            <button type="button" class="btn btn-secondary bucket-filter-btn" data-filter="own_doubledown" style="padding:6px 14px; font-size:12px; border-radius:6px; cursor:pointer; background:#1E293B; color:#94A3B8;">🔥 Own Double Downs (<span id="bucket-filter-own-count">0</span>)</button>
+                            <button type="button" class="btn btn-secondary bucket-filter-btn" data-filter="competitor_remix" style="padding:6px 14px; font-size:12px; border-radius:6px; cursor:pointer; background:#1E293B; color:#94A3B8;">⚔️ Competitor Remixes (<span id="bucket-filter-comp-count">0</span>)</button>
+                        </div>
+                    </div>
+
+                    <!-- Bucket Items Grid -->
+                    <div id="bucket-items-container" style="display:flex; flex-direction:column; gap:20px;">
+                        <div class="empty-state" style="text-align:center; padding:60px 20px; color:#64748B;">
+                            <div style="font-size:48px; margin-bottom:12px;">🗃️</div>
+                            <h4 style="color:#E2E8F0; margin-bottom:6px; font-size:16px;">Your Variations Bucket is Empty</h4>
+                            <p style="max-width:480px; margin:0 auto; font-size:13px; line-height:1.5;">Generate double-down variations from winning ads or remix competitor ads. They will be permanently archived here for instant reference, copying, and exporting.</p>
                         </div>
                     </div>
                 </div>
