@@ -1,3 +1,5 @@
+import time
+import traceback
 import json
 import os
 import re
@@ -102,33 +104,41 @@ def _upload_file_to_gemini(file_path: str, mime_type: str, gemini_key: str):
             "display_name": os.path.basename(file_path)
         }
     }
-    init_res = requests.post(upload_url_init, headers=headers, json=metadata, timeout=15)
+    init_res = requests.post(upload_url_init, headers=headers, json=metadata, timeout=20)
     upload_url = init_res.headers.get("X-Goog-Upload-URL")
     if not upload_url:
+        print(f"[Extractor] Gemini File API init failed ({init_res.status_code}): {init_res.text}")
         return None, None
-        
-    with open(file_path, "rb") as f:
-        data = f.read()
-    
+
     upload_headers = {
         "Content-Length": str(file_size),
         "X-Goog-Upload-Offset": "0",
         "X-Goog-Upload-Command": "upload, finalize"
     }
-    upload_res = requests.post(upload_url, headers=upload_headers, data=data, timeout=120)
+    # Stream file to handle large files (e.g. 100MB+) efficiently
+    with open(file_path, "rb") as f:
+        upload_res = requests.post(upload_url, headers=upload_headers, data=f, timeout=300)
+
+    if upload_res.status_code != 200:
+        print(f"[Extractor] Gemini File API upload error ({upload_res.status_code}): {upload_res.text}")
+        return None, None
+
     file_info = upload_res.json().get("file", {})
     file_uri = file_info.get("uri")
     file_name = file_info.get("name")
     state = file_info.get("state")
-    
+    print(f"[Extractor] Video uploaded ({file_size / (1024*1024):.1f}MB). State: {state}")
+
     # Wait for processing if video
     retries = 0
-    while state == "PROCESSING" and retries < 25:
+    while state == "PROCESSING" and retries < 35:
         time.sleep(2)
-        get_res = requests.get(f"https://generativelanguage.googleapis.com/v1beta/{file_name}?key={gemini_key}", timeout=10)
-        state = get_res.json().get("state")
+        get_res = requests.get(f"https://generativelanguage.googleapis.com/v1beta/{file_name}?key={gemini_key}", timeout=15)
+        if get_res.status_code == 200:
+            state = get_res.json().get("state")
+            print(f"[Extractor] Video processing state: {state}")
         retries += 1
-        
+
     return file_uri, file_name
 
 
@@ -194,20 +204,18 @@ def transcribe_audio_file(file_path: str) -> str:
             )
 
             file_size = os.path.getsize(file_path)
-            is_video = mime_type.startswith("video/") or file_size > 15 * 1024 * 1024
+            is_video = mime_type.startswith("video/") or file_size > 10 * 1024 * 1024
 
             if is_video:
                 print(f"[Extractor] Uploading {file_size / (1024*1024):.1f}MB video to Gemini File API...")
                 file_uri, file_name = _upload_file_to_gemini(file_path, mime_type, gemini_key)
-                if file_uri:
-                    parts = [
-                        {"text": prompt_text},
-                        {"file_data": {"mime_type": mime_type, "file_uri": file_uri}}
-                    ]
-                else:
-                    parts = None
+                if not file_uri:
+                    raise RuntimeError("Failed to upload video to Gemini File API")
+                parts = [
+                    {"text": prompt_text},
+                    {"file_data": {"mime_type": mime_type, "file_uri": file_uri}}
+                ]
             else:
-                # Small audio files can be sent inline directly
                 with open(file_path, "rb") as f:
                     b64_audio = base64.b64encode(f.read()).decode("utf-8")
                 parts = [
@@ -215,46 +223,46 @@ def transcribe_audio_file(file_path: str) -> str:
                     {"inline_data": {"mime_type": mime_type, "data": b64_audio}}
                 ]
 
-            if parts:
-                payload = {
-                    "contents": [{"parts": parts}],
-                    "generationConfig": {"temperature": 0.2}
-                }
+            payload = {
+                "contents": [{"parts": parts}],
+                "generationConfig": {"temperature": 0.2}
+            }
 
-                models_to_try = [
-                    "gemini-3-flash-preview",
-                    "gemini-3.6-flash",
-                    "gemini-3.5-flash"
-                ]
+            models_to_try = [
+                "gemini-3-flash-preview",
+                "gemini-3.6-flash",
+                "gemini-3.5-flash"
+            ]
 
-                for model_name in models_to_try:
-                    for retry_attempt in range(2):
-                        try:
-                            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
-                            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=50)
-                            if res.status_code == 200:
-                                res_data = res.json()
-                                candidates = res_data.get("candidates", [])
-                                if candidates:
-                                    res_parts = candidates[0].get("content", {}).get("parts", [])
-                                    if res_parts and "text" in res_parts[0]:
-                                        transcript = res_parts[0]["text"].strip()
-                                        if transcript:
-                                            print(f"[Extractor] Successfully analyzed video via {model_name} ({len(transcript.split())} words)")
-                                            return transcript
-                            elif res.status_code in [429, 503]:
-                                print(f"[Extractor] {model_name} returned {res.status_code}, waiting 2s before failover...")
-                                time.sleep(2)
-                            else:
-                                print(f"[Extractor] {model_name} status {res.status_code}: {res.text[:120]}")
-                                break
-                        except Exception as m_err:
-                            print(f"[Extractor] {model_name} error: {m_err}")
-                            time.sleep(1)
+            for model_name in models_to_try:
+                for retry_attempt in range(2):
+                    try:
+                        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
+                        res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=60)
+                        if res.status_code == 200:
+                            res_data = res.json()
+                            candidates = res_data.get("candidates", [])
+                            if candidates:
+                                res_parts = candidates[0].get("content", {}).get("parts", [])
+                                if res_parts and "text" in res_parts[0]:
+                                    transcript = res_parts[0]["text"].strip()
+                                    if transcript:
+                                        print(f"[Extractor] Successfully analyzed video via {model_name} ({len(transcript.split())} words)")
+                                        return transcript
+                        elif res.status_code in [429, 503]:
+                            print(f"[Extractor] {model_name} returned {res.status_code}, waiting 3s before retry/failover...")
+                            time.sleep(3)
+                        else:
+                            print(f"[Extractor] {model_name} status {res.status_code}: {res.text[:120]}")
+                            break
+                    except Exception as m_err:
+                        print(f"[Extractor] {model_name} error: {m_err}")
+                        time.sleep(2)
         except Exception as g_err:
             print(f"[Extractor] Gemini multimodal processing error: {g_err}")
+            traceback.print_exc()
 
-    # 2. Try AssemblyAI Fallback    # 2. Try AssemblyAI Fallback
+    # 2. Try AssemblyAI Fallback    # 2. Try AssemblyAI Fallback    # 2. Try AssemblyAI Fallback
     aai_key = os.getenv("ASSEMBLYAI_API_KEY")
     if aai_key and _AAI_AVAILABLE:
         try:

@@ -4138,9 +4138,10 @@ function initOwnAdDoubleDown() {
             const file = e.target.files[0];
             if (!file) return;
 
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
             if (progressEl) {
                 progressEl.classList.remove('hidden');
-                progressEl.innerHTML = '<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Transcribing audio via Gemini AI...';
+                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Uploading & analyzing video (${sizeMb} MB) via Gemini AI... please wait a few seconds.`;
             }
             const formData = new FormData();
             formData.append('file', file);
@@ -4424,9 +4425,10 @@ function initCompetitorAdRemixer() {
             const file = e.target.files[0];
             if (!file) return;
 
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
             if (progressEl) {
                 progressEl.classList.remove('hidden');
-                progressEl.innerHTML = '<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Transcribing audio via Gemini AI...';
+                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Uploading & analyzing video (${sizeMb} MB) via Gemini AI... please wait a few seconds.`;
             }
             const formData = new FormData();
             formData.append('file', file);
