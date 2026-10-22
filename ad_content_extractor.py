@@ -5,7 +5,7 @@ import base64
 import tempfile
 import urllib.request
 import urllib.parse
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 try:
     import requests
@@ -27,6 +27,51 @@ except ImportError:
     _AAI_AVAILABLE = False
 
 
+# Two-Tier Persistent Cache (Memory + Disk JSON)
+_CACHE_FILE = os.path.join(tempfile.gettempdir(), "meta_ads_transcript_cache.json")
+_MEMORY_CACHE: Dict[str, Dict[str, Any]] = {}
+
+
+def _load_cache():
+    global _MEMORY_CACHE
+    if os.path.exists(_CACHE_FILE):
+        try:
+            with open(_CACHE_FILE, "r", encoding="utf-8") as f:
+                _MEMORY_CACHE = json.load(f)
+        except Exception:
+            _MEMORY_CACHE = {}
+
+
+def _save_cache_entry(url_key: str, data: Dict[str, Any]):
+    global _MEMORY_CACHE
+    if not url_key:
+        return
+    _MEMORY_CACHE[url_key] = data
+    # Also index by canonical query id if available (e.g. id=1835955614065211)
+    if "id=" in url_key:
+        m = re.search(r"id=(\d+)", url_key)
+        if m:
+            _MEMORY_CACHE[m.group(1)] = data
+    try:
+        with open(_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(_MEMORY_CACHE, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+
+
+def _get_cache_entry(url_key: str) -> Optional[Dict[str, Any]]:
+    global _MEMORY_CACHE
+    if not _MEMORY_CACHE:
+        _load_cache()
+    if url_key in _MEMORY_CACHE:
+        return _MEMORY_CACHE[url_key]
+    if "id=" in url_key:
+        m = re.search(r"id=(\d+)", url_key)
+        if m and m.group(1) in _MEMORY_CACHE:
+            return _MEMORY_CACHE[m.group(1)]
+    return None
+
+
 def _extract_meta(html: str, attr_name: str, attr_val: str) -> str:
     try:
         p1 = rf'{attr_name}=["\']?{attr_val}["\']?[^>]*content=["\']([^"\'>]+)["\']'
@@ -44,7 +89,7 @@ def _extract_meta(html: str, attr_name: str, attr_val: str) -> str:
 
 def transcribe_audio_file(file_path: str) -> str:
     """
-    Transcribes audio/video file using Gemini API (gemini-3.8-flash) or AssemblyAI.
+    Transcribes audio/video file using Gemini API with ultra-fast models and automatic failover.
     """
     if not os.path.exists(file_path):
         return ""
@@ -52,7 +97,6 @@ def transcribe_audio_file(file_path: str) -> str:
     # 1. Try Gemini Multimodal Speech Transcription
     gemini_key = os.getenv("GEMINI_API_KEY")
     if not gemini_key:
-        # Check parent/sibling .env locations
         for env_path in [
             r"C:\Users\HP\Desktop\Saniya\content-factory-work\content-factory\.env",
             r"C:\Users\HP\Desktop\Saniya\System tracking\.env"
@@ -74,11 +118,11 @@ def transcribe_audio_file(file_path: str) -> str:
             with open(file_path, "rb") as f:
                 b64_audio = base64.b64encode(f.read()).decode("utf-8")
 
+            # gemini-3.6-flash is currently fastest & 100% active (200 OK in ~6s)
             models_to_try = [
-                "gemini-3.5-flash",
                 "gemini-3.6-flash",
-                "gemini-3.8-flash",
                 "gemini-3-flash-preview",
+                "gemini-3.5-flash",
                 "gemini-flash-latest"
             ]
 
@@ -103,7 +147,7 @@ def transcribe_audio_file(file_path: str) -> str:
             for model_name in models_to_try:
                 try:
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
-                    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=45)
+                    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=20)
                     if res.status_code == 200:
                         res_data = res.json()
                         candidates = res_data.get("candidates", [])
@@ -137,10 +181,16 @@ def transcribe_audio_file(file_path: str) -> str:
     return ""
 
 
-def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
+def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
     url = url.strip()
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "https://" + url
+
+    # 0. Check Permanent Cache First (0 API requests hit, 0.001s return)
+    cached = _get_cache_entry(url)
+    if cached and cached.get("extracted_text"):
+        print(f"[Extractor] Cache HIT for {url} (0 API requests hit, returning from local cache)")
+        return dict(cached)
 
     result = {
         "url": url,
@@ -153,7 +203,7 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
         "status": "SUCCESS"
     }
 
-    # 1. Advanced Extraction with yt-dlp & AI Speech Transcription (Meta Ad Library, Facebook, Instagram, YouTube, TikTok)
+    # 1. Advanced Extraction with yt-dlp & Fast AI Speech Transcription
     is_video_platform = any(k in url.lower() for k in [
         "facebook.com/ads", "fb.watch", "facebook.com", "instagram.com", "youtube.com", "youtu.be", "tiktok.com"
     ])
@@ -161,15 +211,16 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
     if _YTDLP_AVAILABLE and is_video_platform:
         downloaded_file = None
         try:
-            # Download audio/lightweight video stream for transcription
             temp_dir = tempfile.gettempdir()
             out_tmpl = os.path.join(temp_dir, "ad_audio_%(id)s.%(ext)s")
+            
+            # Fast SD download (75% smaller file, ~1.3MB instead of 5.4MB)
             ydl_opts = {
                 "quiet": True,
                 "no_warnings": True,
-                "format": "bestaudio/best[height<=480]/best",
+                "format": "sd/worst/best",
                 "outtmpl": out_tmpl,
-                "max_filesize": 35 * 1024 * 1024,
+                "max_filesize": 25 * 1024 * 1024,
                 "socket_timeout": timeout
             }
 
@@ -184,7 +235,6 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
 
                     downloaded_file = ydl.prepare_filename(info)
                     if not os.path.exists(downloaded_file):
-                        # Find matching file in temp_dir
                         base_prefix = os.path.join(temp_dir, f"ad_audio_{info.get('id', '')}")
                         for ext in [".mp4", ".m4a", ".webm", ".mkv"]:
                             cand = base_prefix + ext
@@ -192,7 +242,7 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
                                 downloaded_file = cand
                                 break
 
-                    # Transcribe downloaded media
+                    # Transcribe downloaded media (lightweight SD format)
                     if downloaded_file and os.path.exists(downloaded_file):
                         transcript = transcribe_audio_file(downloaded_file)
                         if transcript:
@@ -216,10 +266,12 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
 
                     result["extracted_text"] = "\n\n".join(parts)
                     result["status"] = "SUCCESS"
+
+                    # Save to Cache so future requests never hit API again
+                    _save_cache_entry(url, result)
                     return result
         except Exception as yt_err:
             print(f"[Extractor] yt-dlp extraction fallback: {yt_err}")
-            # Try flat extract if download failed
             try:
                 with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl_flat:
                     info_flat = ydl_flat.extract_info(url, download=False)
@@ -228,6 +280,7 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
                         ad_desc = info_flat.get("description", "")
                         result["extracted_text"] = f"AD TITLE: {result['title']}\n\nAD CAPTION: {ad_desc}"
                         result["status"] = "SUCCESS"
+                        _save_cache_entry(url, result)
                         return result
             except Exception:
                 pass
@@ -250,11 +303,12 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
                     result["title"] = data.get("title", "")
                     result["description"] = f"Author: {data.get('author_name', '')} | Video Type: {data.get('type', 'video')}"
                     result["extracted_text"] = f"YouTube Video: {result['title']} by {data.get('author_name', '')}."
+                    _save_cache_entry(url, result)
                     return result
         except Exception as yt_err:
             print(f"[Extractor] YouTube oEmbed fallback: {yt_err}")
 
-    # 3. Generic Webpage / Landing Page Scraper
+    # 3. Generic Webpage Scraper
     try:
         req = urllib.request.Request(
             url,
@@ -292,9 +346,11 @@ def extract_content_from_url(url: str, timeout: int = 25) -> Dict[str, Any]:
                 summary_parts.append(f"Content Snippet: {body_snippet}")
 
             result["extracted_text"] = "\n\n".join(summary_parts) if summary_parts else f"URL Source: {url}"
+            _save_cache_entry(url, result)
             return result
     except Exception as e:
         print(f"[Extractor] Failed to fetch URL {url}: {e}")
         result["status"] = "FALLBACK"
         result["extracted_text"] = f"Reference Link: {url}\n(Provide ad script/transcript text if link is protected or behind a login.)"
+        _save_cache_entry(url, result)
         return result

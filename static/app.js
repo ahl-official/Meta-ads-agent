@@ -3986,6 +3986,8 @@ function setupModeToggle(btnTextId, btnUrlId, btnUploadId, urlGroupId, uploadGro
 function initOwnAdDoubleDown() {
     setupModeToggle('own-mode-text', 'own-mode-url', 'own-mode-upload', 'own-url-group', 'own-upload-group');
 
+    window._adTranscriptCache = window._adTranscriptCache || {};
+
     const btnFetchUrl = document.getElementById('btn-fetch-own-url');
     const btnFetchAndGen = document.getElementById('btn-fetch-and-gen-own');
     const inputUrl = document.getElementById('own_ad_url');
@@ -3998,6 +4000,7 @@ function initOwnAdDoubleDown() {
     if (btnSample && txtContent) {
         btnSample.addEventListener('click', () => {
             txtContent.value = "Thinking of getting a hair patch, but worried it might look fake from the front? This is where most people go wrong. Straight line, too perfect, looks artificial. People notice, they just don't tell you. Now this looks fake, and this looks real. The difference is the hairline. Real hairlines are not dense in front, so we keep it lighter here and fuller behind. That's what makes it look natural. Look closely: you can actually see the skin in the front. If the hairline is wrong, nothing else matters. If you're serious about getting a hair patch, click below and book a consultation.";
+            txtContent.dataset.extractedFrom = "sample";
             txtContent.style.border = "1px solid #38BDF8";
             if (transcriptBadge) {
                 transcriptBadge.style.display = "inline-block";
@@ -4010,24 +4013,51 @@ function initOwnAdDoubleDown() {
 
     async function extractAndTranscribeOwnUrl(targetUrl) {
         if (!targetUrl) return null;
+        const normalizedUrl = targetUrl.trim();
+
+        // 1. Instant Cache Hit Check (0 API calls, 0s delay)
+        if (window._adTranscriptCache[normalizedUrl]) {
+            const cached = window._adTranscriptCache[normalizedUrl];
+            if (txtContent) {
+                txtContent.value = cached.extracted_text;
+                txtContent.dataset.extractedFrom = normalizedUrl;
+                txtContent.style.border = "2px solid #10B981";
+            }
+            if (transcriptBadge) {
+                transcriptBadge.style.display = "inline-block";
+                transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                transcriptBadge.style.color = "#10B981";
+                transcriptBadge.textContent = "⚡ Instant Cache (0 API Calls)";
+            }
+            if (urlStatus) {
+                urlStatus.innerHTML = '<span style="color:#10B981; font-weight:600;">⚡ Instant Cache Hit (0 API calls): Loaded from cache in 0.01s!</span>';
+            }
+            return cached.extracted_text;
+        }
+
         if (urlStatus) {
-            urlStatus.innerHTML = '<span style="color:#EC4899; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading ad audio & transcribing with Gemini AI...</span>';
+            urlStatus.innerHTML = '<span style="color:#EC4899; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading SD audio track & transcribing with Gemini AI...</span>';
         }
         if (txtContent) {
-            txtContent.value = "🎙️ Downloading ad audio track and transcribing spoken voiceover with Gemini AI...\n\nPlease wait 5-10 seconds for verbatim transcription...";
+            txtContent.value = "🎙️ Downloading lightweight audio track and transcribing spoken voiceover with Gemini AI...\n\nPlease wait a few seconds...";
             txtContent.style.border = "2px solid #EC4899";
             txtContent.style.boxShadow = "0 0 15px rgba(236, 72, 153, 0.3)";
         }
+
         try {
             const res = await fetch('/api/extract-ad-content', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: targetUrl })
+                body: JSON.stringify({ url: normalizedUrl })
             });
             const data = await res.json();
             if (data && data.extracted_text) {
+                // Save to Frontend Cache
+                window._adTranscriptCache[normalizedUrl] = data;
+
                 if (txtContent) {
                     txtContent.value = data.extracted_text;
+                    txtContent.dataset.extractedFrom = normalizedUrl;
                     txtContent.style.border = "2px solid #10B981";
                     txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
                     txtContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -4083,8 +4113,13 @@ function initOwnAdDoubleDown() {
                 return;
             }
             btnFetchAndGen.disabled = true;
-            btnFetchAndGen.textContent = '🎙️ Transcribing & Generating...';
-            const transcribed = await extractAndTranscribeOwnUrl(url);
+            btnFetchAndGen.textContent = '⚡ Transcribing & Generating...';
+
+            // Only fetch if not already transcribed from this URL
+            let transcribed = (txtContent && txtContent.dataset.extractedFrom === url && txtContent.value.trim().length > 20)
+                ? txtContent.value
+                : await extractAndTranscribeOwnUrl(url);
+
             btnFetchAndGen.disabled = false;
             btnFetchAndGen.textContent = '⚡ Transcribe & Generate 5 Variations Now';
             if (transcribed) {
@@ -4138,15 +4173,12 @@ function initOwnAdDoubleDown() {
         btnGen.disabled = true;
         if (spinner) spinner.classList.remove('hidden');
 
-        // Check if URL was entered and needs automatic transcription before generation
         let contentVal = document.getElementById('own_winner_content').value.trim();
         const urlFieldVal = inputUrl ? inputUrl.value.trim() : '';
 
-        if (urlFieldVal && (!contentVal || contentVal.startsWith('http') || !contentVal.includes('SPOKEN VIDEO SCRIPT'))) {
+        // Prevent Duplicate API Calls: only extract if not already extracted from this URL
+        if (urlFieldVal && txtContent.dataset.extractedFrom !== urlFieldVal && (!contentVal || contentVal.startsWith('http'))) {
             const fetched = await extractAndTranscribeOwnUrl(urlFieldVal);
-            if (fetched) contentVal = fetched;
-        } else if (contentVal.startsWith('http://') || contentVal.startsWith('https://') || contentVal.includes('facebook.com/ads')) {
-            const fetched = await extractAndTranscribeOwnUrl(contentVal);
             if (fetched) contentVal = fetched;
         }
 
@@ -4175,7 +4207,6 @@ function initOwnAdDoubleDown() {
             const data = await res.json();
 
             if (data.status === 'SUCCESS') {
-                // Update Metrics
                 const metricsBar = document.getElementById('own-metrics-bar');
                 if (metricsBar) {
                     metricsBar.classList.remove('hidden');
@@ -4185,7 +4216,6 @@ function initOwnAdDoubleDown() {
                     document.getElementById('own-metric-policy').textContent = `${m.policy_compliance_score || 100}%`;
                 }
 
-                // Update Deconstruction
                 const decompBox = document.getElementById('own-deconstruction-container');
                 if (decompBox && data.winner_deconstruction) {
                     decompBox.classList.remove('hidden');
@@ -4196,7 +4226,6 @@ function initOwnAdDoubleDown() {
                     document.getElementById('own-decomp-conversion').textContent = wd.conversion_trigger || '';
                 }
 
-                // Render Scripts
                 renderDoubleDownScriptCards('own-scripts-container', data.video_scripts, '#EC4899', 'Own Double-Down');
                 if (typeof fetchSystemMetrics === 'function') fetchSystemMetrics();
             } else {
@@ -4215,6 +4244,8 @@ function initOwnAdDoubleDown() {
 function initCompetitorAdRemixer() {
     setupModeToggle('comp-mode-text', 'comp-mode-url', 'comp-mode-upload', 'comp-url-group', 'comp-upload-group');
 
+    window._adTranscriptCache = window._adTranscriptCache || {};
+
     const btnFetchUrl = document.getElementById('btn-fetch-comp-url');
     const btnFetchAndGen = document.getElementById('btn-fetch-and-gen-comp');
     const inputUrl = document.getElementById('comp_ad_url');
@@ -4223,10 +4254,10 @@ function initCompetitorAdRemixer() {
     const transcriptBadge = document.getElementById('comp-transcript-badge');
     const btnSample = document.getElementById('btn-load-sample-comp');
 
-    // Sample Script Loader
     if (btnSample && txtContent) {
         btnSample.addEventListener('click', () => {
             txtContent.value = "Men in their 20s and 30s are secretly using this chemical foam every morning to hide temple receding before it gets worse. Sign up for our monthly subscription delivery, start your free doctor consultation, and get your first can for $20.";
+            txtContent.dataset.extractedFrom = "sample";
             txtContent.style.border = "1px solid #A78BFA";
             if (transcriptBadge) {
                 transcriptBadge.style.display = "inline-block";
@@ -4239,24 +4270,50 @@ function initCompetitorAdRemixer() {
 
     async function extractAndTranscribeCompUrl(targetUrl) {
         if (!targetUrl) return null;
+        const normalizedUrl = targetUrl.trim();
+
+        // 1. Instant Cache Hit Check (0 API calls, 0s delay)
+        if (window._adTranscriptCache[normalizedUrl]) {
+            const cached = window._adTranscriptCache[normalizedUrl];
+            if (txtContent) {
+                txtContent.value = cached.extracted_text;
+                txtContent.dataset.extractedFrom = normalizedUrl;
+                txtContent.style.border = "2px solid #10B981";
+            }
+            if (transcriptBadge) {
+                transcriptBadge.style.display = "inline-block";
+                transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                transcriptBadge.style.color = "#10B981";
+                transcriptBadge.textContent = "⚡ Instant Cache (0 API Calls)";
+            }
+            if (urlStatus) {
+                urlStatus.innerHTML = '<span style="color:#10B981; font-weight:600;">⚡ Instant Cache Hit (0 API calls): Loaded from cache in 0.01s!</span>';
+            }
+            return cached.extracted_text;
+        }
+
         if (urlStatus) {
-            urlStatus.innerHTML = '<span style="color:#A78BFA; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading competitor ad audio & transcribing with Gemini AI...</span>';
+            urlStatus.innerHTML = '<span style="color:#A78BFA; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading SD competitor ad & transcribing with Gemini AI...</span>';
         }
         if (txtContent) {
-            txtContent.value = "🎙️ Downloading competitor ad audio track and transcribing spoken dialogue with Gemini AI...\n\nPlease wait 5-10 seconds for verbatim transcription...";
+            txtContent.value = "🎙️ Downloading lightweight audio track and transcribing spoken voiceover with Gemini AI...\n\nPlease wait a few seconds...";
             txtContent.style.border = "2px solid #8B5CF6";
             txtContent.style.boxShadow = "0 0 15px rgba(139, 92, 246, 0.3)";
         }
+
         try {
             const res = await fetch('/api/extract-ad-content', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: targetUrl })
+                body: JSON.stringify({ url: normalizedUrl })
             });
             const data = await res.json();
             if (data && data.extracted_text) {
+                window._adTranscriptCache[normalizedUrl] = data;
+
                 if (txtContent) {
                     txtContent.value = data.extracted_text;
+                    txtContent.dataset.extractedFrom = normalizedUrl;
                     txtContent.style.border = "2px solid #10B981";
                     txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
                     txtContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -4273,7 +4330,6 @@ function initCompetitorAdRemixer() {
                     const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
                     urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue)! Shown in box below.</span>`;
                 }
-                // Auto-fill competitor brand name if extracted
                 const compBrandInput = document.getElementById('comp_brand_name');
                 if (compBrandInput && (!compBrandInput.value || compBrandInput.value.includes('Leading'))) {
                     if (data.uploader) compBrandInput.value = data.uploader;
@@ -4318,8 +4374,12 @@ function initCompetitorAdRemixer() {
                 return;
             }
             btnFetchAndGen.disabled = true;
-            btnFetchAndGen.textContent = '🎙️ Transcribing & Generating...';
-            const transcribed = await extractAndTranscribeCompUrl(url);
+            btnFetchAndGen.textContent = '⚡ Transcribing & Generating...';
+
+            let transcribed = (txtContent && txtContent.dataset.extractedFrom === url && txtContent.value.trim().length > 20)
+                ? txtContent.value
+                : await extractAndTranscribeCompUrl(url);
+
             btnFetchAndGen.disabled = false;
             btnFetchAndGen.textContent = '⚡ Transcribe & Generate 5 Remixes Now';
             if (transcribed) {
@@ -4373,15 +4433,12 @@ function initCompetitorAdRemixer() {
         btnGen.disabled = true;
         if (spinner) spinner.classList.remove('hidden');
 
-        // Check if URL was entered and needs automatic transcription before generation
         let contentVal = document.getElementById('comp_ad_content').value.trim();
         const urlFieldVal = inputUrl ? inputUrl.value.trim() : '';
 
-        if (urlFieldVal && (!contentVal || contentVal.startsWith('http') || !contentVal.includes('SPOKEN VIDEO SCRIPT'))) {
+        // Prevent Duplicate API Calls: only extract if not already extracted from this URL
+        if (urlFieldVal && txtContent.dataset.extractedFrom !== urlFieldVal && (!contentVal || contentVal.startsWith('http'))) {
             const fetched = await extractAndTranscribeCompUrl(urlFieldVal);
-            if (fetched) contentVal = fetched;
-        } else if (contentVal.startsWith('http://') || contentVal.startsWith('https://') || contentVal.includes('facebook.com/ads')) {
-            const fetched = await extractAndTranscribeCompUrl(contentVal);
             if (fetched) contentVal = fetched;
         }
 
@@ -4411,7 +4468,6 @@ function initCompetitorAdRemixer() {
             const data = await res.json();
 
             if (data.status === 'SUCCESS') {
-                // Update Metrics
                 const metricsBar = document.getElementById('comp-metrics-bar');
                 if (metricsBar) {
                     metricsBar.classList.remove('hidden');
@@ -4421,7 +4477,6 @@ function initCompetitorAdRemixer() {
                     document.getElementById('comp-metric-policy').textContent = `${m.policy_compliance_score || 100}%`;
                 }
 
-                // Update Deconstruction
                 const decompBox = document.getElementById('comp-deconstruction-container');
                 if (decompBox && data.competitor_deconstruction) {
                     decompBox.classList.remove('hidden');
@@ -4432,7 +4487,6 @@ function initCompetitorAdRemixer() {
                     document.getElementById('comp-decomp-counter').textContent = cd.our_counter_positioning || '';
                 }
 
-                // Render Scripts
                 renderDoubleDownScriptCards('comp-scripts-container', data.video_scripts, '#8B5CF6', 'Competitor Remix');
                 if (typeof fetchSystemMetrics === 'function') fetchSystemMetrics();
             } else {

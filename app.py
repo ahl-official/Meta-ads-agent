@@ -1484,7 +1484,8 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
 
     # Check if winning ad content is a URL - if so, auto-extract & transcribe audio
     winner_content = request.winner_content
-    if winner_content and (winner_content.strip().startswith("http://") or winner_content.strip().startswith("https://") or "facebook.com/ads" in winner_content):
+    # Only extract if winner_content is strictly a single raw URL token
+    if winner_content and (winner_content.strip().startswith("http://") or winner_content.strip().startswith("https://")) and len(winner_content.strip().split()) == 1:
         try:
             print(f"[Auto-Extractor] Detected URL in winner_content, extracting & transcribing audio...")
             extracted = await asyncio.to_thread(extract_content_from_url, winner_content.strip())
@@ -1630,7 +1631,8 @@ async def generate_competitor_remix(request: CompetitorAdRemixRequest):
 
     # Check if competitor content is a URL - if so, auto-extract & transcribe audio
     competitor_content = request.competitor_content
-    if competitor_content and (competitor_content.strip().startswith("http://") or competitor_content.strip().startswith("https://") or "facebook.com/ads" in competitor_content):
+    # Only extract if competitor_content is strictly a single raw URL token
+    if competitor_content and (competitor_content.strip().startswith("http://") or competitor_content.strip().startswith("https://")) and len(competitor_content.strip().split()) == 1:
         try:
             print(f"[Auto-Extractor] Detected URL in competitor_content, extracting & transcribing audio...")
             extracted = await asyncio.to_thread(extract_content_from_url, competitor_content.strip())
