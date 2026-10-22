@@ -74,7 +74,14 @@ def transcribe_audio_file(file_path: str) -> str:
             with open(file_path, "rb") as f:
                 b64_audio = base64.b64encode(f.read()).decode("utf-8")
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={gemini_key}"
+            models_to_try = [
+                "gemini-3.5-flash",
+                "gemini-3.6-flash",
+                "gemini-3.8-flash",
+                "gemini-3-flash-preview",
+                "gemini-flash-latest"
+            ]
+
             payload = {
                 "contents": [{
                     "parts": [
@@ -82,7 +89,7 @@ def transcribe_audio_file(file_path: str) -> str:
                             "text": (
                                 "You are an expert audio transcriptionist. Listen to this video audio and transcribe "
                                 "every spoken word verbatim in the spoken language (English, Hindi, or Hinglish). "
-                                "Do not add commentary, notes, or intros. Return only the spoken dialogue transcript."
+                                "Do not add commentary, notes, or intros. Return only the verbatim spoken dialogue transcript."
                             )
                         },
                         {"inline_data": {"mime_type": "video/mp4", "data": b64_audio}}
@@ -92,19 +99,25 @@ def transcribe_audio_file(file_path: str) -> str:
                     "temperature": 0.1
                 }
             }
-            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=60)
-            if res.status_code == 200:
-                res_data = res.json()
-                candidates = res_data.get("candidates", [])
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    if parts and "text" in parts[0]:
-                        transcript = parts[0]["text"].strip()
-                        if transcript:
-                            print(f"[Extractor] Successfully transcribed audio via Gemini ({len(transcript.split())} words)")
-                            return transcript
-            else:
-                print(f"[Extractor] Gemini API transcription returned status {res.status_code}: {res.text[:200]}")
+
+            for model_name in models_to_try:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
+                    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=45)
+                    if res.status_code == 200:
+                        res_data = res.json()
+                        candidates = res_data.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            if parts and "text" in parts[0]:
+                                transcript = parts[0]["text"].strip()
+                                if transcript:
+                                    print(f"[Extractor] Successfully transcribed audio via {model_name} ({len(transcript.split())} words)")
+                                    return transcript
+                    else:
+                        print(f"[Extractor] {model_name} returned status {res.status_code}, trying next model...")
+                except Exception as m_err:
+                    print(f"[Extractor] {model_name} error: {m_err}, trying next model...")
         except Exception as g_err:
             print(f"[Extractor] Gemini transcription error: {g_err}")
 

@@ -348,7 +348,7 @@ async def generate_benefits(request: BenefitsExtractionRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         benefits_engine.build_system_prompt,
-        product_name=request.product_name,
+        product_name=product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries or [],
         retrieved_context=context_text
@@ -369,7 +369,7 @@ async def generate_benefits(request: BenefitsExtractionRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         benefits_engine.generate_10_benefits,
-        product_name=request.product_name,
+        product_name=product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries,
         topic_filter=request.topic_filter
@@ -481,7 +481,7 @@ async def generate_angles(request: BenefitsAngleRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         angle_engine.build_system_prompt,
-        product_name=request.product_name,
+        product_name=product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries or [],
         angles_per_benefit=request.angles_per_benefit,
@@ -503,7 +503,7 @@ async def generate_angles(request: BenefitsAngleRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         angle_engine.generate_benefits_and_angles,
-        product_name=request.product_name,
+        product_name=product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries,
         angles_per_benefit=request.angles_per_benefit,
@@ -619,7 +619,7 @@ async def generate_video_scripts(request: VideoScriptRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         video_engine.build_system_prompt,
-        product_name=request.product_name,
+        product_name=product_name,
         chosen_angle=request.chosen_angle,
         chosen_hook=request.chosen_hook,
         target_persona=request.target_persona,
@@ -643,7 +643,7 @@ async def generate_video_scripts(request: VideoScriptRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         video_engine.generate_video_scripts,
-        product_name=request.product_name,
+        product_name=product_name,
         chosen_angle=request.chosen_angle,
         chosen_hook=request.chosen_hook,
         target_persona=request.target_persona,
@@ -1017,7 +1017,7 @@ async def generate_creative_direction(request: CreativeDirectionRequest):
     gen_start = time.time()
     creative_data, metrics, token_usage = await asyncio.to_thread(
         creative_engine.generate_creative_direction,
-        product_name=request.product_name,
+        product_name=product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
         global_feedback=request.global_feedback,
@@ -1087,7 +1087,7 @@ async def generate_thumbnail_strategy(request: ThumbnailStrategyRequest):
     gen_start = time.time()
     thumbnail_data, metrics, token_usage = await asyncio.to_thread(
         thumbnail_engine.generate_thumbnail_strategy,
-        product_name=request.product_name,
+        product_name=product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
         target_persona=request.target_persona,
@@ -1158,7 +1158,7 @@ async def generate_thumbnail_design(request: ThumbnailDesignRequest):
     gen_start = time.time()
     design_data, metrics, token_usage = await asyncio.to_thread(
         designer_engine.generate_thumbnail_design,
-        product_name=request.product_name,
+        product_name=product_name,
         script_title=request.script_title,
         concept_title=request.concept_title,
         main_visual=request.main_visual,
@@ -1230,7 +1230,7 @@ async def generate_title_strategy(request: TitleStrategyRequest):
     gen_start = time.time()
     title_data, metrics, token_usage = await asyncio.to_thread(
         title_engine.generate_title_strategy,
-        product_name=request.product_name,
+        product_name=product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
         target_persona=request.target_persona,
@@ -1302,7 +1302,7 @@ async def generate_content_brief(request: ContentBriefRequest):
     gen_start = time.time()
     brief_data, metrics, token_usage = await asyncio.to_thread(
         brief_engine.generate_content_brief,
-        product_name=request.product_name,
+        product_name=product_name,
         target_persona=request.target_persona,
         campaign_objective=request.campaign_objective,
         ad_format=request.ad_format,
@@ -1374,7 +1374,7 @@ async def generate_campaign_metadata(request: CampaignMetadataRequest):
     gen_start = time.time()
     meta_data, metrics, token_usage = await asyncio.to_thread(
         metadata_engine.generate_campaign_metadata,
-        product_name=request.product_name,
+        product_name=product_name,
         script_title=request.script_title,
         target_persona=request.target_persona,
         campaign_objective=request.campaign_objective,
@@ -1466,9 +1466,9 @@ class CompetitorAdRemixRequest(BaseModel):
 @app.post("/api/extract-ad-content")
 async def extract_ad_content(request: ExtractAdContentRequest):
     """
-    Extracts ad copy, title, description, and readable text from YouTube or web URLs.
+    Extracts ad copy, title, description, and audio transcript from video/ad URLs.
     """
-    data = extract_content_from_url(request.url)
+    data = await asyncio.to_thread(extract_content_from_url, request.url)
     return JSONResponse(content=data)
 
 
@@ -1494,11 +1494,14 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
         except Exception as e:
             print(f"[Warning] Backend auto-extraction error: {e}")
 
+    product_name = (request.product_name or "").strip() or "American Hairline Scalp Revival System"
+    winning_notes = (request.winning_notes or "").strip() or "Analyze winning ad transcript to deconstruct the 3-second thumbstop hook, core agitation, proof mechanism, and conversion CTA."
+
     # Span 1: Vector Retrieval for Brand Context & Proof Points
     t0 = time.time()
     context_chunks = await asyncio.to_thread(
         own_ad_engine.retrieve_context,
-        query=f"{request.product_name} winning ad hooks proof benefits {request.winning_notes}",
+        query=f"{product_name} winning ad hooks proof benefits {winning_notes}",
         topic_filter=request.topic_filter,
         top_k=4
     )
@@ -1519,9 +1522,9 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         own_ad_engine.build_system_prompt,
-        product_name=request.product_name,
+        product_name=product_name,
         winner_content=winner_content,
-        winning_notes=request.winning_notes,
+        winning_notes=winning_notes,
         target_persona=request.target_persona,
         total_duration=request.total_duration,
         retrieved_context=context_text
@@ -1542,9 +1545,9 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         own_ad_engine.generate_variations,
-        product_name=request.product_name,
+        product_name=product_name,
         winner_content=winner_content,
-        winning_notes=request.winning_notes,
+        winning_notes=winning_notes,
         target_persona=request.target_persona,
         total_duration=request.total_duration,
         global_feedback=request.global_feedback,

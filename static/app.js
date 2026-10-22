@@ -3986,17 +3986,37 @@ function setupModeToggle(btnTextId, btnUrlId, btnUploadId, urlGroupId, uploadGro
 function initOwnAdDoubleDown() {
     setupModeToggle('own-mode-text', 'own-mode-url', 'own-mode-upload', 'own-url-group', 'own-upload-group');
 
-    // URL Fetcher & Auto-Transcriber
     const btnFetchUrl = document.getElementById('btn-fetch-own-url');
     const btnFetchAndGen = document.getElementById('btn-fetch-and-gen-own');
     const inputUrl = document.getElementById('own_ad_url');
     const urlStatus = document.getElementById('own-url-status');
     const txtContent = document.getElementById('own_winner_content');
+    const transcriptBadge = document.getElementById('own-transcript-badge');
+    const btnSample = document.getElementById('btn-load-sample-own');
+
+    // Sample Script Loader
+    if (btnSample && txtContent) {
+        btnSample.addEventListener('click', () => {
+            txtContent.value = "Thinking of getting a hair patch, but worried it might look fake from the front? This is where most people go wrong. Straight line, too perfect, looks artificial. People notice, they just don't tell you. Now this looks fake, and this looks real. The difference is the hairline. Real hairlines are not dense in front, so we keep it lighter here and fuller behind. That's what makes it look natural. Look closely: you can actually see the skin in the front. If the hairline is wrong, nothing else matters. If you're serious about getting a hair patch, click below and book a consultation.";
+            txtContent.style.border = "1px solid #38BDF8";
+            if (transcriptBadge) {
+                transcriptBadge.style.display = "inline-block";
+                transcriptBadge.style.background = "rgba(56, 189, 248, 0.2)";
+                transcriptBadge.style.color = "#38BDF8";
+                transcriptBadge.textContent = "📄 Sample Ad Loaded";
+            }
+        });
+    }
 
     async function extractAndTranscribeOwnUrl(targetUrl) {
         if (!targetUrl) return null;
         if (urlStatus) {
             urlStatus.innerHTML = '<span style="color:#EC4899; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading ad audio & transcribing with Gemini AI...</span>';
+        }
+        if (txtContent) {
+            txtContent.value = "🎙️ Downloading ad audio track and transcribing spoken voiceover with Gemini AI...\n\nPlease wait 5-10 seconds for verbatim transcription...";
+            txtContent.style.border = "2px solid #EC4899";
+            txtContent.style.boxShadow = "0 0 15px rgba(236, 72, 153, 0.3)";
         }
         try {
             const res = await fetch('/api/extract-ad-content', {
@@ -4005,19 +4025,37 @@ function initOwnAdDoubleDown() {
                 body: JSON.stringify({ url: targetUrl })
             });
             const data = await res.json();
-            if (data.extracted_text) {
-                txtContent.value = data.extracted_text;
-                if (data.audio_transcript) {
-                    const words = data.audio_transcript.trim().split(/\s+/).length;
-                    if (urlStatus) urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue extracted)!</span>`;
-                } else if (urlStatus) {
-                    urlStatus.innerHTML = `<span style="color:#38BDF8; font-weight:600;">✅ Extracted: ${data.title || data.source_type}</span>`;
+            if (data && data.extracted_text) {
+                if (txtContent) {
+                    txtContent.value = data.extracted_text;
+                    txtContent.style.border = "2px solid #10B981";
+                    txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
+                    txtContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
+                }
+                if (transcriptBadge) {
+                    transcriptBadge.style.display = "inline-block";
+                    transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                    transcriptBadge.style.color = "#10B981";
+                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
+                    transcriptBadge.textContent = words > 0 ? `✅ Transcribed (${words} words)` : `✅ Extracted`;
+                }
+                if (urlStatus) {
+                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
+                    urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue)! Shown in box below.</span>`;
                 }
                 return data.extracted_text;
+            } else {
+                throw new Error("No transcription or text returned from URL");
             }
         } catch (err) {
             console.error(err);
-            if (urlStatus) urlStatus.innerHTML = '<span style="color:#F59E0B;">Could not auto-transcribe URL. You can paste script below.</span>';
+            if (txtContent) {
+                txtContent.value = "⚠️ Could not automatically transcribe this link.\n\nReason: " + (err.message || "Network / platform protection") + "\n\nPlease make sure it is a public Meta Ad Library, Facebook, Instagram, or YouTube link, or paste the script directly.";
+                txtContent.style.border = "2px solid #EF4444";
+                txtContent.style.boxShadow = "";
+            }
+            if (urlStatus) urlStatus.innerHTML = '<span style="color:#EF4444;">Transcription error. You can paste ad script directly below.</span>';
         }
         return null;
     }
@@ -4046,12 +4084,13 @@ function initOwnAdDoubleDown() {
             }
             btnFetchAndGen.disabled = true;
             btnFetchAndGen.textContent = '🎙️ Transcribing & Generating...';
-            await extractAndTranscribeOwnUrl(url);
+            const transcribed = await extractAndTranscribeOwnUrl(url);
             btnFetchAndGen.disabled = false;
             btnFetchAndGen.textContent = '⚡ Transcribe & Generate 5 Variations Now';
-            // Trigger form submission
-            const form = document.getElementById('own-doubledown-form');
-            if (form) form.requestSubmit();
+            if (transcribed) {
+                const form = document.getElementById('own-doubledown-form');
+                if (form) form.requestSubmit();
+            }
         });
     }
 
@@ -4111,12 +4150,19 @@ function initOwnAdDoubleDown() {
             if (fetched) contentVal = fetched;
         }
 
+        if (!contentVal) {
+            alert('Please enter an ad link and click Transcribe, or paste an ad script.');
+            btnGen.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+            return;
+        }
+
         const payload = {
-            product_name: document.getElementById('own_product_name').value,
+            product_name: (document.getElementById('own_product_name')?.value || "").trim() || "American Hairline Scalp Revival System",
             winner_content: contentVal,
-            winning_notes: document.getElementById('own_winning_notes').value,
-            target_persona: document.getElementById('own_target_persona').value,
-            total_duration: document.getElementById('own_total_duration').value,
+            winning_notes: (document.getElementById('own_winning_notes')?.value || "").trim(),
+            target_persona: document.getElementById('own_target_persona')?.value || "The Skeptical Solution Seeker (Marcus, 34)",
+            total_duration: document.getElementById('own_total_duration')?.value || "30 Seconds",
             global_feedback: window.sirsGlobalFeedback || ""
         };
 
@@ -4169,17 +4215,37 @@ function initOwnAdDoubleDown() {
 function initCompetitorAdRemixer() {
     setupModeToggle('comp-mode-text', 'comp-mode-url', 'comp-mode-upload', 'comp-url-group', 'comp-upload-group');
 
-    // URL Fetcher & Auto-Transcriber
     const btnFetchUrl = document.getElementById('btn-fetch-comp-url');
     const btnFetchAndGen = document.getElementById('btn-fetch-and-gen-comp');
     const inputUrl = document.getElementById('comp_ad_url');
     const urlStatus = document.getElementById('comp-url-status');
     const txtContent = document.getElementById('comp_ad_content');
+    const transcriptBadge = document.getElementById('comp-transcript-badge');
+    const btnSample = document.getElementById('btn-load-sample-comp');
+
+    // Sample Script Loader
+    if (btnSample && txtContent) {
+        btnSample.addEventListener('click', () => {
+            txtContent.value = "Men in their 20s and 30s are secretly using this chemical foam every morning to hide temple receding before it gets worse. Sign up for our monthly subscription delivery, start your free doctor consultation, and get your first can for $20.";
+            txtContent.style.border = "1px solid #A78BFA";
+            if (transcriptBadge) {
+                transcriptBadge.style.display = "inline-block";
+                transcriptBadge.style.background = "rgba(167, 139, 250, 0.2)";
+                transcriptBadge.style.color = "#A78BFA";
+                transcriptBadge.textContent = "📄 Sample Competitor Ad Loaded";
+            }
+        });
+    }
 
     async function extractAndTranscribeCompUrl(targetUrl) {
         if (!targetUrl) return null;
         if (urlStatus) {
             urlStatus.innerHTML = '<span style="color:#A78BFA; font-weight:600;"><span class="spinner" style="width:12px; height:12px; display:inline-block; vertical-align:middle; margin-right:4px;"></span> Downloading competitor ad audio & transcribing with Gemini AI...</span>';
+        }
+        if (txtContent) {
+            txtContent.value = "🎙️ Downloading competitor ad audio track and transcribing spoken dialogue with Gemini AI...\n\nPlease wait 5-10 seconds for verbatim transcription...";
+            txtContent.style.border = "2px solid #8B5CF6";
+            txtContent.style.boxShadow = "0 0 15px rgba(139, 92, 246, 0.3)";
         }
         try {
             const res = await fetch('/api/extract-ad-content', {
@@ -4188,19 +4254,43 @@ function initCompetitorAdRemixer() {
                 body: JSON.stringify({ url: targetUrl })
             });
             const data = await res.json();
-            if (data.extracted_text) {
-                txtContent.value = data.extracted_text;
-                if (data.audio_transcript) {
-                    const words = data.audio_transcript.trim().split(/\s+/).length;
-                    if (urlStatus) urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue extracted)!</span>`;
-                } else if (urlStatus) {
-                    urlStatus.innerHTML = `<span style="color:#38BDF8; font-weight:600;">✅ Extracted: ${data.title || data.source_type}</span>`;
+            if (data && data.extracted_text) {
+                if (txtContent) {
+                    txtContent.value = data.extracted_text;
+                    txtContent.style.border = "2px solid #10B981";
+                    txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
+                    txtContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
+                }
+                if (transcriptBadge) {
+                    transcriptBadge.style.display = "inline-block";
+                    transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                    transcriptBadge.style.color = "#10B981";
+                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
+                    transcriptBadge.textContent = words > 0 ? `✅ Transcribed (${words} words)` : `✅ Extracted`;
+                }
+                if (urlStatus) {
+                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
+                    urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue)! Shown in box below.</span>`;
+                }
+                // Auto-fill competitor brand name if extracted
+                const compBrandInput = document.getElementById('comp_brand_name');
+                if (compBrandInput && (!compBrandInput.value || compBrandInput.value.includes('Leading'))) {
+                    if (data.uploader) compBrandInput.value = data.uploader;
+                    else if (data.title) compBrandInput.value = data.title;
                 }
                 return data.extracted_text;
+            } else {
+                throw new Error("No transcription or text returned from URL");
             }
         } catch (err) {
             console.error(err);
-            if (urlStatus) urlStatus.innerHTML = '<span style="color:#F59E0B;">Could not auto-transcribe competitor URL. You can paste script below.</span>';
+            if (txtContent) {
+                txtContent.value = "⚠️ Could not automatically transcribe competitor link.\n\nReason: " + (err.message || "Network / platform protection") + "\n\nPlease paste competitor script directly.";
+                txtContent.style.border = "2px solid #EF4444";
+                txtContent.style.boxShadow = "";
+            }
+            if (urlStatus) urlStatus.innerHTML = '<span style="color:#EF4444;">Transcription error. You can paste competitor script directly below.</span>';
         }
         return null;
     }
@@ -4229,12 +4319,13 @@ function initCompetitorAdRemixer() {
             }
             btnFetchAndGen.disabled = true;
             btnFetchAndGen.textContent = '🎙️ Transcribing & Generating...';
-            await extractAndTranscribeCompUrl(url);
+            const transcribed = await extractAndTranscribeCompUrl(url);
             btnFetchAndGen.disabled = false;
             btnFetchAndGen.textContent = '⚡ Transcribe & Generate 5 Remixes Now';
-            // Trigger form submission
-            const form = document.getElementById('competitor-remix-form');
-            if (form) form.requestSubmit();
+            if (transcribed) {
+                const form = document.getElementById('competitor-remix-form');
+                if (form) form.requestSubmit();
+            }
         });
     }
 
@@ -4294,13 +4385,20 @@ function initCompetitorAdRemixer() {
             if (fetched) contentVal = fetched;
         }
 
+        if (!contentVal) {
+            alert('Please enter a competitor ad link and click Transcribe, or paste a competitor script.');
+            btnGen.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+            return;
+        }
+
         const payload = {
-            competitor_name: document.getElementById('comp_brand_name').value,
+            competitor_name: (document.getElementById('comp_brand_name')?.value || "").trim() || "Leading Competitor Brand",
             competitor_content: contentVal,
-            our_product_name: document.getElementById('comp_our_product').value,
-            our_unique_mechanism: document.getElementById('comp_our_mechanism').value,
-            target_persona: document.getElementById('comp_target_persona').value,
-            total_duration: document.getElementById('comp_total_duration').value,
+            our_product_name: (document.getElementById('comp_our_product')?.value || "").trim() || "American Hairline Scalp Revival System",
+            our_unique_mechanism: (document.getElementById('comp_our_mechanism')?.value || "").trim() || "Bio-active botanical peptide signaling that revitalizes dormant follicles without surgery or greasy residue",
+            target_persona: document.getElementById('comp_target_persona')?.value || "The Skeptical Solution Seeker (Marcus, 34)",
+            total_duration: document.getElementById('comp_total_duration')?.value || "30 Seconds",
             global_feedback: window.sirsGlobalFeedback || ""
         };
 

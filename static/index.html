@@ -1701,21 +1701,21 @@
                             <div class="form-group">
                                 <label>INPUT METHOD FOR WINNING AD</label>
                                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; margin-top:4px;">
-                                    <button type="button" class="btn btn-secondary mode-btn active" id="own-mode-text" style="padding:6px 8px; font-size:11px;">📝 Paste Script</button>
-                                    <button type="button" class="btn btn-secondary mode-btn" id="own-mode-url" style="padding:6px 8px; font-size:11px;">🔗 Ad / Video URL</button>
+                                    <button type="button" class="btn btn-secondary mode-btn" id="own-mode-text" style="padding:6px 8px; font-size:11px;">📝 Paste Script</button>
+                                    <button type="button" class="btn btn-secondary mode-btn active" id="own-mode-url" style="padding:6px 8px; font-size:11px;">🔗 Ad / Video URL</button>
                                     <button type="button" class="btn btn-secondary mode-btn" id="own-mode-upload" style="padding:6px 8px; font-size:11px;">🎙️ Upload Media</button>
                                 </div>
                             </div>
 
-                            <!-- URL Input Box -->
-                            <div class="form-group hidden" id="own-url-group">
+                            <!-- URL Input Box (Active by default for URL input) -->
+                            <div class="form-group" id="own-url-group">
                                 <label for="own_ad_url">WINNING AD OR VIDEO URL (META AD LIBRARY, FB, IG, YOUTUBE)</label>
                                 <div style="display:flex; gap:6px;">
                                     <input type="url" id="own_ad_url" class="form-control" placeholder="https://www.facebook.com/ads/library/?id=... or video link" style="flex:1;">
-                                    <button type="button" id="btn-fetch-own-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px; font-weight:600;">🎙️ Transcribe Audio</button>
+                                    <button type="button" id="btn-fetch-own-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 14px; font-size:12px; font-weight:700; background:rgba(236,72,153,0.15); color:#EC4899; border:1px solid #EC4899;">🎙️ Transcribe Audio</button>
                                 </div>
-                                <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
-                                    <button type="button" id="btn-fetch-and-gen-own" class="btn btn-primary" style="padding:6px 14px; font-size:12px; font-weight:700; background:linear-gradient(135deg, #EC4899, #BE185D); border:none; border-radius:6px; cursor:pointer;">
+                                <div style="display:flex; gap:8px; align-items:center; margin-top:6px; flex-wrap:wrap;">
+                                    <button type="button" id="btn-fetch-and-gen-own" class="btn btn-primary" style="padding:7px 14px; font-size:12px; font-weight:700; background:linear-gradient(135deg, #EC4899, #BE185D); border:none; border-radius:6px; cursor:pointer;">
                                         ⚡ Transcribe & Generate 5 Variations Now
                                     </button>
                                     <span id="own-url-status" style="font-size:11px; color:#94A3B8; display:block;"></span>
@@ -1728,26 +1728,20 @@
                                 <input type="file" id="own_media_file" class="form-control" accept="video/*,audio/*">
                                 <div id="own-upload-progress" class="hidden" style="margin-top:6px; font-size:12px; color:#38BDF8;">
                                     <span class="spinner" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></span>
-                                    Transcribing via AssemblyAI...
+                                    Transcribing audio via Gemini AI...
                                 </div>
                             </div>
 
-                            <!-- Winning Ad Text / Script -->
+                            <!-- Winning Ad Text / Script (Shows live transcript here) -->
                             <div class="form-group">
-                                <label for="own_winner_content">WINNING AD SCRIPT / TRANSCRIPT / BREAKDOWN *</label>
-                                <textarea id="own_winner_content" class="form-control" rows="5" required placeholder="Paste winning ad voiceover, script, or breakdown here... (e.g. 'Stop checking your hairline in your car rearview mirror—here is what actually fixes it.')">Stop checking your hairline in your car rearview mirror—here is what actually fixes it. You have tried shampoos, oils, and messy foam solutions that leave your scalp itchy and greasy. Meanwhile, harsh overhead lighting makes your scalp look twice as thin as it feels. American Hairline Scalp Revival System uses targeted peptide micro-delivery to nourish dormant roots directly without surgery or greasiness. Order today with our 90-day density guarantee!</textarea>
-                            </div>
-
-                            <!-- Why It Worked Notes -->
-                            <div class="form-group">
-                                <label for="own_winning_notes">WHY IT WORKED / KEY PERFORMANCE NOTES</label>
-                                <input type="text" id="own_winning_notes" class="form-control" placeholder="e.g., 55% 3-sec thumbstop, rearview mirror hook resonated, high conversion" value="High thumbstop on rearview mirror hook, strong emotional relief on 90-day guarantee">
-                            </div>
-
-                            <!-- Product Name -->
-                            <div class="form-group">
-                                <label for="own_product_name">PRODUCT / OFFER NAME</label>
-                                <input type="text" id="own_product_name" class="form-control" value="American Hairline Scalp Revival System" required>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                    <label for="own_winner_content" style="margin-bottom:0;">WINNING AD SCRIPT / TRANSCRIPT / BREAKDOWN *</label>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span id="own-transcript-badge" style="font-size:11px; padding:2px 8px; border-radius:4px; display:none;"></span>
+                                        <button type="button" id="btn-load-sample-own" style="background:none; border:none; color:#38BDF8; font-size:11px; cursor:pointer; text-decoration:underline;">📄 Load Sample</button>
+                                    </div>
+                                </div>
+                                <textarea id="own_winner_content" class="form-control" rows="6" required placeholder="Paste your winning ad script here, OR enter a Meta Ad Library / video link above and click 'Transcribe Audio' to load the spoken transcript automatically..."></textarea>
                             </div>
 
                             <!-- Target Persona / Audience -->
@@ -1763,21 +1757,41 @@
                             </div>
 
                             <!-- Live Sir Global Feedback Banner -->
-                            <div class="form-group" style="margin-bottom:14px;">
+                            <div class="form-group" style="margin-bottom:12px;">
                                 <div id="own-global-feedback-badge" style="background:rgba(236,72,153,0.08); border:1px dashed #EC4899; padding:8px 10px; border-radius:6px; font-size:11px; color:#CBD5E1;">
                                     <span style="color:#EC4899; font-weight:700;">✨ Sir's Global Feedback:</span> <span id="own-feedback-display">No global feedback applied yet (using default brand rules).</span>
                                 </div>
                             </div>
 
-                            <!-- Duration -->
-                            <div class="form-group">
-                                <label for="own_total_duration">DESIRED VIDEO DURATION</label>
-                                <select id="own_total_duration" class="form-select-dropdown">
-                                    <option value="30 Seconds" selected>30 Seconds (High Velocity)</option>
-                                    <option value="45 Seconds">45 Seconds (Deeper Story & Proof)</option>
-                                    <option value="60 Seconds">60 Seconds (Full Breakdown)</option>
-                                </select>
-                            </div>
+                            <!-- Collapsible Advanced Settings (Optional for easy usage) -->
+                            <details style="margin: 12px 0 16px 0; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 10px 14px;">
+                                <summary style="font-size: 11px; font-weight: 700; color: #94A3B8; cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    ⚙️ Advanced Settings (Optional — AI auto-analyzes transcript if left blank)
+                                </summary>
+                                <div style="margin-top: 10px;">
+                                    <!-- Why It Worked Notes -->
+                                    <div class="form-group">
+                                        <label for="own_winning_notes">WHY IT WORKED / PERFORMANCE NOTES (OPTIONAL)</label>
+                                        <input type="text" id="own_winning_notes" class="form-control" placeholder="Leave blank — AI will automatically deconstruct why the ad worked from the transcript">
+                                    </div>
+
+                                    <!-- Product Name -->
+                                    <div class="form-group">
+                                        <label for="own_product_name">PRODUCT / OFFER NAME (OPTIONAL)</label>
+                                        <input type="text" id="own_product_name" class="form-control" value="American Hairline Scalp Revival System" placeholder="e.g. American Hairline Scalp Revival System">
+                                    </div>
+
+                                    <!-- Duration -->
+                                    <div class="form-group">
+                                        <label for="own_total_duration">DESIRED VIDEO DURATION</label>
+                                        <select id="own_total_duration" class="form-select-dropdown">
+                                            <option value="30 Seconds" selected>30 Seconds (High Velocity)</option>
+                                            <option value="45 Seconds">45 Seconds (Deeper Story & Proof)</option>
+                                            <option value="60 Seconds">60 Seconds (Full Breakdown)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </details>
 
                             <!-- Submit Button -->
                             <button type="submit" id="btn-generate-own" class="btn btn-primary btn-generate" style="background: linear-gradient(135deg, #EC4899, #BE185D);">
@@ -1852,31 +1866,25 @@
                         <p class="card-description">Deconstructs a competitor's winning ad framework and ethically remixes its persuasion blueprint into 5 high-converting video scripts customized 100% to our brand voice & mechanism.</p>
 
                         <form id="competitor-remix-form">
-                            <!-- Competitor Name -->
-                            <div class="form-group">
-                                <label for="comp_brand_name">COMPETITOR BRAND NAME / REFERENCE *</label>
-                                <input type="text" id="comp_brand_name" class="form-control" value="Leading Hair Care Competitor" required placeholder="e.g. Hims, Nutrafol, Keeps, Rogaine">
-                            </div>
-
                             <!-- Input Mode Selector -->
                             <div class="form-group">
                                 <label>COMPETITOR AD INPUT METHOD</label>
                                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; margin-top:4px;">
-                                    <button type="button" class="btn btn-secondary comp-mode-btn active" id="comp-mode-text" style="padding:6px 8px; font-size:11px;">📝 Paste Script</button>
-                                    <button type="button" class="btn btn-secondary comp-mode-btn" id="comp-mode-url" style="padding:6px 8px; font-size:11px;">🔗 Competitor URL</button>
+                                    <button type="button" class="btn btn-secondary comp-mode-btn" id="comp-mode-text" style="padding:6px 8px; font-size:11px;">📝 Paste Script</button>
+                                    <button type="button" class="btn btn-secondary comp-mode-btn active" id="comp-mode-url" style="padding:6px 8px; font-size:11px;">🔗 Competitor URL</button>
                                     <button type="button" class="btn btn-secondary comp-mode-btn" id="comp-mode-upload" style="padding:6px 8px; font-size:11px;">🎙️ Upload Media</button>
                                 </div>
                             </div>
 
-                            <!-- URL Input Box -->
-                            <div class="form-group hidden" id="comp-url-group">
+                            <!-- URL Input Box (Active by default for URL input) -->
+                            <div class="form-group" id="comp-url-group">
                                 <label for="comp_ad_url">COMPETITOR AD / VIDEO URL (META AD LIBRARY, FB, IG)</label>
                                 <div style="display:flex; gap:6px;">
                                     <input type="url" id="comp_ad_url" class="form-control" placeholder="https://www.facebook.com/ads/library/?id=... or competitor video link" style="flex:1;">
-                                    <button type="button" id="btn-fetch-comp-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 12px; font-size:12px; font-weight:600;">🎙️ Transcribe Audio</button>
+                                    <button type="button" id="btn-fetch-comp-url" class="btn btn-secondary" style="white-space:nowrap; padding:6px 14px; font-size:12px; font-weight:700; background:rgba(139,92,246,0.15); color:#A78BFA; border:1px solid #8B5CF6;">🎙️ Transcribe Audio</button>
                                 </div>
-                                <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
-                                    <button type="button" id="btn-fetch-and-gen-comp" class="btn btn-primary" style="padding:6px 14px; font-size:12px; font-weight:700; background:linear-gradient(135deg, #8B5CF6, #6D28D9); border:none; border-radius:6px; cursor:pointer;">
+                                <div style="display:flex; gap:8px; align-items:center; margin-top:6px; flex-wrap:wrap;">
+                                    <button type="button" id="btn-fetch-and-gen-comp" class="btn btn-primary" style="padding:7px 14px; font-size:12px; font-weight:700; background:linear-gradient(135deg, #8B5CF6, #6D28D9); border:none; border-radius:6px; cursor:pointer;">
                                         ⚡ Transcribe & Generate 5 Remixes Now
                                     </button>
                                     <span id="comp-url-status" style="font-size:11px; color:#94A3B8; display:block;"></span>
@@ -1889,26 +1897,20 @@
                                 <input type="file" id="comp_media_file" class="form-control" accept="video/*,audio/*">
                                 <div id="comp-upload-progress" class="hidden" style="margin-top:6px; font-size:12px; color:#A78BFA;">
                                     <span class="spinner" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></span>
-                                    Transcribing via AssemblyAI...
+                                    Transcribing audio via Gemini AI...
                                 </div>
                             </div>
 
-                            <!-- Competitor Ad Content / Script -->
+                            <!-- Competitor Ad Content / Script (Shows live transcript here) -->
                             <div class="form-group">
-                                <label for="comp_ad_content">COMPETITOR SCRIPT / TRANSCRIPT / BREAKDOWN *</label>
-                                <textarea id="comp_ad_content" class="form-control" rows="5" required placeholder="Paste competitor's ad copy, voiceover, or video breakdown here... (e.g. 'Men in their 20s are secretly using this foam to hide temple receding before it gets worse...')">Men in their 20s and 30s are secretly using this chemical foam every morning to hide temple receding before it gets worse. Sign up for our monthly subscription delivery, start your free doctor consultation, and get your first can for $20.</textarea>
-                            </div>
-
-                            <!-- Our Product Name -->
-                            <div class="form-group">
-                                <label for="comp_our_product">OUR PRODUCT NAME</label>
-                                <input type="text" id="comp_our_product" class="form-control" value="American Hairline Scalp Revival System" required>
-                            </div>
-
-                            <!-- Our Unique Mechanism / Advantage -->
-                            <div class="form-group">
-                                <label for="comp_our_mechanism">OUR UNIQUE MECHANISM / ADVANTAGE</label>
-                                <textarea id="comp_our_mechanism" class="form-control" rows="2" placeholder="What makes our solution superior to this competitor?">Bio-active botanical peptide signaling that revitalizes dormant roots in 15-second clean absorption with zero greasy residue and an unconditional 90-day money-back guarantee.</textarea>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                    <label for="comp_ad_content" style="margin-bottom:0;">COMPETITOR SCRIPT / TRANSCRIPT / BREAKDOWN *</label>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <span id="comp-transcript-badge" style="font-size:11px; padding:2px 8px; border-radius:4px; display:none;"></span>
+                                        <button type="button" id="btn-load-sample-comp" style="background:none; border:none; color:#38BDF8; font-size:11px; cursor:pointer; text-decoration:underline;">📄 Load Sample</button>
+                                    </div>
+                                </div>
+                                <textarea id="comp_ad_content" class="form-control" rows="6" required placeholder="Paste competitor's ad copy/script here, OR enter their Meta Ad Library / video link above and click 'Transcribe Audio' to load the spoken transcript automatically..."></textarea>
                             </div>
 
                             <!-- Target Persona / Audience -->
@@ -1924,25 +1926,51 @@
                             </div>
 
                             <!-- Live Sir Global Feedback Banner -->
-                            <div class="form-group" style="margin-bottom:14px;">
+                            <div class="form-group" style="margin-bottom:12px;">
                                 <div id="comp-global-feedback-badge" style="background:rgba(139,92,246,0.08); border:1px dashed #8B5CF6; padding:8px 10px; border-radius:6px; font-size:11px; color:#CBD5E1;">
                                     <span style="color:#A78BFA; font-weight:700;">✨ Sir's Global Feedback:</span> <span id="comp-feedback-display">No global feedback applied yet (using default brand rules).</span>
                                 </div>
                             </div>
 
-                            <!-- Duration -->
-                            <div class="form-group">
-                                <label for="comp_total_duration">DESIRED VIDEO DURATION</label>
-                                <select id="comp_total_duration" class="form-select-dropdown">
-                                    <option value="30 Seconds" selected>30 Seconds (High Velocity)</option>
-                                    <option value="45 Seconds">45 Seconds (Deeper Story & Proof)</option>
-                                    <option value="60 Seconds">60 Seconds (Full Breakdown)</option>
-                                </select>
-                            </div>
+                            <!-- Collapsible Advanced Settings -->
+                            <details style="margin: 12px 0 16px 0; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 10px 14px;">
+                                <summary style="font-size: 11px; font-weight: 700; color: #94A3B8; cursor: pointer; user-select: none; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    ⚙️ Advanced Settings (Optional — Competitor & Brand Overrides)
+                                </summary>
+                                <div style="margin-top: 10px;">
+                                    <!-- Competitor Name -->
+                                    <div class="form-group">
+                                        <label for="comp_brand_name">COMPETITOR BRAND NAME / REFERENCE (OPTIONAL)</label>
+                                        <input type="text" id="comp_brand_name" class="form-control" placeholder="Auto-detected from URL, or enter e.g. Hims, Nutrafol, Keeps">
+                                    </div>
+
+                                    <!-- Our Product Name -->
+                                    <div class="form-group">
+                                        <label for="comp_our_product">OUR PRODUCT NAME (OPTIONAL)</label>
+                                        <input type="text" id="comp_our_product" class="form-control" value="American Hairline Scalp Revival System">
+                                    </div>
+
+                                    <!-- Our Unique Mechanism / Advantage -->
+                                    <div class="form-group">
+                                        <label for="comp_our_mechanism">OUR UNIQUE MECHANISM / ADVANTAGE (OPTIONAL)</label>
+                                        <textarea id="comp_our_mechanism" class="form-control" rows="2" placeholder="Bio-active botanical peptide signaling that revitalizes dormant roots in 15-second clean absorption with zero greasy residue.">Bio-active botanical peptide signaling that revitalizes dormant roots in 15-second clean absorption with zero greasy residue and an unconditional 90-day money-back guarantee.</textarea>
+                                    </div>
+
+                                    <!-- Duration -->
+                                    <div class="form-group">
+                                        <label for="comp_total_duration">DESIRED VIDEO DURATION</label>
+                                        <select id="comp_total_duration" class="form-select-dropdown">
+                                            <option value="30 Seconds" selected>30 Seconds (High Velocity)</option>
+                                            <option value="45 Seconds">45 Seconds (Deeper Story & Proof)</option>
+                                            <option value="60 Seconds">60 Seconds (Full Breakdown)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </details>
 
                             <!-- Submit Button -->
                             <button type="submit" id="btn-generate-comp" class="btn btn-primary btn-generate" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9);">
-                                <span class="btn-text">⚡ Generate 5 Brand Remixes</span>
+                                <span class="btn-text">🚀 Generate 5 Brand Remixes</span>
                                 <span id="comp-spinner" class="spinner hidden"></span>
                             </button>
                         </form>
@@ -2184,7 +2212,7 @@
         </button>
     </div>
 
-    <script src="/static/app.js?v=3.9"></script>
+    <script src="/static/app.js?v=4.5"></script>
 </body>
 
 </html>
