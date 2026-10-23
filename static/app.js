@@ -172,55 +172,8 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
     }
 }
 
-        if (finalData && finalData.transcript_id) {
-            pollTranscription(finalData.transcript_id, txtContent, progressEl);
-            return;
-        }
-
-        if (finalData && finalData.transcription) {
-            const words = finalData.transcription.trim().split(/\s+/).length;
-            txtContent.value = finalData.transcription;
-            txtContent.style.border = "2px solid #10B981";
-            txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
-            setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
-            if (transcriptBadge) {
-                transcriptBadge.style.display = "inline-block";
-                transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
-                transcriptBadge.style.color = "#10B981";
-                transcriptBadge.textContent = `✓ Analyzed (${words} words)`;
-            }
-            if (progressEl) {
-                progressEl.innerHTML = `
-                    <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
-                        <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✓ Video Analyzed & Transcribed (${words} words)!</div>
-                        <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and visual breakdown loaded into the script box below.</div>
-                        <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:${accentGradient}; border:none; cursor:pointer;" onclick="document.getElementById('${formId}').requestSubmit();">
-                            ⚡ Generate 5 Variations from This Video Now
-                        </button>
-                    </div>
-                `;
-            }
-        } else {
-            throw new Error((finalData && (finalData.detail || finalData.message)) || "Could not extract transcription from video.");
-        }
-    } catch (err) {
-        console.error('Media upload error:', err);
-        if (progressEl) {
-            progressEl.innerHTML = `
-                <div style="background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
-                    <div style="color:#EF4444; font-weight:600; font-size:13px; margin-bottom:4px;">⚠️ Upload Notice</div>
-                    <div style="color:#94A3B8; font-size:12px; margin-bottom:6px;">${err.message || 'Server error occurred during processing.'}</div>
-                    <div style="color:#64748B; font-size:11px;">You can also paste the transcript or ad script directly in the text area below.</div>
-                </div>
-            `;
-        }
-    }
-}
-
-
 // --- GLOBAL FEEDBACK LOGIC (SIR'S GLOBAL FEEDBACK) ---
 window.sirsGlobalFeedback = '';
-            updateGlobalFeedbackBadges();
 
 document.addEventListener('DOMContentLoaded', () => {
     const btnApplyFeedback = document.getElementById('btn-apply-global-feedback');
