@@ -173,7 +173,7 @@ def transcribe_audio_file(file_path: str) -> str:
         return ""
 
     # 1. Obtain Gemini API Key
-    gemini_key = os.getenv("GEMINI_API_KEY")
+    gemini_key = _get_gemini_api_key()
     if not gemini_key:
         for env_path in [
             r"C:\Users\HP\Desktop\Saniya\content-factory-work\content-factory\.env",
@@ -376,6 +376,21 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
             _safe_print(f"[Extractor] Fast Meta Ad Library extraction success for {url}")
             _save_cache_entry(url, fast_res)
             return fast_res
+        
+        # If Facebook challenges cloud IP with 403, return clean instant fallback (never hang or run yt-dlp)
+        fallback_res = {
+            "url": url,
+            "title": "Meta Library Ad",
+            "uploader": "Advertiser",
+            "description": "",
+            "extracted_text": "Reference Link: " + url + "\n\n[Meta Ad Library link detected. Please paste the ad script, hook, or caption directly in this box to generate 5 winning variations.]",
+            "video_stream_url": "",
+            "audio_transcript": "",
+            "source_type": "meta_ad_library",
+            "status": "FALLBACK"
+        }
+        _save_cache_entry(url, fallback_res)
+        return fallback_res
 
     result = {
         "url": url,

@@ -54,7 +54,7 @@ def call_gemini_json(system_prompt: str, user_prompt: str, timeout: int = 40) ->
     Direct Gemini API caller with automatic model failover and JSON output guarantee.
     Used when OpenRouter credits are exhausted (402) or as primary/fallback LLM engine.
     """
-    gemini_key = os.getenv("GEMINI_API_KEY")
+    gemini_key = _get_gemini_api_key()
     if not gemini_key:
         for env_path in [
             r"C:\Users\HP\Desktop\Saniya\content-factory-work\content-factory\.env",
@@ -77,9 +77,10 @@ def call_gemini_json(system_prompt: str, user_prompt: str, timeout: int = 40) ->
         return None
 
     models_to_try = [
+        "gemini-flash-lite-latest",
+        "gemini-3.5-flash",
         "gemini-3-flash-preview",
-        "gemini-3.6-flash",
-        "gemini-3.5-flash"
+        "gemini-3.6-flash"
     ]
 
     payload = {
