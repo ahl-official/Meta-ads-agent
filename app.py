@@ -1,3 +1,4 @@
+import requests
 import sys
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -986,6 +987,137 @@ SUPPORTED_MEDIA_EXTS = ('.mp4', '.mov', '.mkv', '.webm', '.avi', '.mp3', '.m4a',
 
 CHUNK_UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "meta_ads_chunks")
 os.makedirs(CHUNK_UPLOAD_DIR, exist_ok=True)
+
+
+class GeminiUploadInitRequest(BaseModel):
+    filename: str
+    mime_type: Optional[str] = "video/mp4"
+    file_size: int
+
+
+class GeminiAnalyzeFileRequest(BaseModel):
+    file_uri: str
+    file_name: str
+    mime_type: Optional[str] = "video/mp4"
+
+
+@app.post("/api/gemini-upload-init")
+async def gemini_upload_init(request: GeminiUploadInitRequest):
+    """
+    Initializes a direct resumable upload session with Google Gemini File API.
+    Returns the Google upload URL so the browser can upload directly to Google,
+    bypassing Vercel's 4.5MB payload limit and timeouts entirely.
+    """
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured")
+
+    headers = {
+        "X-Goog-Upload-Protocol": "resumable",
+        "X-Goog-Upload-Command": "start",
+        "X-Goog-Upload-Header-Content-Length": str(request.file_size),
+        "X-Goog-Upload-Header-Content-Type": request.mime_type or "video/mp4",
+        "Content-Type": "application/json"
+    }
+    metadata = {
+        "file": {
+            "display_name": os.path.basename(request.filename or "ad_video.mp4")
+        }
+    }
+    init_url = f"https://generativelanguage.googleapis.com/upload/v1beta/files?key={gemini_key}"
+    try:
+        init_res = requests.post(init_url, headers=headers, json=metadata, timeout=15)
+        upload_url = init_res.headers.get("X-Goog-Upload-URL")
+        if not upload_url:
+            raise RuntimeError(f"Google File API error ({init_res.status_code}): {init_res.text}")
+        return JSONResponse(content={"status": "SUCCESS", "upload_url": upload_url})
+    except Exception as e:
+        print(f"[API] Gemini upload init error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/gemini-analyze-file")
+async def gemini_analyze_file(request: GeminiAnalyzeFileRequest):
+    """
+    Analyzes an uploaded video/audio file on Gemini File API.
+    Transcribes spoken voiceover verbatim AND produces an in-depth winning ad pattern breakdown.
+    """
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured")
+
+    # Poll processing state if video
+    state = "PROCESSING"
+    retries = 0
+    while state == "PROCESSING" and retries < 25:
+        await asyncio.sleep(2)
+        try:
+            get_res = requests.get(
+                f"https://generativelanguage.googleapis.com/v1beta/{request.file_name}?key={gemini_key}",
+                timeout=10
+            )
+            if get_res.status_code == 200:
+                state = get_res.json().get("state", "ACTIVE")
+                if state != "PROCESSING":
+                    break
+        except Exception:
+            pass
+        retries += 1
+
+    prompt_text = (
+        "You are an expert Meta Ads creative director and video analyst.\n"
+        "Analyze this winning ad video thoroughly for ad reproduction and doubling down:\n\n"
+        "1. VERBATIM SPOKEN DIALOGUE / TRANSCRIPT:\n"
+        "Transcribe every spoken word verbatim in the spoken language (English, Hindi, or Hinglish).\n"
+        "If the ad has no speech (visual only with music), clearly write: '[Visual Ad - No Spoken Dialogue]'.\n\n"
+        "2. WINNING AD PATTERN & SCENE BREAKDOWN:\n"
+        "- Opening Hook (0-3s): The exact visual hook, actor action, or pattern interrupt.\n"
+        "- Agitation & Pain: How the customer's problem or frustration is visually depicted.\n"
+        "- Product / Solution Reveal: How the product/offer is demonstrated.\n"
+        "- Text Overlays & Badges: Key on-screen text, offers, or proof elements.\n"
+        "- Call to Action (CTA): The final offer and closing scene.\n\n"
+        "3. WHAT MADE THIS AD WIN & CONVERT:\n"
+        "- Identify the core emotional trigger, pacing, and visual style.\n\n"
+        "Format your response clearly starting with the transcript and followed by the breakdown."
+    )
+
+    payload = {
+        "contents": [{
+            "parts": [
+                {"text": prompt_text},
+                {"file_data": {"mime_type": request.mime_type or "video/mp4", "file_uri": request.file_uri}}
+            ]
+        }],
+        "generationConfig": {"temperature": 0.2}
+    }
+
+    models_to_try = ["gemini-3-flash-preview", "gemini-3.6-flash", "gemini-3.5-flash"]
+    last_err = ""
+    for model_name in models_to_try:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=45)
+            if res.status_code == 200:
+                res_data = res.json()
+                candidates = res_data.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts and "text" in parts[0]:
+                        transcript = parts[0]["text"].strip()
+                        if transcript:
+                            return JSONResponse(content={
+                                "status": "SUCCESS",
+                                "transcription": transcript
+                            })
+            last_err = res.text[:200]
+        except Exception as e:
+            last_err = str(e)
+
+    return JSONResponse(
+        status_code=500,
+        content={"status": "ERROR", "detail": f"Failed to analyze video: {last_err}"}
+    )
+
 
 @app.post("/api/transcribe-audio")
 async def transcribe_audio_endpoint(file: UploadFile = File(...)):
