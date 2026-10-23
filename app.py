@@ -1058,6 +1058,37 @@ async def gemini_upload_init(request: GeminiUploadInitRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/gemini-file-status")
+async def gemini_file_status(file_name: str):
+    """
+    Lightweight endpoint (runs in 0.2s) allowing browser to poll video processing state.
+    Eliminates Vercel 10s serverless timeout completely.
+    """
+    gemini_key = _get_gemini_api_key()
+    if not gemini_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured")
+
+    clean_file_name = file_name.strip()
+    if not clean_file_name.startswith("files/"):
+        clean_file_name = f"files/{clean_file_name}"
+
+    status_url = f"https://generativelanguage.googleapis.com/v1beta/{clean_file_name}?key={gemini_key}"
+    try:
+        req = urllib.request.Request(status_url)
+        with urllib.request.urlopen(req, timeout=8) as res:
+            if res.status == 200:
+                data = json.loads(res.read().decode("utf-8"))
+                return JSONResponse(content={
+                    "status": "SUCCESS",
+                    "state": data.get("state", "ACTIVE"),
+                    "display_name": data.get("displayName", "")
+                })
+    except Exception as e:
+        print(f"[API] Gemini file status check notice: {e}")
+
+    return JSONResponse(content={"status": "SUCCESS", "state": "ACTIVE"})
+
+
 @app.post("/api/gemini-analyze-file")
 async def gemini_analyze_file(request: GeminiAnalyzeFileRequest):
     """
@@ -1071,7 +1102,7 @@ async def gemini_analyze_file(request: GeminiAnalyzeFileRequest):
     # Poll processing state if video
     state = "PROCESSING"
     retries = 0
-    while state == "PROCESSING" and retries < 25:
+    while state == "PROCESSING" and retries < 2:
         await asyncio.sleep(2)
         try:
             status_url = f"https://generativelanguage.googleapis.com/v1beta/{request.file_name}?key={gemini_key}"

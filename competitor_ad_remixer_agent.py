@@ -172,9 +172,23 @@ Respond STRICTLY with valid JSON with this structure:
 
         user_prompt = f"Deconstruct competitor '{competitor_name}' and generate 5 customized, brand-aligned video scripts for '{our_product_name}'."
 
-        global _OPENROUTER_EXHAUSTED
-        if _OPENAI_AVAILABLE and self.api_key and not _OPENROUTER_EXHAUSTED:
+        # 1. Primary Engine: Google Gemini Flash (Fastest, zero credit/token exhaustion issues)
+        print("[Info] Generating competitor remixes via Gemini Flash...")
+        gemini_raw = call_gemini_json(system_prompt, user_prompt)
+        if gemini_raw:
             try:
+                parsed = self._parse_json_response(gemini_raw, competitor_name, our_product_name, target_persona, total_duration)
+                deconstruction = parsed.get("deconstruction")
+                scripts = parsed.get("scripts", [])
+                if scripts:
+                    print("[Info] Successfully generated 5 remix variations via Gemini Flash!")
+            except Exception as g_err:
+                print(f"[Info] Gemini parsing error: {g_err}")
+
+        # 2. Secondary Fallback: OpenRouter (only attempted if Gemini produced no scripts)
+        if not scripts and _OPENAI_AVAILABLE and self.api_key:
+            try:
+                print("[Info] Gemini unavailable, attempting OpenRouter fallback...")
                 client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
                 response = call_openai_with_retry(
                     client,
@@ -191,31 +205,7 @@ Respond STRICTLY with valid JSON with this structure:
                 deconstruction = parsed.get("deconstruction")
                 scripts = parsed.get("scripts", [])
             except Exception as e:
-                print(f"[Info] OpenRouter call failed ({e}). Attempting Gemini LLM failover...")
-                if "402" in str(e) or "credit" in str(e).lower() or "afford" in str(e).lower():
-                    _OPENROUTER_EXHAUSTED = True
-                    print("[Info] Marked OpenRouter as exhausted. Subsequent calls will route directly to Gemini Flash.")
-                gemini_raw = call_gemini_json(system_prompt, user_prompt)
-                if gemini_raw:
-                    try:
-                        parsed = self._parse_json_response(gemini_raw, competitor_name, our_product_name, target_persona, total_duration)
-                        deconstruction = parsed.get("deconstruction")
-                        scripts = parsed.get("scripts", [])
-                        print("[Info] Successfully generated 5 remix variations via Gemini!")
-                    except Exception as g_err:
-                        print(f"[Info] Gemini parsing error: {g_err}")
-
-        if not scripts:
-            print("[Info] Trying Gemini API directly...")
-            gemini_raw = call_gemini_json(system_prompt, user_prompt)
-            if gemini_raw:
-                try:
-                    parsed = self._parse_json_response(gemini_raw, competitor_name, our_product_name, target_persona, total_duration)
-                    deconstruction = parsed.get("deconstruction")
-                    scripts = parsed.get("scripts", [])
-                    print("[Info] Successfully generated 5 remix variations via Gemini directly!")
-                except Exception as g_err:
-                    print(f"[Info] Gemini direct parsing error: {g_err}")
+                print(f"[Info] OpenRouter fallback failed: {e}")
 
         if not scripts:
             print("[Info] LLM providers exhausted. Using templated competitor remix generator as emergency fallback.")

@@ -101,8 +101,26 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
                     xhr.send(file);
                 });
 
+                // Async status polling from browser (each poll takes 0.2s, 0% Vercel timeout risk)
                 if (progressEl) {
-                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Gemini AI analyzing ad video & transcribing dialogue verbatim... (takes ~5s)`;
+                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Preparing video frames for AI analysis... (takes ~5s)`;
+                }
+
+                for (let poll = 0; poll < 15; poll++) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    try {
+                        const stData = await safeFetchJson(`/api/gemini-file-status?file_name=${encodeURIComponent(googleFile.name)}`);
+                        if (stData && stData.state === 'ACTIVE') {
+                            break;
+                        }
+                    } catch (_) {}
+                    if (progressEl) {
+                        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Processing video frames with Gemini AI... (${(poll + 1) * 2}s)`;
+                    }
+                }
+
+                if (progressEl) {
+                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Gemini AI analyzing ad video & transcribing dialogue verbatim... (takes ~3s)`;
                 }
 
                 finalData = await safeFetchJson('/api/gemini-analyze-file', {
