@@ -118,7 +118,10 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
                 })
             });
         } else {
-            // Fallback for smaller files if direct upload is unavailable
+            if (file.size > 4 * 1024 * 1024) {
+                const initMsg = (initData && (initData.detail || initData.message)) || 'Direct cloud upload initialization failed';
+                throw new Error(initMsg + '. Please ensure GEMINI_API_KEY is configured in Vercel settings, or paste the ad script directly.');
+            }
             const formData = new FormData();
             formData.append('file', file);
             finalData = await safeFetchJson('/api/transcribe-audio', {

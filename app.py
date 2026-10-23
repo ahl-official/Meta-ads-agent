@@ -1,4 +1,11 @@
-import requests
+try:
+    import requests
+    _REQUESTS_AVAILABLE = True
+except ImportError:
+    requests = None
+    _REQUESTS_AVAILABLE = False
+import urllib.request
+import urllib.parse
 import sys
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -1005,32 +1012,36 @@ class GeminiAnalyzeFileRequest(BaseModel):
 async def gemini_upload_init(request: GeminiUploadInitRequest):
     """
     Initializes a direct resumable upload session with Google Gemini File API.
-    Returns the Google upload URL so the browser can upload directly to Google,
-    bypassing Vercel's 4.5MB payload limit and timeouts entirely.
+    Uses standard library urllib.request for 100% reliable zero-dependency execution on Vercel.
     """
     gemini_key = os.getenv("GEMINI_API_KEY")
     if not gemini_key:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured")
 
-    headers = {
-        "X-Goog-Upload-Protocol": "resumable",
-        "X-Goog-Upload-Command": "start",
-        "X-Goog-Upload-Header-Content-Length": str(request.file_size),
-        "X-Goog-Upload-Header-Content-Type": request.mime_type or "video/mp4",
-        "Content-Type": "application/json"
-    }
-    metadata = {
+    init_url = f"https://generativelanguage.googleapis.com/upload/v1beta/files?key={gemini_key}"
+    metadata_json = json.dumps({
         "file": {
             "display_name": os.path.basename(request.filename or "ad_video.mp4")
         }
-    }
-    init_url = f"https://generativelanguage.googleapis.com/upload/v1beta/files?key={gemini_key}"
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        init_url,
+        data=metadata_json,
+        headers={
+            "X-Goog-Upload-Protocol": "resumable",
+            "X-Goog-Upload-Command": "start",
+            "X-Goog-Upload-Header-Content-Length": str(request.file_size),
+            "X-Goog-Upload-Header-Content-Type": request.mime_type or "video/mp4",
+            "Content-Type": "application/json"
+        }
+    )
     try:
-        init_res = requests.post(init_url, headers=headers, json=metadata, timeout=15)
-        upload_url = init_res.headers.get("X-Goog-Upload-URL")
-        if not upload_url:
-            raise RuntimeError(f"Google File API error ({init_res.status_code}): {init_res.text}")
-        return JSONResponse(content={"status": "SUCCESS", "upload_url": upload_url})
+        with urllib.request.urlopen(req, timeout=15) as res:
+            upload_url = res.headers.get("X-Goog-Upload-URL")
+            if not upload_url:
+                raise RuntimeError("Google File API did not return an upload URL")
+            return JSONResponse(content={"status": "SUCCESS", "upload_url": upload_url})
     except Exception as e:
         print(f"[API] Gemini upload init error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -1052,14 +1063,14 @@ async def gemini_analyze_file(request: GeminiAnalyzeFileRequest):
     while state == "PROCESSING" and retries < 25:
         await asyncio.sleep(2)
         try:
-            get_res = requests.get(
-                f"https://generativelanguage.googleapis.com/v1beta/{request.file_name}?key={gemini_key}",
-                timeout=10
-            )
-            if get_res.status_code == 200:
-                state = get_res.json().get("state", "ACTIVE")
-                if state != "PROCESSING":
-                    break
+            status_url = f"https://generativelanguage.googleapis.com/v1beta/{request.file_name}?key={gemini_key}"
+            req = urllib.request.Request(status_url)
+            with urllib.request.urlopen(req, timeout=10) as get_res:
+                if get_res.status == 200:
+                    data = json.loads(get_res.read().decode("utf-8"))
+                    state = data.get("state", "ACTIVE")
+                    if state != "PROCESSING":
+                        break
         except Exception:
             pass
         retries += 1
@@ -1090,26 +1101,31 @@ async def gemini_analyze_file(request: GeminiAnalyzeFileRequest):
         }],
         "generationConfig": {"temperature": 0.2}
     }
+    payload_bytes = json.dumps(payload).encode("utf-8")
 
     models_to_try = ["gemini-3-flash-preview", "gemini-3.6-flash", "gemini-3.5-flash"]
     last_err = ""
     for model_name in models_to_try:
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
-            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=45)
-            if res.status_code == 200:
-                res_data = res.json()
-                candidates = res_data.get("candidates", [])
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    if parts and "text" in parts[0]:
-                        transcript = parts[0]["text"].strip()
-                        if transcript:
-                            return JSONResponse(content={
-                                "status": "SUCCESS",
-                                "transcription": transcript
-                            })
-            last_err = res.text[:200]
+            req = urllib.request.Request(
+                url,
+                data=payload_bytes,
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=45) as res:
+                if res.status == 200:
+                    res_data = json.loads(res.read().decode("utf-8"))
+                    candidates = res_data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts and "text" in parts[0]:
+                            transcript = parts[0]["text"].strip()
+                            if transcript:
+                                return JSONResponse(content={
+                                    "status": "SUCCESS",
+                                    "transcription": transcript
+                                })
         except Exception as e:
             last_err = str(e)
 
