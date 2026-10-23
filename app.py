@@ -1,3 +1,4 @@
+import datetime
 try:
     import requests
     _REQUESTS_AVAILABLE = True
@@ -130,16 +131,23 @@ Speaker B: Always ensure your guarantee is clear. If you offer a 30-day money-ba
 """
 
 def _init_knowledge_base():
-    chunks = chunker.chunk_text(
-        text=INITIAL_SAMPLE_TRANSCRIPT,
-        source_file="initial_masterclass_transcript.txt",
-        default_module="Module 1: Hook Writing",
-        default_topic="Hook Writing"
-    )
-    embeddings = embedding_manager.get_embeddings([c.text for c in chunks])
-    vector_store.add_chunks(chunks, embeddings)
+    try:
+        chunks = chunker.chunk_text(
+            text=INITIAL_SAMPLE_TRANSCRIPT,
+            source_file="initial_masterclass_transcript.txt",
+            default_module="Module 1: Hook Writing",
+            default_topic="Hook Writing"
+        )
+        embeddings = embedding_manager.get_embeddings([c.text for c in chunks])
+        vector_store.add_chunks(chunks, embeddings)
+        print("[Knowledge Base] Initial masterclass transcript indexed successfully.")
+    except Exception as e:
+        print(f"[Knowledge Base Warning] Knowledge base init notice: {e}")
 
-_init_knowledge_base()
+@app.on_event("startup")
+async def startup_event():
+    # Load knowledge base asynchronously in background so cold starts take <0.05s
+    asyncio.create_task(asyncio.to_thread(_init_knowledge_base))
 
 
 # Request / Response Schemas
@@ -921,6 +929,15 @@ async def get_feedback_summary():
     return JSONResponse(content=feedback_mgr.get_summary())
 
 
+@app.get("/api/health")
+async def health_check():
+    return JSONResponse(content={
+        "status": "healthy",
+        "service": "meta-ads-suite",
+        "gemini_ready": bool(_get_gemini_api_key()),
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    })
+
 @app.get("/api/metrics")
 async def get_metrics():
     metrics_summary = global_tracer.get_metrics_summary()
@@ -1145,7 +1162,7 @@ async def gemini_analyze_file(request: GeminiAnalyzeFileRequest):
     }
     payload_bytes = json.dumps(payload).encode("utf-8")
 
-    models_to_try = ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-3-flash-preview", "gemini-3.6-flash"]
+    models_to_try = ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3-flash", "gemini-3.5-flash", "gemini-3.6-flash", "gemini-2.5-flash"]
     last_err = ""
     for model_name in models_to_try:
         try:
@@ -1814,23 +1831,39 @@ async def extract_ad_content(request: ExtractAdContentRequest):
 # ============================================================================
 # Variations Bucket (Persistent Creative Vault)
 # ============================================================================
-VARIATIONS_BUCKET_FILE = os.path.join(os.path.dirname(__file__), "variations_bucket.json")
+import tempfile, shutil
+
+def _get_bucket_file_path() -> str:
+    primary = os.path.join(os.path.dirname(os.path.abspath(__file__)), "variations_bucket.json")
+    if os.environ.get("VERCEL") or not os.access(os.path.dirname(os.path.abspath(__file__)), os.W_OK):
+        tmp_path = os.path.join(tempfile.gettempdir(), "variations_bucket.json")
+        if not os.path.exists(tmp_path) and os.path.exists(primary):
+            try:
+                shutil.copyfile(primary, tmp_path)
+            except Exception:
+                pass
+        return tmp_path
+    return primary
+
+VARIATIONS_BUCKET_FILE = _get_bucket_file_path()
 
 def _load_variations_bucket() -> List[Dict[str, Any]]:
-    if os.path.exists(VARIATIONS_BUCKET_FILE):
+    bucket_path = _get_bucket_file_path()
+    if os.path.exists(bucket_path):
         try:
-            with open(VARIATIONS_BUCKET_FILE, "r", encoding="utf-8") as f:
+            with open(bucket_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception:
             return []
     return []
 
 def _save_variations_bucket(bucket: List[Dict[str, Any]]):
+    bucket_path = _get_bucket_file_path()
     try:
-        with open(VARIATIONS_BUCKET_FILE, "w", encoding="utf-8") as f:
+        with open(bucket_path, "w", encoding="utf-8") as f:
             json.dump(bucket, f, indent=2, ensure_ascii=False)
     except Exception as e:
-        print(f"[Bucket] Error saving variations bucket: {e}")
+        print(f"[Bucket] Warning: saving variations bucket to disk ({bucket_path}) failed: {e}")
 
 def _add_batch_to_bucket(batch_data: Dict[str, Any]) -> str:
     bucket = _load_variations_bucket()

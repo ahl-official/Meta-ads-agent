@@ -89,9 +89,11 @@ def call_gemini_json(system_prompt: str, user_prompt: str, timeout: int = 40) ->
 
     models_to_try = [
         "gemini-flash-lite-latest",
+        "gemini-3.5-flash-lite",
+        "gemini-3-flash",
         "gemini-3.5-flash",
-        "gemini-3-flash-preview",
-        "gemini-3.6-flash"
+        "gemini-3.6-flash",
+        "gemini-2.5-flash"
     ]
 
     payload = {

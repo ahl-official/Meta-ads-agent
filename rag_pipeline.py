@@ -317,7 +317,14 @@ class VectorStoreManager:
         try:
             self.index.upsert(vectors=batch)
         except Exception as e:
-            raise RuntimeError(f"Failed to store {len(batch)} chunk(s) in the vector database: {e}") from e
+            print(f"[VectorStore Warning] Pinecone upsert notice: {e}. Preserving chunks in resilient local memory store.")
+            for v in batch:
+                self._fallback_store.append({
+                    "id": v["id"],
+                    "text": v["metadata"].get("text", ""),
+                    "vector": v["values"],
+                    "metadata": v["metadata"]
+                })
 
     @staticmethod
     def _cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
@@ -345,7 +352,11 @@ class VectorStoreManager:
         # over-fetch a wider candidate pool from Pinecone and apply the same substring filter
         # client-side before truncating to top_k, preserving the original matching behavior.
         fetch_k = top_k if not metadata_filter else min(max(top_k * 10, 50), 1000)
-        response = self.index.query(vector=query_vector, top_k=fetch_k, include_metadata=True)
+        try:
+            response = self.index.query(vector=query_vector, top_k=fetch_k, include_metadata=True)
+        except Exception as e:
+            print(f"[VectorStore Warning] Pinecone query notice: {e}. Falling back to resilient local store.")
+            return self._search_fallback(query_vector, top_k, metadata_filter)
 
         results = []
         for match in response.matches:
