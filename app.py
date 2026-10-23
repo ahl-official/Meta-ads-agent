@@ -43,44 +43,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
-import openai
-from openai import OpenAI
-try:
-    import assemblyai as aai
-    _ASSEMBLYAI_AVAILABLE = True
-except ImportError:
-    aai = None
-    _ASSEMBLYAI_AVAILABLE = False
 
-from rag_pipeline import SemanticChunker, EmbeddingManager, VectorStoreManager
-from ad_generator import AdGeneratorEngine
-from persona_generator import PersonaGeneratorEngine
-from benefits_extractor import BenefitsExtractorEngine
-from benefits_angle_agent import BenefitsAngleEngine
-from video_script_agent import VideoScriptEngine
-from creative_director_agent import CreativeDirectorEngine
-from thumbnail_strategist_agent import ThumbnailStrategistEngine
-from thumbnail_designer_agent import ThumbnailDesignerEngine
-from title_strategist_agent import TitleStrategistEngine
-from content_brief_agent import ContentBriefEngine
-from metadata_publisher_agent import MetadataPublisherEngine
-from own_ad_double_down_agent import OwnAdDoubleDownEngine
-from competitor_ad_remixer_agent import CompetitorAdRemixerEngine
-from ad_content_extractor import extract_content_from_url, transcribe_audio_file as transcribe_media_via_gemini
-from cost_tracker import CostTracker, TokenUsageReport
-from tracer import global_tracer, ExecutionSpan
-
-# Initialize FastAPI App
+# Initialize FastAPI App IMMEDIATELY so Vercel can always load the ASGI application
 def _get_gemini_api_key() -> str:
     k = os.getenv("GEMINI_API_KEY")
     if k and len(k.strip()) > 10:
-        return k.strip().strip('"\'')
+        return k.strip().replace('"', '').replace("'", '')
     try:
         import base64
         return base64.b64decode(b'QVEuQWI4Uk42THJBSDU4Wlh1b002S3lleVpBamc5WDdMOGxtZHdWZC0yempzXzY5cGZSX2c=').decode('utf-8')
     except Exception:
         return ""
-
 
 app = FastAPI(
     title="Meta Ads Suite - Multi-Agent Intelligence Engine",
@@ -88,8 +61,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS. No cookie/session auth exists in this app, so credentials aren't needed;
-# allow_origins=["*"] + allow_credentials=True is an invalid combination browsers reject anyway.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -112,24 +83,72 @@ async def error_shield_middleware(request: Request, call_next):
             "traceback": err
         })
 
-# Global Engine Singletons
-chunker = SemanticChunker(target_min_tokens=500, target_max_tokens=800, overlap_tokens=100)
-embedding_manager = EmbeddingManager(model_name="openai/text-embedding-3-small", vector_dim=1536)
-vector_store = VectorStoreManager()
-cost_tracker = CostTracker(default_model="openai/gpt-4o-mini", default_embedding_model="openai/text-embedding-3-small")
-ad_engine = AdGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-persona_engine = PersonaGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-benefits_engine = BenefitsExtractorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-angle_engine = BenefitsAngleEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-video_engine = VideoScriptEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-creative_engine = CreativeDirectorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-thumbnail_engine = ThumbnailStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-designer_engine = ThumbnailDesignerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-title_engine = TitleStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-brief_engine = ContentBriefEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-metadata_engine = MetadataPublisherEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-own_ad_engine = OwnAdDoubleDownEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-competitor_engine = CompetitorAdRemixerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+_STARTUP_ERROR = None
+
+@app.get("/api/health")
+async def health_check():
+    if _STARTUP_ERROR:
+        return JSONResponse(status_code=500, content={
+            "status": "STARTUP_ERROR",
+            "error": str(_STARTUP_ERROR)
+        })
+    return JSONResponse(content={
+        "status": "healthy",
+        "service": "meta-ads-suite",
+        "gemini_ready": bool(_get_gemini_api_key()),
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    })
+
+import openai
+from openai import OpenAI
+try:
+    import assemblyai as aai
+    _ASSEMBLYAI_AVAILABLE = True
+except ImportError:
+    aai = None
+    _ASSEMBLYAI_AVAILABLE = False
+
+try:
+    from rag_pipeline import SemanticChunker, EmbeddingManager, VectorStoreManager
+    from ad_generator import AdGeneratorEngine
+    from persona_generator import PersonaGeneratorEngine
+    from benefits_extractor import BenefitsExtractorEngine
+    from benefits_angle_agent import BenefitsAngleEngine
+    from video_script_agent import VideoScriptEngine
+    from creative_director_agent import CreativeDirectorEngine
+    from thumbnail_strategist_agent import ThumbnailStrategistEngine
+    from thumbnail_designer_agent import ThumbnailDesignerEngine
+    from title_strategist_agent import TitleStrategistEngine
+    from content_brief_agent import ContentBriefEngine
+    from metadata_publisher_agent import MetadataPublisherEngine
+    from own_ad_double_down_agent import OwnAdDoubleDownEngine
+    from competitor_ad_remixer_agent import CompetitorAdRemixerEngine
+    from ad_content_extractor import extract_content_from_url, transcribe_audio_file as transcribe_media_via_gemini
+    from cost_tracker import CostTracker, TokenUsageReport
+    from tracer import global_tracer, ExecutionSpan
+
+    # Global Engine Singletons
+    chunker = SemanticChunker(target_min_tokens=500, target_max_tokens=800, overlap_tokens=100)
+    embedding_manager = EmbeddingManager(model_name="openai/text-embedding-3-small", vector_dim=1536)
+    vector_store = VectorStoreManager()
+    cost_tracker = CostTracker(default_model="openai/gpt-4o-mini", default_embedding_model="openai/text-embedding-3-small")
+    ad_engine = AdGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    persona_engine = PersonaGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    benefits_engine = BenefitsExtractorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    angle_engine = BenefitsAngleEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    video_engine = VideoScriptEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    creative_engine = CreativeDirectorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    thumbnail_engine = ThumbnailStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    designer_engine = ThumbnailDesignerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    title_engine = TitleStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    brief_engine = ContentBriefEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    metadata_engine = MetadataPublisherEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    own_ad_engine = OwnAdDoubleDownEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+    competitor_engine = CompetitorAdRemixerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+except Exception as _e:
+    import traceback
+    _STARTUP_ERROR = traceback.format_exc()
+    print(f'[FATAL AGENT INIT ERROR] {_e}: {_STARTUP_ERROR}')
 
 # Populate initial vector store with masterclass transcript
 INITIAL_SAMPLE_TRANSCRIPT = """
@@ -943,14 +962,7 @@ async def get_feedback_summary():
     return JSONResponse(content=feedback_mgr.get_summary())
 
 
-@app.get("/api/health")
-async def health_check():
-    return JSONResponse(content={
-        "status": "healthy",
-        "service": "meta-ads-suite",
-        "gemini_ready": bool(_get_gemini_api_key()),
-        "timestamp": datetime.datetime.utcnow().isoformat()
-    })
+
 
 @app.get("/api/metrics")
 async def get_metrics():
