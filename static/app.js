@@ -1,3 +1,155 @@
+// Robust API Fetch with Content-Type safety (never throws SyntaxError on non-JSON 413/500 errors)
+async function safeFetchJson(url, options = {}) {
+    const res = await fetch(url, options);
+    const contentType = res.headers.get('content-type') || '';
+    let body = null;
+    if (contentType.includes('application/json')) {
+        try {
+            body = await res.json();
+        } catch (e) {
+            body = null;
+        }
+    }
+    if (!body) {
+        const text = await res.text();
+        let cleanMsg = (text || '').trim();
+        if (cleanMsg.length > 250) cleanMsg = cleanMsg.substring(0, 250) + '...';
+        body = {
+            status: res.ok ? 'SUCCESS' : 'ERROR',
+            detail: cleanMsg || `HTTP ${res.status}: ${res.statusText}`,
+            message: cleanMsg
+        };
+    }
+    if (!res.ok) {
+        const errMsg = body.detail || body.message || `HTTP ${res.status}: ${res.statusText}`;
+        const err = new Error(errMsg);
+        err.status = res.status;
+        err.body = body;
+        throw err;
+    }
+    return body;
+}
+
+// Robust Chunked Media Uploader for Video & Audio files (supports 100MB+ videos with live chunk progress)
+async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptBadge, generateBtnId, formId, accentGradient) {
+    if (!file) return;
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+    const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunk size
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+    if (progressEl) {
+        progressEl.classList.remove('hidden');
+        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Preparing ${sizeMb} MB media for analysis...`;
+    }
+
+    try {
+        let finalData = null;
+        if (totalChunks <= 3 && file.size <= 15 * 1024 * 1024) {
+            // Smaller files: single streaming request
+            if (progressEl) {
+                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Uploading & analyzing media (${sizeMb} MB) with Gemini AI... please wait.`;
+            }
+            const formData = new FormData();
+            formData.append('file', file);
+            finalData = await safeFetchJson('/api/transcribe-audio', {
+                method: 'POST',
+                body: formData
+            });
+        } else {
+            // Large files (> 15MB, e.g. 124.6MB): upload in 5MB chunks!
+            const uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+            for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
+                const start = chunkIdx * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, file.size);
+                const chunkBlob = file.slice(start, end);
+                const percent = Math.round(((chunkIdx + 1) / totalChunks) * 100);
+
+                if (progressEl) {
+                    progressEl.innerHTML = `
+                        <div style="margin-bottom:6px; font-size:12px; color:#E2E8F0;">
+                            <span class="spinner-small" style="display:inline-block; margin-right:6px; vertical-align:middle;"></span>
+                            Uploading large video (${sizeMb} MB) &mdash; Chunk ${chunkIdx + 1} of ${totalChunks} (${percent}%)
+                        </div>
+                        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                            <div style="width:${percent}%; height:100%; background:linear-gradient(90deg, #3B82F6, #10B981); transition:width 0.2s;"></div>
+                        </div>
+                    `;
+                }
+
+                const chunkFormData = new FormData();
+                chunkFormData.append('chunk', chunkBlob, file.name);
+                chunkFormData.append('upload_id', uploadId);
+                chunkFormData.append('chunk_index', chunkIdx.toString());
+                chunkFormData.append('total_chunks', totalChunks.toString());
+                chunkFormData.append('filename', file.name);
+
+                let chunkRes = null;
+                let attempts = 0;
+                while (attempts < 3) {
+                    try {
+                        chunkRes = await safeFetchJson('/api/upload-media-chunk', {
+                            method: 'POST',
+                            body: chunkFormData
+                        });
+                        break;
+                    } catch (err) {
+                        attempts++;
+                        if (attempts >= 3) throw err;
+                        await new Promise(r => setTimeout(r, 1500));
+                    }
+                }
+
+                if (chunkIdx + 1 === totalChunks) {
+                    finalData = chunkRes;
+                }
+            }
+        }
+
+        if (finalData && finalData.transcript_id) {
+            pollTranscription(finalData.transcript_id, txtContent, progressEl);
+            return;
+        }
+
+        if (finalData && finalData.transcription) {
+            const words = finalData.transcription.trim().split(/\s+/).length;
+            txtContent.value = finalData.transcription;
+            txtContent.style.border = "2px solid #10B981";
+            txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
+            setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
+            if (transcriptBadge) {
+                transcriptBadge.style.display = "inline-block";
+                transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
+                transcriptBadge.style.color = "#10B981";
+                transcriptBadge.textContent = `✓ Analyzed (${words} words)`;
+            }
+            if (progressEl) {
+                progressEl.innerHTML = `
+                    <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
+                        <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✓ Video Analyzed & Transcribed (${words} words)!</div>
+                        <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and visual breakdown loaded into the script box below.</div>
+                        <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:${accentGradient}; border:none; cursor:pointer;" onclick="document.getElementById('${formId}').requestSubmit();">
+                            ⚡ Generate 5 Variations from This Video Now
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            throw new Error((finalData && (finalData.detail || finalData.message)) || "Could not extract transcription from video.");
+        }
+    } catch (err) {
+        console.error('Media upload error:', err);
+        if (progressEl) {
+            progressEl.innerHTML = `
+                <div style="background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
+                    <div style="color:#EF4444; font-weight:600; font-size:13px; margin-bottom:4px;">⚠️ Upload Notice</div>
+                    <div style="color:#94A3B8; font-size:12px; margin-bottom:6px;">${err.message || 'Server error occurred during processing.'}</div>
+                    <div style="color:#64748B; font-size:11px;">You can also paste the transcript or ad script directly in the text area below.</div>
+                </div>
+            `;
+        }
+    }
+}
+
 
 // --- GLOBAL FEEDBACK LOGIC (SIR'S GLOBAL FEEDBACK) ---
 window.sirsGlobalFeedback = '';
@@ -4048,14 +4200,13 @@ function initOwnAdDoubleDown() {
         }
 
         try {
-            const res = await fetch('/api/extract-ad-content', {
+            const data = await safeFetchJson('/api/extract-ad-content', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url: normalizedUrl })
             });
-            const data = await res.json();
+
             if (data && data.extracted_text) {
-                // Save to Frontend Cache
                 window._adTranscriptCache[normalizedUrl] = data;
 
                 if (txtContent) {
@@ -4070,25 +4221,26 @@ function initOwnAdDoubleDown() {
                     transcriptBadge.style.display = "inline-block";
                     transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
                     transcriptBadge.style.color = "#10B981";
-                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
-                    transcriptBadge.textContent = words > 0 ? `✅ Transcribed (${words} words)` : `✅ Extracted`;
+                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : (data.extracted_text ? data.extracted_text.trim().split(/\s+/).length : 0);
+                    transcriptBadge.textContent = words > 0 ? `✓ Transcribed (${words} words)` : `✓ Extracted`;
                 }
                 if (urlStatus) {
-                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
-                    urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue)! Shown in box below.</span>`;
+                    urlStatus.innerHTML = '<span style="color:#10B981; font-weight:600;">✓ Ad content and script loaded successfully!</span>';
                 }
                 return data.extracted_text;
             } else {
-                throw new Error("No transcription or text returned from URL");
+                throw new Error("No script or transcript returned from this ad link");
             }
         } catch (err) {
-            console.error(err);
+            console.error('URL extraction error:', err);
             if (txtContent) {
-                txtContent.value = "⚠️ Could not automatically transcribe this link.\n\nReason: " + (err.message || "Network / platform protection") + "\n\nPlease make sure it is a public Meta Ad Library, Facebook, Instagram, or YouTube link, or paste the script directly.";
-                txtContent.style.border = "2px solid #EF4444";
+                txtContent.value = `Reference Ad Link: ${normalizedUrl}\n\n(Note: ${err.message || 'Platform restricted'})\nYou can paste the ad script or hook details directly in this box to generate variations.`;
+                txtContent.style.border = "2px solid #F59E0B";
                 txtContent.style.boxShadow = "";
             }
-            if (urlStatus) urlStatus.innerHTML = '<span style="color:#EF4444;">Transcription error. You can paste ad script directly below.</span>';
+            if (urlStatus) {
+                urlStatus.innerHTML = '<span style="color:#F59E0B; font-weight:600;">⚠️ Link requires direct script input below.</span>';
+            }
         }
         return null;
     }
@@ -4132,7 +4284,7 @@ function initOwnAdDoubleDown() {
         });
     }
 
-    // Media Upload
+    // Media Upload with Seamless Chunking Support (100MB+ videos handled safely)
     const fileInput = document.getElementById('own_media_file');
     const progressEl = document.getElementById('own-upload-progress');
 
@@ -4140,54 +4292,15 @@ function initOwnAdDoubleDown() {
         fileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
-            const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-            if (progressEl) {
-                progressEl.classList.remove('hidden');
-                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Uploading & analyzing video (${sizeMb} MB) via Gemini AI... please wait a few seconds.`;
-            }
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const res = await fetch('/api/transcribe-audio', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.detail || 'Upload failed');
-                }
-                if (data.transcript_id) {
-                    pollTranscription(data.transcript_id, txtContent, progressEl);
-                } else if (data.transcription) {
-                    const words = data.transcription ? data.transcription.trim().split(/\s+/).length : 0;
-                    txtContent.value = data.transcription;
-                    txtContent.style.border = "2px solid #10B981";
-                    txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
-                    setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
-                    if (transcriptBadge) {
-                        transcriptBadge.style.display = "inline-block";
-                        transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
-                        transcriptBadge.style.color = "#10B981";
-                        transcriptBadge.textContent = `✅ Analyzed (${words} words)`;
-                    }
-                    if (progressEl) {
-                        progressEl.innerHTML = `
-                            <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
-                                <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✅ Video Analyzed & Transcribed (${words} words)!</div>
-                                <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and visual hooks loaded in the box below.</div>
-                                <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); border:none; cursor:pointer;" onclick="document.getElementById('own-doubledown-form').requestSubmit();">
-                                    🚀 Generate 5 Double Downs from This Video Now
-                                </button>
-                            </div>
-                        `;
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                if (progressEl) progressEl.innerHTML = `<span style="color:#ef4444;">Upload error: ${err.message || 'Please try pasting transcript.'}</span>`;
-            }
+            await uploadMediaWithChunking(
+                file,
+                progressEl,
+                txtContent,
+                transcriptBadge,
+                'btn-generate-own',
+                'own-doubledown-form',
+                'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)'
+            );
         });
     }
 
@@ -4333,12 +4446,12 @@ function initCompetitorAdRemixer() {
         }
 
         try {
-            const res = await fetch('/api/extract-ad-content', {
+            const data = await safeFetchJson('/api/extract-ad-content', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url: normalizedUrl })
             });
-            const data = await res.json();
+
             if (data && data.extracted_text) {
                 window._adTranscriptCache[normalizedUrl] = data;
 
@@ -4354,12 +4467,11 @@ function initCompetitorAdRemixer() {
                     transcriptBadge.style.display = "inline-block";
                     transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
                     transcriptBadge.style.color = "#10B981";
-                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
-                    transcriptBadge.textContent = words > 0 ? `✅ Transcribed (${words} words)` : `✅ Extracted`;
+                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : (data.extracted_text ? data.extracted_text.trim().split(/\s+/).length : 0);
+                    transcriptBadge.textContent = words > 0 ? `✓ Transcribed (${words} words)` : `✓ Extracted`;
                 }
                 if (urlStatus) {
-                    const words = data.audio_transcript ? data.audio_transcript.trim().split(/\s+/).length : 0;
-                    urlStatus.innerHTML = `<span style="color:#10B981; font-weight:600;">✅ Audio Transcribed Verbatim (${words} words spoken dialogue)! Shown in box below.</span>`;
+                    urlStatus.innerHTML = '<span style="color:#10B981; font-weight:600;">✓ Competitor ad content loaded successfully!</span>';
                 }
                 const compBrandInput = document.getElementById('comp_brand_name');
                 if (compBrandInput && (!compBrandInput.value || compBrandInput.value.includes('Leading'))) {
@@ -4368,16 +4480,18 @@ function initCompetitorAdRemixer() {
                 }
                 return data.extracted_text;
             } else {
-                throw new Error("No transcription or text returned from URL");
+                throw new Error("No script or transcript returned from this ad link");
             }
         } catch (err) {
-            console.error(err);
+            console.error('URL extraction error:', err);
             if (txtContent) {
-                txtContent.value = "⚠️ Could not automatically transcribe competitor link.\n\nReason: " + (err.message || "Network / platform protection") + "\n\nPlease paste competitor script directly.";
-                txtContent.style.border = "2px solid #EF4444";
+                txtContent.value = `Reference Competitor Ad Link: ${normalizedUrl}\n\n(Note: ${err.message || 'Platform restricted'})\nYou can paste the competitor ad script or hook details directly in this box to generate remixes.`;
+                txtContent.style.border = "2px solid #F59E0B";
                 txtContent.style.boxShadow = "";
             }
-            if (urlStatus) urlStatus.innerHTML = '<span style="color:#EF4444;">Transcription error. You can paste competitor script directly below.</span>';
+            if (urlStatus) {
+                urlStatus.innerHTML = '<span style="color:#F59E0B; font-weight:600;">⚠️ Link requires direct script input below.</span>';
+            }
         }
         return null;
     }
@@ -4420,7 +4534,7 @@ function initCompetitorAdRemixer() {
         });
     }
 
-    // Media Upload
+    // Media Upload with Seamless Chunking Support (100MB+ videos handled safely)
     const fileInput = document.getElementById('comp_media_file');
     const progressEl = document.getElementById('comp-upload-progress');
 
@@ -4428,54 +4542,15 @@ function initCompetitorAdRemixer() {
         fileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
-            const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-            if (progressEl) {
-                progressEl.classList.remove('hidden');
-                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Uploading & analyzing video (${sizeMb} MB) via Gemini AI... please wait a few seconds.`;
-            }
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const res = await fetch('/api/transcribe-audio', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.detail || 'Upload failed');
-                }
-                if (data.transcript_id) {
-                    pollTranscription(data.transcript_id, txtContent, progressEl);
-                } else if (data.transcription) {
-                    const words = data.transcription ? data.transcription.trim().split(/\s+/).length : 0;
-                    txtContent.value = data.transcription;
-                    txtContent.style.border = "2px solid #10B981";
-                    txtContent.style.boxShadow = "0 0 18px rgba(16, 185, 129, 0.4)";
-                    setTimeout(() => { txtContent.style.boxShadow = ""; }, 3000);
-                    if (transcriptBadge) {
-                        transcriptBadge.style.display = "inline-block";
-                        transcriptBadge.style.background = "rgba(16, 185, 129, 0.2)";
-                        transcriptBadge.style.color = "#10B981";
-                        transcriptBadge.textContent = `✅ Analyzed (${words} words)`;
-                    }
-                    if (progressEl) {
-                        progressEl.innerHTML = `
-                            <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
-                                <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✅ Competitor Video Analyzed (${words} words)!</div>
-                                <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and visual hooks loaded in the box below.</div>
-                                <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); border:none; cursor:pointer;" onclick="document.getElementById('competitor-remix-form').requestSubmit();">
-                                    🚀 Generate 5 Remix Variations from This Video Now
-                                </button>
-                            </div>
-                        `;
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                if (progressEl) progressEl.innerHTML = `<span style="color:#ef4444;">Upload error: ${err.message || 'Please try pasting transcript.'}</span>`;
-            }
+            await uploadMediaWithChunking(
+                file,
+                progressEl,
+                txtContent,
+                transcriptBadge,
+                'btn-generate-comp',
+                'competitor-remix-form',
+                'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)'
+            );
         });
     }
 

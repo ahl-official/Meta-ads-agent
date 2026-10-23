@@ -1,3 +1,25 @@
+import sys
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+def _safe_print(*args, **kwargs):
+    try:
+        _safe_print(*args, **kwargs)
+    except Exception:
+        try:
+            cleaned = [str(a).encode("ascii", "replace").decode("ascii") for a in args]
+            _safe_print(*cleaned, **kwargs)
+        except Exception:
+            pass
+
 import time
 import traceback
 import json
@@ -107,7 +129,7 @@ def _upload_file_to_gemini(file_path: str, mime_type: str, gemini_key: str):
     init_res = requests.post(upload_url_init, headers=headers, json=metadata, timeout=20)
     upload_url = init_res.headers.get("X-Goog-Upload-URL")
     if not upload_url:
-        print(f"[Extractor] Gemini File API init failed ({init_res.status_code}): {init_res.text}")
+        _safe_print(f"[Extractor] Gemini File API init failed ({init_res.status_code}): {init_res.text}")
         return None, None
 
     upload_headers = {
@@ -120,14 +142,14 @@ def _upload_file_to_gemini(file_path: str, mime_type: str, gemini_key: str):
         upload_res = requests.post(upload_url, headers=upload_headers, data=f, timeout=300)
 
     if upload_res.status_code != 200:
-        print(f"[Extractor] Gemini File API upload error ({upload_res.status_code}): {upload_res.text}")
+        _safe_print(f"[Extractor] Gemini File API upload error ({upload_res.status_code}): {upload_res.text}")
         return None, None
 
     file_info = upload_res.json().get("file", {})
     file_uri = file_info.get("uri")
     file_name = file_info.get("name")
     state = file_info.get("state")
-    print(f"[Extractor] Video uploaded ({file_size / (1024*1024):.1f}MB). State: {state}")
+    _safe_print(f"[Extractor] Video uploaded ({file_size / (1024*1024):.1f}MB). State: {state}")
 
     # Wait for processing if video
     retries = 0
@@ -136,7 +158,7 @@ def _upload_file_to_gemini(file_path: str, mime_type: str, gemini_key: str):
         get_res = requests.get(f"https://generativelanguage.googleapis.com/v1beta/{file_name}?key={gemini_key}", timeout=15)
         if get_res.status_code == 200:
             state = get_res.json().get("state")
-            print(f"[Extractor] Video processing state: {state}")
+            _safe_print(f"[Extractor] Video processing state: {state}")
         retries += 1
 
     return file_uri, file_name
@@ -207,7 +229,7 @@ def transcribe_audio_file(file_path: str) -> str:
             is_video = mime_type.startswith("video/") or file_size > 10 * 1024 * 1024
 
             if is_video:
-                print(f"[Extractor] Uploading {file_size / (1024*1024):.1f}MB video to Gemini File API...")
+                _safe_print(f"[Extractor] Uploading {file_size / (1024*1024):.1f}MB video to Gemini File API...")
                 file_uri, file_name = _upload_file_to_gemini(file_path, mime_type, gemini_key)
                 if not file_uri:
                     raise RuntimeError("Failed to upload video to Gemini File API")
@@ -247,19 +269,19 @@ def transcribe_audio_file(file_path: str) -> str:
                                 if res_parts and "text" in res_parts[0]:
                                     transcript = res_parts[0]["text"].strip()
                                     if transcript:
-                                        print(f"[Extractor] Successfully analyzed video via {model_name} ({len(transcript.split())} words)")
+                                        _safe_print(f"[Extractor] Successfully analyzed video via {model_name} ({len(transcript.split())} words)")
                                         return transcript
                         elif res.status_code in [429, 503]:
-                            print(f"[Extractor] {model_name} returned {res.status_code}, waiting 3s before retry/failover...")
+                            _safe_print(f"[Extractor] {model_name} returned {res.status_code}, waiting 3s before retry/failover...")
                             time.sleep(3)
                         else:
-                            print(f"[Extractor] {model_name} status {res.status_code}: {res.text[:120]}")
+                            _safe_print(f"[Extractor] {model_name} status {res.status_code}: {res.text[:120]}")
                             break
                     except Exception as m_err:
-                        print(f"[Extractor] {model_name} error: {m_err}")
+                        _safe_print(f"[Extractor] {model_name} error: {m_err}")
                         time.sleep(2)
         except Exception as g_err:
-            print(f"[Extractor] Gemini multimodal processing error: {g_err}")
+            _safe_print(f"[Extractor] Gemini multimodal processing error: {g_err}")
             traceback.print_exc()
 
     # 2. Try AssemblyAI Fallback    # 2. Try AssemblyAI Fallback    # 2. Try AssemblyAI Fallback
@@ -270,10 +292,10 @@ def transcribe_audio_file(file_path: str) -> str:
             transcriber = aai.Transcriber()
             transcript_obj = transcriber.transcribe(file_path)
             if transcript_obj.status == aai.TranscriptStatus.completed and transcript_obj.text:
-                print(f"[Extractor] Successfully transcribed audio via AssemblyAI ({len(transcript_obj.text.split())} words)")
+                _safe_print(f"[Extractor] Successfully transcribed audio via AssemblyAI ({len(transcript_obj.text.split())} words)")
                 return transcript_obj.text.strip()
         except Exception as aai_err:
-            print(f"[Extractor] AssemblyAI transcription error: {aai_err}")
+            _safe_print(f"[Extractor] AssemblyAI transcription error: {aai_err}")
 
     return ""
 
@@ -286,7 +308,7 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
     # 0. Check Permanent Cache First (0 API requests hit, 0.001s return)
     cached = _get_cache_entry(url)
     if cached and cached.get("extracted_text"):
-        print(f"[Extractor] Cache HIT for {url} (0 API requests hit, returning from local cache)")
+        _safe_print(f"[Extractor] Cache HIT for {url} (0 API requests hit, returning from local cache)")
         return dict(cached)
 
     result = {
@@ -368,7 +390,7 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
                     _save_cache_entry(url, result)
                     return result
         except Exception as yt_err:
-            print(f"[Extractor] yt-dlp extraction fallback: {yt_err}")
+            _safe_print(f"[Extractor] yt-dlp extraction fallback: {yt_err}")
             try:
                 with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl_flat:
                     info_flat = ydl_flat.extract_info(url, download=False)
@@ -403,20 +425,33 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
                     _save_cache_entry(url, result)
                     return result
         except Exception as yt_err:
-            print(f"[Extractor] YouTube oEmbed fallback: {yt_err}")
+            _safe_print(f"[Extractor] YouTube oEmbed fallback: {yt_err}")
 
-    # 3. Generic Webpage Scraper
-    try:
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-            }
-        )
-        with urllib.request.urlopen(req, timeout=timeout) as response:
-            html = response.read().decode("utf-8", errors="ignore")
+    # 3. Generic Webpage Scraper (Googlebot & Browser UA Failover)
+    user_agents = [
+        "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ]
+    html = None
+    for ua in user_agents:
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "User-Agent": ua,
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                }
+            )
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                if response.status == 200:
+                    html = response.read().decode("utf-8", errors="ignore")
+                    if html:
+                        break
+        except Exception as fetch_err:
+            _safe_print(f"[Extractor] Scraper attempt fallback: {fetch_err}")
 
+    if html:
+        try:
             title_match = re.search(r"<title[^>]*>(.*?)</title>", html, re.IGNORECASE | re.DOTALL)
             if title_match:
                 result["title"] = title_match.group(1).strip()
@@ -443,11 +478,13 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
                 summary_parts.append(f"Content Snippet: {body_snippet}")
 
             result["extracted_text"] = "\n\n".join(summary_parts) if summary_parts else f"URL Source: {url}"
+            result["status"] = "SUCCESS"
             _save_cache_entry(url, result)
             return result
-    except Exception as e:
-        print(f"[Extractor] Failed to fetch URL {url}: {e}")
-        result["status"] = "FALLBACK"
-        result["extracted_text"] = f"Reference Link: {url}\n(Provide ad script/transcript text if link is protected or behind a login.)"
-        _save_cache_entry(url, result)
-        return result
+        except Exception as parse_err:
+            _safe_print(f"[Extractor] HTML parse fallback: {parse_err}")
+
+    result["status"] = "FALLBACK"
+    result["extracted_text"] = f"Reference Link: {url}\n(Please paste the ad script or hook details directly if this link requires authentication or is restricted.)"
+    _save_cache_entry(url, result)
+    return result

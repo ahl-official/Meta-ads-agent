@@ -1,3 +1,14 @@
+import sys
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 """
 app.py
 
@@ -11,12 +22,14 @@ import json
 import time
 import os
 import tempfile
+import shutil
+import re
 import uuid
 from typing import Dict, List, Literal, Optional
 from dotenv import load_dotenv
 
 load_dotenv()
-from fastapi import FastAPI, File, UploadFile, HTTPException, Request
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -971,28 +984,33 @@ def _get_assemblyai_status(transcript_id: str) -> dict:
 
 SUPPORTED_MEDIA_EXTS = ('.mp4', '.mov', '.mkv', '.webm', '.avi', '.mp3', '.m4a', '.wav', '.aac', '.flac', '.ogg')
 
+CHUNK_UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "meta_ads_chunks")
+os.makedirs(CHUNK_UPLOAD_DIR, exist_ok=True)
+
 @app.post("/api/transcribe-audio")
 async def transcribe_audio_endpoint(file: UploadFile = File(...)):
     filename = file.filename or "media.mp4"
     ext = os.path.splitext(filename)[1].lower()
     if ext not in SUPPORTED_MEDIA_EXTS:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Unsupported format '{ext}'. Please upload video (.mp4, .mov, .webm) or audio (.mp3, .m4a, .wav)."
+        return JSONResponse(
+            status_code=400,
+            content={
+                "status": "ERROR",
+                "detail": f"Unsupported format '{ext}'. Please upload video (.mp4, .mov, .webm) or audio (.mp3, .m4a, .wav)."
+            }
         )
 
     temp_file_path = None
     try:
-        content_bytes = await file.read()
         fd, temp_file_path = tempfile.mkstemp(suffix=ext, prefix="media_transcribe_")
         with os.fdopen(fd, "wb") as f:
-            f.write(content_bytes)
+            while chunk := await file.read(1024 * 1024):
+                f.write(chunk)
 
-        # Transcribe directly via Gemini
+        # Transcribe directly via Gemini Multimodal File API
         transcript = await asyncio.to_thread(transcribe_media_via_gemini, temp_file_path)
 
         if not transcript or not transcript.strip():
-            # If Gemini couldn't find speech, fallback to AssemblyAI if key exists
             if os.getenv("ASSEMBLYAI_API_KEY"):
                 try:
                     transcript_id = await asyncio.to_thread(_submit_to_assemblyai, temp_file_path)
@@ -1002,20 +1020,111 @@ async def transcribe_audio_endpoint(file: UploadFile = File(...)):
                     })
                 except Exception:
                     pass
-            raise HTTPException(status_code=422, detail="Could not extract spoken dialogue from uploaded file. The video may contain no speech or only background music.")
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "status": "ERROR",
+                    "detail": "Could not extract spoken dialogue from uploaded file. The video may contain no speech or only background music."
+                }
+            )
 
         return JSONResponse(content={
             "status": "SUCCESS",
             "transcription": transcript.strip()
         })
-    except HTTPException:
-        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(status_code=500, content={"status": "ERROR", "detail": str(e)})
     finally:
         if temp_file_path and os.path.exists(temp_file_path):
             try:
                 os.remove(temp_file_path)
+            except Exception:
+                pass
+
+
+@app.post("/api/upload-media-chunk")
+async def upload_media_chunk_endpoint(
+    chunk: UploadFile = File(...),
+    upload_id: str = Form(...),
+    chunk_index: int = Form(...),
+    total_chunks: int = Form(...),
+    filename: str = Form(...)
+):
+    """
+    Receives chunked media upload for large video files (100MB+).
+    Assembles chunks when the final chunk arrives and transcribes via Gemini File API.
+    """
+    clean_upload_id = re.sub(r'[^a-zA-Z0-9_-]', '_', upload_id)
+    upload_folder = os.path.join(CHUNK_UPLOAD_DIR, clean_upload_id)
+    os.makedirs(upload_folder, exist_ok=True)
+
+    chunk_file_path = os.path.join(upload_folder, f"chunk_{chunk_index:05d}.part")
+    with open(chunk_file_path, "wb") as f:
+        while data := await chunk.read(1024 * 1024):
+            f.write(data)
+
+    if chunk_index + 1 < total_chunks:
+        return JSONResponse(content={
+            "status": "CHUNK_RECEIVED",
+            "chunk_index": chunk_index,
+            "total_chunks": total_chunks,
+            "percent": int(((chunk_index + 1) / total_chunks) * 100)
+        })
+
+    # Final chunk received: assemble the complete video file
+    ext = os.path.splitext(filename or "media.mp4")[1].lower()
+    if ext not in SUPPORTED_MEDIA_EXTS:
+        ext = ".mp4"
+
+    fd, assembled_path = tempfile.mkstemp(suffix=ext, prefix="assembled_media_")
+    os.close(fd)
+
+    try:
+        with open(assembled_path, "wb") as out_f:
+            for idx in range(total_chunks):
+                part_p = os.path.join(upload_folder, f"chunk_{idx:05d}.part")
+                if not os.path.exists(part_p):
+                    return JSONResponse(
+                        status_code=400,
+                        content={"status": "ERROR", "detail": f"Missing chunk {idx} of {total_chunks}"}
+                    )
+                with open(part_p, "rb") as in_f:
+                    while buf := in_f.read(1024 * 1024):
+                        out_f.write(buf)
+
+        # Clean up chunk directory
+        try:
+            shutil.rmtree(upload_folder, ignore_errors=True)
+        except Exception:
+            pass
+
+        # Transcribe assembled media via Gemini File API
+        transcript = await asyncio.to_thread(transcribe_media_via_gemini, assembled_path)
+        if not transcript or not transcript.strip():
+            if os.getenv("ASSEMBLYAI_API_KEY"):
+                try:
+                    transcript_id = await asyncio.to_thread(_submit_to_assemblyai, assembled_path)
+                    return JSONResponse(content={"status": "SUBMITTED", "transcript_id": transcript_id})
+                except Exception:
+                    pass
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "status": "ERROR",
+                    "detail": "Could not extract spoken dialogue from uploaded video. The video may contain no speech or only background music."
+                }
+            )
+
+        return JSONResponse(content={
+            "status": "SUCCESS",
+            "transcription": transcript.strip()
+        })
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "ERROR", "detail": str(e)})
+    finally:
+        if os.path.exists(assembled_path):
+            try:
+                os.remove(assembled_path)
             except Exception:
                 pass
 
@@ -1491,9 +1600,24 @@ class CompetitorAdRemixRequest(BaseModel):
 async def extract_ad_content(request: ExtractAdContentRequest):
     """
     Extracts ad copy, title, description, and audio transcript from video/ad URLs.
+    Safely catches any errors and always returns valid JSON.
     """
-    data = await asyncio.to_thread(extract_content_from_url, request.url)
-    return JSONResponse(content=data)
+    try:
+        data = await asyncio.to_thread(extract_content_from_url, request.url)
+        return JSONResponse(content=data)
+    except Exception as e:
+        print(f"[API] Error in extract_ad_content: {e}")
+        return JSONResponse(content={
+            "url": request.url,
+            "title": "",
+            "description": "",
+            "extracted_text": f"Reference Link: {request.url}\n(Please paste the ad script or hook details directly if this link requires authentication or is restricted.)",
+            "video_stream_url": "",
+            "audio_transcript": "",
+            "source_type": "webpage",
+            "status": "FALLBACK",
+            "message": str(e)
+        })
 
 
 
