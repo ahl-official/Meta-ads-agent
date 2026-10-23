@@ -98,6 +98,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def error_shield_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as exc:
+        import traceback
+        err = traceback.format_exc()
+        print(f"[Unhandled Error] {request.url.path}: {err}")
+        return JSONResponse(status_code=500, content={
+            "status": "ERROR",
+            "detail": str(exc),
+            "traceback": err
+        })
+
 # Global Engine Singletons
 chunker = SemanticChunker(target_min_tokens=500, target_max_tokens=800, overlap_tokens=100)
 embedding_manager = EmbeddingManager(model_name="openai/text-embedding-3-small", vector_dim=1536)
