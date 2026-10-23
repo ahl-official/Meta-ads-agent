@@ -1,3 +1,4 @@
+_OPENROUTER_EXHAUSTED = False
 """
 own_ad_double_down_agent.py
 
@@ -162,7 +163,8 @@ Respond STRICTLY with valid JSON with this structure:
 
         user_prompt = f"Analyze this winning ad and generate 5 distinct double-down script variations with full scene breakdowns for {product_name}."
 
-        if _OPENAI_AVAILABLE and self.api_key:
+        global _OPENROUTER_EXHAUSTED
+        if _OPENAI_AVAILABLE and self.api_key and not _OPENROUTER_EXHAUSTED:
             try:
                 client = openai.OpenAI(api_key=self.api_key, base_url="https://openrouter.ai/api/v1")
                 response = call_openai_with_retry(
@@ -181,6 +183,9 @@ Respond STRICTLY with valid JSON with this structure:
                 scripts = parsed.get("scripts", [])
             except Exception as e:
                 print(f"[Info] OpenRouter call failed ({e}). Attempting Gemini LLM failover...")
+                if "402" in str(e) or "credit" in str(e).lower() or "afford" in str(e).lower():
+                    _OPENROUTER_EXHAUSTED = True
+                    print("[Info] Marked OpenRouter as exhausted. Subsequent calls will route directly to Gemini Flash.")
                 gemini_raw = call_gemini_json(system_prompt, user_prompt)
                 if gemini_raw:
                     try:
