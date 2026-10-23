@@ -442,39 +442,11 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
 
         # 0. Check Permanent Cache First (0 API requests hit, 0.001s return)
     cached = _get_cache_entry(url)
-    if cached and cached.get("extracted_text"):
-        _safe_print(f"[Extractor] Cache HIT for {url} (0 API requests hit, returning from local cache)")
+    if cached and cached.get("status") == "SUCCESS" and len(cached.get("extracted_text", "")) > 100:
+        _safe_print(f"[Extractor] Cache HIT for {url} (returning from local cache)")
         return dict(cached)
 
-    # 1. Fast Meta Ad Library Extraction (takes <0.5s, 0% Vercel timeout risk)
-    if "facebook.com/ads" in url.lower() or "meta.com/ads" in url.lower():
-        fast_res = _extract_meta_ad_library_fast(url, timeout=5)
-        if fast_res and fast_res.get("extracted_text"):
-            _safe_print(f"[Extractor] Fast Meta Ad Library extraction success for {url}")
-            _save_cache_entry(url, fast_res)
-            return fast_res
-        
-        # Cloud datacenter IP bypass via Jina Reader proxy
-        jina_res = _extract_meta_ad_via_jina_proxy(url, timeout=6)
-        if jina_res and jina_res.get("extracted_text"):
-            _safe_print(f"[Extractor] Jina proxy Meta extraction success for {url}")
-            _save_cache_entry(url, jina_res)
-            return jina_res
-
-        # If Facebook challenges cloud IP with 403, return clean instant fallback (never hang or run yt-dlp)
-        fallback_res = {
-            "url": url,
-            "title": "Meta Library Ad",
-            "uploader": "Advertiser",
-            "description": "",
-            "extracted_text": "Reference Link: " + url + "\n\n[Meta Ad Library link detected. Please paste the ad script, hook, or caption directly in this box to generate 5 winning variations.]",
-            "video_stream_url": "",
-            "audio_transcript": "",
-            "source_type": "meta_ad_library",
-            "status": "FALLBACK"
-        }
-        _save_cache_entry(url, fallback_res)
-        return fallback_res
+    # (Fast and Jina scrapers are available as fallback if yt-dlp is unavailable or challenged)
 
     result = {
         "url": url,
@@ -555,7 +527,21 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
                     _save_cache_entry(url, result)
                     return result
         except Exception as yt_err:
-            _safe_print(f"[Extractor] yt-dlp extraction fallback: {yt_err}")
+            _safe_print(f"[Extractor] yt-dlp extraction notice: {yt_err}")
+            # Fallback 1: Fast Meta Ad Library parser
+            if "facebook.com/ads" in url.lower() or "meta.com/ads" in url.lower():
+                fast_res = _extract_meta_ad_library_fast(url, timeout=5)
+                if fast_res and fast_res.get("extracted_text"):
+                    _safe_print(f"[Extractor] Fast Meta Ad Library fallback success for {url}")
+                    _save_cache_entry(url, fast_res)
+                    return fast_res
+
+                # Fallback 2: Jina Reader Proxy (bypasses datacenter IP blocks on Vercel)
+                jina_res = _extract_meta_ad_via_jina_proxy(url, timeout=6)
+                if jina_res and jina_res.get("extracted_text"):
+                    _safe_print(f"[Extractor] Jina proxy Meta fallback success for {url}")
+                    _save_cache_entry(url, jina_res)
+                    return jina_res
             try:
                 with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl_flat:
                     info_flat = ydl_flat.extract_info(url, download=False)
@@ -651,5 +637,5 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
 
     result["status"] = "FALLBACK"
     result["extracted_text"] = f"Reference Link: {url}\n(Please paste the ad script or hook details directly if this link requires authentication or is restricted.)"
-    _save_cache_entry(url, result)
+    # Never save failed fallback to cache, allowing subsequent retries
     return result

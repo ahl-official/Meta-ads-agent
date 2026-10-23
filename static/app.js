@@ -30,174 +30,41 @@ async function safeFetchJson(url, options = {}) {
     return body;
 }
 
-// ============================================================================
-// In-Browser Audio Extractor (Method A)
-// Converts any 20MB-100MB+ video into a lightweight ~1MB 16kHz mono WAV file
-// Bypasses Vercel's 4.5MB serverless limit completely!
-// ============================================================================
-function writeWavString(view, offset, string) {
-    for (let i = 0; i < string.length; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
-    }
-}
-
-function encodeWavBlob(samples, sampleRate) {
-    const buffer = new ArrayBuffer(44 + samples.length * 2);
-    const view = new DataView(buffer);
-
-    writeWavString(view, 0, 'RIFF');
-    view.setUint32(4, 36 + samples.length * 2, true);
-    writeWavString(view, 8, 'WAVE');
-    writeWavString(view, 12, 'fmt ');
-    view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true); // PCM format
-    view.setUint16(22, 1, true); // Mono channel
-    view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * 2, true);
-    view.setUint16(32, 2, true);
-    view.setUint16(34, 16, true);
-    writeWavString(view, 36, 'data');
-    view.setUint32(40, samples.length * 2, true);
-
-    let offset = 44;
-    for (let i = 0; i < samples.length; i++, offset += 2) {
-        const s = Math.max(-1, Math.min(1, samples[i]));
-        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    }
-
-    return new Blob([view], { type: 'audio/wav' });
-}
-
-async function extractAudioFromVideo(videoFile, onProgress) {
-    if (!videoFile) return null;
-    if (videoFile.type && videoFile.type.startsWith('audio/') && videoFile.size < 4 * 1024 * 1024) {
-        return videoFile;
-    }
-
-    if (onProgress) onProgress("Extracting speech audio in browser...");
-
-    const arrayBuffer = await videoFile.arrayBuffer();
-    const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtxClass) {
-        throw new Error("Web Audio API not supported");
-    }
-
-    const audioCtx = new AudioCtxClass();
-    let audioBuffer;
-    try {
-        audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-    } finally {
-        try { audioCtx.close(); } catch (_) {}
-    }
-
-    if (!audioBuffer || audioBuffer.duration === 0) {
-        throw new Error("No audio track detected in video");
-    }
-
-    if (onProgress) onProgress(`Compressing speech audio (16kHz mono, ${audioBuffer.duration.toFixed(1)}s)...`);
-
-    const targetSampleRate = 16000;
-    const maxDuration = Math.min(audioBuffer.duration, 90);
-    const targetLength = Math.ceil(maxDuration * targetSampleRate);
-    const offlineCtx = new OfflineAudioContext(1, targetLength, targetSampleRate);
-
-    const source = offlineCtx.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(offlineCtx.destination);
-    source.start(0);
-
-    const renderedBuffer = await offlineCtx.startRendering();
-    const channelData = renderedBuffer.getChannelData(0);
-
-    const wavBlob = encodeWavBlob(channelData, targetSampleRate);
-    const baseName = (videoFile.name || "ad_audio").replace(/\.[^/.]+$/, "");
-    return new File([wavBlob], `${baseName}_audio.wav`, { type: "audio/wav" });
-}
-
-
-// High-Performance Dual-Engine Media Uploader (Method A: In-Browser Audio Extraction + Method B: Direct Gemini CORS)
-// Bypasses Vercel 4.5MB payload limit and timeouts completely
+// High-Performance Direct-to-Gemini Cloud Uploader (Bypasses Vercel 4.5MB Limit Completely)
+// Direct Browser-to-Google CORS upload handles 20MB to 500MB+ videos with zero server proxy bottleneck
 async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptBadge, generateBtnId, formId, accentGradient) {
     if (!file) return;
     const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
 
     if (progressEl) {
         progressEl.classList.remove('hidden');
-        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Preparing video for AI transcription (${sizeMb} MB)...`;
+        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Preparing direct cloud upload (${sizeMb} MB)...`;
     }
 
     try {
         let finalData = null;
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        let directUploadSucceeded = false;
 
-        // ============================================================
-        // METHOD A: In-Browser Audio Extraction (Recommended & Fast)
-        // Extracts audio in browser so 100MB video becomes ~1MB
-        // Bypasses Vercel 4.5MB serverless limit completely!
-        // ============================================================
-        let audioFile = null;
-        const isVideo = (file.type && file.type.startsWith('video/')) || 
-                        /\.(mp4|mov|webm|avi|mkv)$/i.test(file.name) || 
-                        file.size > 3.5 * 1024 * 1024;
-
-        if (isVideo) {
-            try {
-                audioFile = await extractAudioFromVideo(file, (msg) => {
-                    if (progressEl) {
-                        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> ${msg}`;
-                    }
-                });
-            } catch (extErr) {
-                console.warn('In-browser audio extraction fallback:', extErr);
-            }
-        } else if (file.type && file.type.startsWith('audio/')) {
-            audioFile = file;
-        }
-
-        // If audio extracted and under 4.2 MB (fits within Vercel serverless limit)
-        if (audioFile && audioFile.size < 4.2 * 1024 * 1024) {
-            const audioSizeMb = (audioFile.size / (1024 * 1024)).toFixed(2);
-            if (progressEl) {
-                progressEl.innerHTML = `
-                    <div style="font-size:12px; color:#10B981; margin-bottom:4px;">
-                        <span class="spinner-small" style="display:inline-block; margin-right:6px; vertical-align:middle;"></span>
-                        Extracted voice track (${audioSizeMb} MB, compressed from ${sizeMb} MB) &mdash; transcribing via Gemini AI...
-                    </div>
-                `;
-            }
-
-            const formData = new FormData();
-            formData.append('file', audioFile);
-
-            finalData = await safeFetchJson('/api/transcribe-audio', {
+        // Step 1: Direct Cloud Resumable Upload to Google Gemini File API (Handles 100MB+ videos safely)
+        try {
+            const initData = await safeFetchJson('/api/gemini-upload-init', {
                 method: 'POST',
-                body: formData
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filename: file.name,
+                    mime_type: file.type || 'video/mp4',
+                    file_size: file.size
+                })
             });
-        } else {
-            // ============================================================
-            // METHOD B (Fallback): Direct Cloud Resumable Upload to Google Gemini
-            // Used if browser extraction was unsupported or file is unusually massive
-            // ============================================================
-            let initData = null;
-            try {
-                initData = await safeFetchJson('/api/gemini-upload-init', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        filename: file.name,
-                        mime_type: file.type || 'video/mp4',
-                        file_size: file.size
-                    })
-                });
-            } catch (initErr) {
-                console.warn('Gemini direct upload init fallback:', initErr);
-            }
 
             if (initData && initData.upload_url) {
                 const uploadUrl = initData.upload_url;
                 const googleFile = await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', uploadUrl, true);
-                    xhr.setRequestHeader('Content-Length', file.size.toString());
+                    // Google Gemini Resumable Upload protocol headers (CORS permitted by Google)
+                    // Note: Do NOT set Content-Length; browser sets it automatically to avoid CORS preflight rejection.
                     xhr.setRequestHeader('X-Goog-Upload-Offset', '0');
                     xhr.setRequestHeader('X-Goog-Upload-Command', 'upload, finalize');
 
@@ -207,7 +74,7 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
                             progressEl.innerHTML = `
                                 <div style="margin-bottom:6px; font-size:12px; color:#E2E8F0;">
                                     <span class="spinner-small" style="display:inline-block; margin-right:6px; vertical-align:middle;"></span>
-                                    Uploading video (${sizeMb} MB) directly to Gemini AI &mdash; ${percent}%
+                                    Uploading video directly to Gemini AI (${sizeMb} MB) &mdash; ${percent}%
                                 </div>
                                 <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
                                     <div style="width:${percent}%; height:100%; background:linear-gradient(90deg, #EC4899, #8B5CF6); transition:width 0.2s;"></div>
@@ -230,12 +97,12 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
                     };
 
                     xhr.onerror = () => reject(new Error("Network connection error during video upload"));
-                    xhr.ontimeout = () => reject(new Error("Video upload to Google timed out"));
+                    xhr.ontimeout = () => reject(new Error("Video upload timed out"));
                     xhr.send(file);
                 });
 
                 if (progressEl) {
-                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Learning winning ad pattern & transcribing dialogue with Gemini AI... (takes ~10s)`;
+                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Gemini AI analyzing ad video & transcribing dialogue verbatim... (takes ~5s)`;
                 }
 
                 finalData = await safeFetchJson('/api/gemini-analyze-file', {
@@ -247,9 +114,26 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
                         mime_type: file.type || 'video/mp4'
                     })
                 });
-            } else {
-                throw new Error("Could not process video. Please paste the ad script directly into the box.");
+                directUploadSucceeded = true;
             }
+        } catch (cloudErr) {
+            console.warn('Direct cloud upload notice:', cloudErr);
+        }
+
+        // Step 2: Fallback to local server or small file direct upload
+        if (!directUploadSucceeded) {
+            if (!isLocal && file.size > 4.2 * 1024 * 1024) {
+                throw new Error("Direct cloud upload was interrupted. Please check your internet connection or paste the ad script directly.");
+            }
+            if (progressEl) {
+                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Processing media on server (${sizeMb} MB)...`;
+            }
+            const formData = new FormData();
+            formData.append('file', file);
+            finalData = await safeFetchJson('/api/transcribe-audio', {
+                method: 'POST',
+                body: formData
+            });
         }
 
         if (finalData && finalData.transcript_id) {
@@ -4316,7 +4200,7 @@ function initOwnAdDoubleDown() {
         const normalizedUrl = targetUrl.trim();
 
         // 1. Instant Cache Hit Check (0 API calls, 0s delay)
-        if (window._adTranscriptCache[normalizedUrl]) {
+        if (window._adTranscriptCache[normalizedUrl] && window._adTranscriptCache[normalizedUrl].status === 'SUCCESS') {
             const cached = window._adTranscriptCache[normalizedUrl];
             if (txtContent) {
                 txtContent.value = cached.extracted_text;
@@ -4352,7 +4236,7 @@ function initOwnAdDoubleDown() {
             });
 
             if (data && data.extracted_text) {
-                window._adTranscriptCache[normalizedUrl] = data;
+                if (data.status === 'SUCCESS') { window._adTranscriptCache[normalizedUrl] = data; }
 
                 if (txtContent) {
                     txtContent.value = data.extracted_text;
@@ -4562,7 +4446,7 @@ function initCompetitorAdRemixer() {
         const normalizedUrl = targetUrl.trim();
 
         // 1. Instant Cache Hit Check (0 API calls, 0s delay)
-        if (window._adTranscriptCache[normalizedUrl]) {
+        if (window._adTranscriptCache[normalizedUrl] && window._adTranscriptCache[normalizedUrl].status === 'SUCCESS') {
             const cached = window._adTranscriptCache[normalizedUrl];
             if (txtContent) {
                 txtContent.value = cached.extracted_text;
@@ -4598,7 +4482,7 @@ function initCompetitorAdRemixer() {
             });
 
             if (data && data.extracted_text) {
-                window._adTranscriptCache[normalizedUrl] = data;
+                if (data.status === 'SUCCESS') { window._adTranscriptCache[normalizedUrl] = data; }
 
                 if (txtContent) {
                     txtContent.value = data.extracted_text;

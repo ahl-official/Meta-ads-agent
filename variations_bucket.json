@@ -1,5 +1,313 @@
 [
   {
+    "id": "batch_1792748665030",
+    "timestamp": "23 Oct 2026, 03:14 PM",
+    "strategy_type": "own_doubledown",
+    "title": "Own Double Down: American Hairline Scalp Revival System",
+    "product_name": "American Hairline Scalp Revival System",
+    "target_persona": "American Hairline General Persona",
+    "total_duration": "30 Seconds",
+    "winning_notes": "Analyze winning ad transcript to deconstruct the 3-second thumbstop hook, core agitation, proof mechanism, and conversion CTA.",
+    "video_scripts": [
+      {
+        "script_id": 1,
+        "script_title": "The Mirror Double-Take",
+        "framework_structure": "Hook Velocity & Pattern-Interrupt Pivot",
+        "target_persona": "American Hairline General Persona",
+        "core_angle": "Unrecognizable natural hairline vs old thinning look",
+        "core_hook": "Stop scrolling if you've been hiding your hairline in every single photo.",
+        "total_duration_est": "30 Seconds",
+        "scenes": [
+          {
+            "scene_number": 1,
+            "scene_type": "Hook (0-3s)",
+            "duration_seconds": "0 - 3s",
+            "spoken_script": "Stop scrolling if you've been hiding your hairline in every single photo.",
+            "visual_direction": "Actor abruptly turns away from a mirror, locking eyes with the camera holding a phone.",
+            "on_screen_text": "STOP HIDING YOUR HAIRLINE",
+            "audio_cues": "Sharp record scratch SFX, pulsing beat begins"
+          },
+          {
+            "scene_number": 2,
+            "scene_type": "Problem / Agitation (3-12s)",
+            "duration_seconds": "3 - 12s",
+            "spoken_script": "Let's be honest. Balding makes you look 10 years older, and those messy comb-overs or toxic sprays just don't work anymore.",
+            "visual_direction": "Quick cuts showing frustrated styling attempts in front of the bathroom mirror.",
+            "on_screen_text": "Looking 10 Years Older?",
+            "audio_cues": "Low tension synth hum"
+          },
+          {
+            "scene_number": 3,
+            "scene_type": "Solution & Proof (12-22s)",
+            "duration_seconds": "12 - 22s",
+            "spoken_script": "That's why over 5,000 men trust American Hairline. Non-surgical, 100 percent human hair, and completely undetectable even up close.",
+            "visual_direction": "Macro close-up of the ultra-natural hairline. Actor running fingers freely through the hair.",
+            "on_screen_text": "5000+ Happy Clients | 100% Human Hair",
+            "audio_cues": "Upbeat, inspiring corporate pop music swells"
+          },
+          {
+            "scene_number": 4,
+            "scene_type": "CTA (22-30s)",
+            "duration_seconds": "22 - 30s",
+            "spoken_script": "Regain your confidence today. Click below to book your private consultation with American Hairline.",
+            "visual_direction": "Actor smiles confidently at camera, pointing down toward the CTA button.",
+            "on_screen_text": "Book Your Consultation Today | americanhairline.in",
+            "audio_cues": "Bright bell chimes on CTA"
+          }
+        ],
+        "actor_casting_notes": "Relatable man in his 30s or 40s, energetic, confident delivery.",
+        "b_roll_shot_list": [
+          "Close up of hands running through a thick, seamless hairline",
+          "Split screen showing old photo vs current mirror reflection",
+          "Consultation booking screen overlay"
+        ],
+        "ftc_disclaimer_note": "*Results may vary based on individual conditions.",
+        "preview_storyboard_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 220\" width=\"100%\" height=\"220\" style=\"background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;\">\n            <rect x=\"0\" y=\"0\" width=\"800\" height=\"38\" fill=\"#131B2E\" rx=\"12\" />\n            <text x=\"20\" y=\"24\" fill=\"#F8FAFC\" font-size=\"13\" font-weight=\"700\">DOUBLE-DOWN TIMELINE: The Mirror Double-Take...</text>\n            <text x=\"780\" y=\"24\" fill=\"#6366F1\" font-size=\"12\" font-weight=\"600\" text-anchor=\"end\">Hook Velocity & Pattern-Interrupt Pivot</text>\n            \n            <rect x=\"20\" y=\"50\" width=\"760\" height=\"32\" fill=\"#6366F122\" rx=\"6\" stroke=\"#6366F144\" />\n            <text x=\"32\" y=\"71\" fill=\"#E2E8F0\" font-size=\"11\" font-weight=\"500\">HOOK: \"Stop scrolling if you've been hiding your hairline in e...\"</text>\n\n            <g transform=\"translate(20, 95)\">\n            <g transform=\"translate(0, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#6366F133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 1</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">0-3s</text>\n                <text x=\"8\" y=\"40\" fill=\"#6366F1\" font-size=\"10\" font-weight=\"600\">Hook</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Stop scrolling if you've been ...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">STOP HIDING YOUR H</text>\n            </g>\n            <g transform=\"translate(154, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#6366F133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 2</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">3-12s</text>\n                <text x=\"8\" y=\"40\" fill=\"#6366F1\" font-size=\"10\" font-weight=\"600\">Problem / Agit</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Let's be honest. Balding makes...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Looking 10 Years O</text>\n            </g>\n            <g transform=\"translate(308, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#6366F133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 3</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">12-22s</text>\n                <text x=\"8\" y=\"40\" fill=\"#6366F1\" font-size=\"10\" font-weight=\"600\">Solution & Pro</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">That's why over 5,000 men trus...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">5000+ Happy Client</text>\n            </g>\n            <g transform=\"translate(462, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#6366F133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 4</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">22-30s</text>\n                <text x=\"8\" y=\"40\" fill=\"#6366F1\" font-size=\"10\" font-weight=\"600\">CTA</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Regain your confidence today. ...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Book Your Consulta</text>\n            </g></g></svg>"
+      },
+      {
+        "script_id": 2,
+        "script_title": "The Morning Routine Frustration",
+        "framework_structure": "Visceral Pain & Emotional Agitation Deep-Dive",
+        "target_persona": "American Hairline General Persona",
+        "core_angle": "The silent daily emotional toll of hair thinning",
+        "core_hook": "How much time do you waste every morning trying to angle your hair over that bald spot?",
+        "total_duration_est": "30 Seconds",
+        "scenes": [
+          {
+            "scene_number": 1,
+            "scene_type": "Hook (0-3s)",
+            "duration_seconds": "0 - 3s",
+            "spoken_script": "How much time do you waste every morning trying to cover up that receding hairline?",
+            "visual_direction": "Tight close-up of actor staring exhaustedly into a tilted mirror.",
+            "on_screen_text": "Tired of Hiding Your Hairline?",
+            "audio_cues": "Sudden sharp camera zoom SFX"
+          },
+          {
+            "scene_number": 2,
+            "scene_type": "Agitation (3-12s)",
+            "duration_seconds": "3 - 12s",
+            "spoken_script": "The wind blows, you panic. Someone takes a photo from above, your stomach drops. It's exhausting carrying that constant insecurity.",
+            "visual_direction": "Montage of awkward head-turning, avoiding top-down photos, adjusting caps nervously.",
+            "on_screen_text": "The Constant Anxiety",
+            "audio_cues": "Dull, heavy heartbeat rhythm"
+          },
+          {
+            "scene_number": 3,
+            "scene_type": "Solution (12-22s)",
+            "duration_seconds": "12 - 22s",
+            "spoken_script": "American Hairline changes everything. With 15 years of specialization and 100% customized human hair systems, you get your old self back instantly.",
+            "visual_direction": "Transition to bright lighting. Actor effortlessly styles his full, seamless head of hair.",
+            "on_screen_text": "15 Years of Specialization | 100% Customized",
+            "audio_cues": "Uplifting transition chord"
+          },
+          {
+            "scene_number": 4,
+            "scene_type": "CTA (22-30s)",
+            "duration_seconds": "22 - 30s",
+            "spoken_script": "Stop stressing. Take the first step and book your consultation at americanhairline.in today.",
+            "visual_direction": "Warm, confident smile from actor directly into camera lens.",
+            "on_screen_text": "Regain Your Confidence Today! | americanhairline.in",
+            "audio_cues": "Soft optimistic outro note"
+          }
+        ],
+        "actor_casting_notes": "Authentic, expressive male actor, genuine emotional delivery.",
+        "b_roll_shot_list": [
+          "Desperate styling in harsh bathroom lighting",
+          "Sighing while looking at a smartphone camera",
+          "Effortless styling reveal shot"
+        ],
+        "ftc_disclaimer_note": "*Results may vary based on individual conditions.",
+        "preview_storyboard_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 220\" width=\"100%\" height=\"220\" style=\"background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;\">\n            <rect x=\"0\" y=\"0\" width=\"800\" height=\"38\" fill=\"#131B2E\" rx=\"12\" />\n            <text x=\"20\" y=\"24\" fill=\"#F8FAFC\" font-size=\"13\" font-weight=\"700\">DOUBLE-DOWN TIMELINE: The Morning Routine Frustration...</text>\n            <text x=\"780\" y=\"24\" fill=\"#EC4899\" font-size=\"12\" font-weight=\"600\" text-anchor=\"end\">Visceral Pain & Emotional Agitation Deep-Dive</text>\n            \n            <rect x=\"20\" y=\"50\" width=\"760\" height=\"32\" fill=\"#EC489922\" rx=\"6\" stroke=\"#EC489944\" />\n            <text x=\"32\" y=\"71\" fill=\"#E2E8F0\" font-size=\"11\" font-weight=\"500\">HOOK: \"How much time do you waste every morning trying to angl...\"</text>\n\n            <g transform=\"translate(20, 95)\">\n            <g transform=\"translate(0, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#EC489933\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 1</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">0-3s</text>\n                <text x=\"8\" y=\"40\" fill=\"#EC4899\" font-size=\"10\" font-weight=\"600\">Hook</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">How much time do you waste eve...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Tired of Hiding Yo</text>\n            </g>\n            <g transform=\"translate(154, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#EC489933\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 2</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">3-12s</text>\n                <text x=\"8\" y=\"40\" fill=\"#EC4899\" font-size=\"10\" font-weight=\"600\">Agitation</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">The wind blows, you panic. Som...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">The Constant Anxie</text>\n            </g>\n            <g transform=\"translate(308, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#EC489933\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 3</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">12-22s</text>\n                <text x=\"8\" y=\"40\" fill=\"#EC4899\" font-size=\"10\" font-weight=\"600\">Solution</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">American Hairline changes ever...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">15 Years of Specia</text>\n            </g>\n            <g transform=\"translate(462, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#EC489933\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 4</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">22-30s</text>\n                <text x=\"8\" y=\"40\" fill=\"#EC4899\" font-size=\"10\" font-weight=\"600\">CTA</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Stop stressing. Take the first...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Regain Your Confid</text>\n            </g></g></svg>"
+      },
+      {
+        "script_id": 3,
+        "script_title": "The Industry Myth Buster",
+        "framework_structure": "The Contrarian / Industry Myth-Buster",
+        "target_persona": "American Hairline General Persona",
+        "core_angle": "Exposing fake-looking hairpieces vs superior modern non-surgical systems",
+        "core_hook": "Stop wasting money on cheap hair fibers that wash away in the rain.",
+        "total_duration_est": "30 Seconds",
+        "scenes": [
+          {
+            "scene_number": 1,
+            "scene_type": "Hook (0-3s)",
+            "duration_seconds": "0 - 3s",
+            "spoken_script": "Stop wasting money on cheap hair fibers and miracle shampoos that do absolutely nothing.",
+            "visual_direction": "Actor gestures directly at camera with a firm, no-nonsense expression.",
+            "on_screen_text": "STOP WASTING MONEY ON FAKES",
+            "audio_cues": "Metallic whoosh SFX"
+          },
+          {
+            "scene_number": 2,
+            "scene_type": "Problem / Myth (3-12s)",
+            "duration_seconds": "3 - 12s",
+            "spoken_script": "The hair industry wants you to stay trapped buying temporary fixes. And old-school hairpieces? They look obvious, stiff, and fake.",
+            "visual_direction": "Quick cuts showing exaggerated, unnatural hairpieces with a red 'X' overlay.",
+            "on_screen_text": "The Old Hairpiece Lie",
+            "audio_cues": "Subtle buzzer sound"
+          },
+          {
+            "scene_number": 3,
+            "scene_type": "Solution / Proof (12-22s)",
+            "duration_seconds": "12 - 22s",
+            "spoken_script": "American Hairline is different. Backed by 15 years of expertise, our non-surgical systems use 100% highest quality human hair designed to look completely natural.",
+            "visual_direction": "Pan across a flawless, undetectable hairline blending seamlessly into the skin.",
+            "on_screen_text": "Most Natural Looking Hairline",
+            "audio_cues": "Clean ascending chime"
+          },
+          {
+            "scene_number": 4,
+            "scene_type": "CTA (22-30s)",
+            "duration_seconds": "22 - 30s",
+            "spoken_script": "Get the permanent solution you deserve. Visit americanhairline.in and book your consultation.",
+            "visual_direction": "Bold graphic card showing URL with high-contrast text.",
+            "on_screen_text": "Book Your Consultation Today | americanhairline.in",
+            "audio_cues": "Punchy click sound"
+          }
+        ],
+        "actor_casting_notes": "Direct, authoritative, expert persona.",
+        "b_roll_shot_list": [
+          "Dismissive hand gesture crossing out old remedies",
+          "Close up of premium human hair texture under bright studio light",
+          "Website booking interface mockup"
+        ],
+        "ftc_disclaimer_note": "*Results may vary based on individual conditions.",
+        "preview_storyboard_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 220\" width=\"100%\" height=\"220\" style=\"background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;\">\n            <rect x=\"0\" y=\"0\" width=\"800\" height=\"38\" fill=\"#131B2E\" rx=\"12\" />\n            <text x=\"20\" y=\"24\" fill=\"#F8FAFC\" font-size=\"13\" font-weight=\"700\">DOUBLE-DOWN TIMELINE: The Industry Myth Buster...</text>\n            <text x=\"780\" y=\"24\" fill=\"#F59E0B\" font-size=\"12\" font-weight=\"600\" text-anchor=\"end\">The Contrarian / Industry Myth-Buster</text>\n            \n            <rect x=\"20\" y=\"50\" width=\"760\" height=\"32\" fill=\"#F59E0B22\" rx=\"6\" stroke=\"#F59E0B44\" />\n            <text x=\"32\" y=\"71\" fill=\"#E2E8F0\" font-size=\"11\" font-weight=\"500\">HOOK: \"Stop wasting money on cheap hair fibers that wash away ...\"</text>\n\n            <g transform=\"translate(20, 95)\">\n            <g transform=\"translate(0, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#F59E0B33\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 1</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">0-3s</text>\n                <text x=\"8\" y=\"40\" fill=\"#F59E0B\" font-size=\"10\" font-weight=\"600\">Hook</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Stop wasting money on cheap ha...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">STOP WASTING MONEY</text>\n            </g>\n            <g transform=\"translate(154, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#F59E0B33\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 2</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">3-12s</text>\n                <text x=\"8\" y=\"40\" fill=\"#F59E0B\" font-size=\"10\" font-weight=\"600\">Problem / Myth</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">The hair industry wants you to...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">The Old Hairpiece </text>\n            </g>\n            <g transform=\"translate(308, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#F59E0B33\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 3</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">12-22s</text>\n                <text x=\"8\" y=\"40\" fill=\"#F59E0B\" font-size=\"10\" font-weight=\"600\">Solution / Pro</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">American Hairline is different...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Most Natural Looki</text>\n            </g>\n            <g transform=\"translate(462, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#F59E0B33\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 4</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">22-30s</text>\n                <text x=\"8\" y=\"40\" fill=\"#F59E0B\" font-size=\"10\" font-weight=\"600\">CTA</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Get the permanent solution you...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Book Your Consulta</text>\n            </g></g></svg>"
+      },
+      {
+        "script_id": 4,
+        "script_title": "The Personal Transformation Story",
+        "framework_structure": "Relatable UGC Case-Study & Transformation Story",
+        "target_persona": "American Hairline General Persona",
+        "core_angle": "First-person authentic testimonial on recovering lost youth",
+        "core_hook": "I honestly thought my hairline was gone forever until I found this.",
+        "total_duration_est": "30 Seconds",
+        "scenes": [
+          {
+            "scene_number": 1,
+            "scene_type": "Hook (0-3s)",
+            "duration_seconds": "0 - 3s",
+            "spoken_script": "I honestly thought my hairline was gone forever until I found American Hairline.",
+            "visual_direction": "Actor talking directly into phone camera as if recording a candid video.",
+            "on_screen_text": "I Thought It Was Gone Forever...",
+            "audio_cues": "Casual vlog intro audio"
+          },
+          {
+            "scene_number": 2,
+            "scene_type": "Agitation & Discovery (3-12s)",
+            "duration_seconds": "3 - 12s",
+            "spoken_script": "For years I avoided mirrors and hated getting photographed. Then I discovered their non-surgical scalp revival system.",
+            "visual_direction": "B-roll of old photos flashing quickly, transitioning to modern happy lifestyle clips.",
+            "on_screen_text": "No More Hiding in Photos",
+            "audio_cues": "Gentle acoustic guitar strum"
+          },
+          {
+            "scene_number": 3,
+            "scene_type": "Proof & Quality (12-22s)",
+            "duration_seconds": "12 - 22s",
+            "spoken_script": "It's 100% human hair, completely customized, and over 5,000 happy clients can't be wrong. It feels and looks 100% real.",
+            "visual_direction": "Actor running hand through hair on camera, showing absolute natural movement.",
+            "on_screen_text": "5000+ Happy Clients | 100% Human Hair",
+            "audio_cues": "Uplifting acoustic rhythm builds"
+          },
+          {
+            "scene_number": 4,
+            "scene_type": "CTA (22-30s)",
+            "duration_seconds": "22 - 30s",
+            "spoken_script": "Do yourself a favor. Regain your confidence today and check out americanhairline.in.",
+            "visual_direction": "Friendly wave to camera with website link clearly displayed on screen.",
+            "on_screen_text": "Regain Your Confidence Today! | americanhairline.in",
+            "audio_cues": "Warm closing chime"
+          }
+        ],
+        "actor_casting_notes": "Warm, relatable everyday man, casual selfie-style delivery.",
+        "b_roll_shot_list": [
+          "Selfie-style video holding phone at slight angle",
+          "Old selfie showing thinning hair with nostalgic filter",
+          "Close up of happy client smiling in natural daylight"
+        ],
+        "ftc_disclaimer_note": "*Results may vary based on individual conditions.",
+        "preview_storyboard_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 220\" width=\"100%\" height=\"220\" style=\"background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;\">\n            <rect x=\"0\" y=\"0\" width=\"800\" height=\"38\" fill=\"#131B2E\" rx=\"12\" />\n            <text x=\"20\" y=\"24\" fill=\"#F8FAFC\" font-size=\"13\" font-weight=\"700\">DOUBLE-DOWN TIMELINE: The Personal Transformation Story...</text>\n            <text x=\"780\" y=\"24\" fill=\"#10B981\" font-size=\"12\" font-weight=\"600\" text-anchor=\"end\">Relatable UGC Case-Study & Transformation Story</text>\n            \n            <rect x=\"20\" y=\"50\" width=\"760\" height=\"32\" fill=\"#10B98122\" rx=\"6\" stroke=\"#10B98144\" />\n            <text x=\"32\" y=\"71\" fill=\"#E2E8F0\" font-size=\"11\" font-weight=\"500\">HOOK: \"I honestly thought my hairline was gone forever until I...\"</text>\n\n            <g transform=\"translate(20, 95)\">\n            <g transform=\"translate(0, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#10B98133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 1</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">0-3s</text>\n                <text x=\"8\" y=\"40\" fill=\"#10B981\" font-size=\"10\" font-weight=\"600\">Hook</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">I honestly thought my hairline...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">I Thought It Was G</text>\n            </g>\n            <g transform=\"translate(154, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#10B98133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 2</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">3-12s</text>\n                <text x=\"8\" y=\"40\" fill=\"#10B981\" font-size=\"10\" font-weight=\"600\">Agitation & Di</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">For years I avoided mirrors an...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">No More Hiding in </text>\n            </g>\n            <g transform=\"translate(308, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#10B98133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 3</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">12-22s</text>\n                <text x=\"8\" y=\"40\" fill=\"#10B981\" font-size=\"10\" font-weight=\"600\">Proof & Qualit</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">It's 100% human hair, complete...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">5000+ Happy Client</text>\n            </g>\n            <g transform=\"translate(462, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#10B98133\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 4</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">22-30s</text>\n                <text x=\"8\" y=\"40\" fill=\"#10B981\" font-size=\"10\" font-weight=\"600\">CTA</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Do yourself a favor. Regain yo...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Regain Your Confid</text>\n            </g></g></svg>"
+      },
+      {
+        "script_id": 5,
+        "script_title": "The Rapid-Fire Solution & Guarantee",
+        "framework_structure": "High-Urgency Direct Offer & Risk-Reversal Stack",
+        "target_persona": "American Hairline General Persona",
+        "core_angle": "Direct benefits stack with immediate low-friction consultation offer",
+        "core_hook": "Want the most natural hairline without surgery? Here is exactly how it works.",
+        "total_duration_est": "30 Seconds",
+        "scenes": [
+          {
+            "scene_number": 1,
+            "scene_type": "Hook (0-3s)",
+            "duration_seconds": "0 - 3s",
+            "spoken_script": "Want the most natural looking hairline without surgery? Here is why American Hairline is the gold standard.",
+            "visual_direction": "Professional presenter stepping into frame with high energy and bold eye contact.",
+            "on_screen_text": "Most Natural Hairline - Non-Surgical",
+            "audio_cues": "Energetic transition swish"
+          },
+          {
+            "scene_number": 2,
+            "scene_type": "Value Stack (3-12s)",
+            "duration_seconds": "3 - 12s",
+            "spoken_script": "You get 15 years of proven specialization, 100 percent customized fitting, and highest quality human hair trusted by over 5,000 clients.",
+            "visual_direction": "Dynamic text badges pop up sequentially with checkmarks on screen.",
+            "on_screen_text": "✔ 15 Years Exp\n✔ 100% Customized\n✔ Highest Quality Hair",
+            "audio_cues": "Clean pop sound for each checkmark"
+          },
+          {
+            "scene_number": 3,
+            "scene_type": "Risk Reversal (12-22s)",
+            "duration_seconds": "12 - 22s",
+            "spoken_script": "Safe, effective, and completely confidential. Zero downtime, immediate results that last.",
+            "visual_direction": "Clean studio footage showing professional consultation setup and comfortable environment.",
+            "on_screen_text": "Safe & Confidential Consultation",
+            "audio_cues": "Subtle reassurance chime"
+          },
+          {
+            "scene_number": 4,
+            "scene_type": "CTA (22-30s)",
+            "duration_seconds": "22 - 30s",
+            "spoken_script": "Regain your confidence today. Click americanhairline.in and book your consultation right now.",
+            "visual_direction": "Bold call-to-action end card with clickable link and brand handle.",
+            "on_screen_text": "Book Your Consultation Today | americanhairline.in",
+            "audio_cues": "Strong closing bell sound"
+          }
+        ],
+        "actor_casting_notes": "High energy, professional consultant, sharp presentation style.",
+        "b_roll_shot_list": [
+          "Fast-paced graphic checkmarks popping on screen",
+          "Consultation booking calendar preview",
+          "Brand logo and trust badge display"
+        ],
+        "ftc_disclaimer_note": "*Results may vary based on individual conditions.",
+        "preview_storyboard_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 800 220\" width=\"100%\" height=\"220\" style=\"background:#090D16; border-radius:12px; font-family:'Inter', sans-serif;\">\n            <rect x=\"0\" y=\"0\" width=\"800\" height=\"38\" fill=\"#131B2E\" rx=\"12\" />\n            <text x=\"20\" y=\"24\" fill=\"#F8FAFC\" font-size=\"13\" font-weight=\"700\">DOUBLE-DOWN TIMELINE: The Rapid-Fire Solution & Guarantee...</text>\n            <text x=\"780\" y=\"24\" fill=\"#3B82F6\" font-size=\"12\" font-weight=\"600\" text-anchor=\"end\">High-Urgency Direct Offer & Risk-Reversal Stack</text>\n            \n            <rect x=\"20\" y=\"50\" width=\"760\" height=\"32\" fill=\"#3B82F622\" rx=\"6\" stroke=\"#3B82F644\" />\n            <text x=\"32\" y=\"71\" fill=\"#E2E8F0\" font-size=\"11\" font-weight=\"500\">HOOK: \"Want the most natural hairline without surgery? Here is...\"</text>\n\n            <g transform=\"translate(20, 95)\">\n            <g transform=\"translate(0, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#3B82F633\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 1</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">0-3s</text>\n                <text x=\"8\" y=\"40\" fill=\"#3B82F6\" font-size=\"10\" font-weight=\"600\">Hook</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Want the most natural looking ...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Most Natural Hairl</text>\n            </g>\n            <g transform=\"translate(154, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#3B82F633\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 2</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">3-12s</text>\n                <text x=\"8\" y=\"40\" fill=\"#3B82F6\" font-size=\"10\" font-weight=\"600\">Value Stack</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">You get 15 years of proven spe...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">✔ 15 Years Exp\n✔ 1</text>\n            </g>\n            <g transform=\"translate(308, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#3B82F633\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 3</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">12-22s</text>\n                <text x=\"8\" y=\"40\" fill=\"#3B82F6\" font-size=\"10\" font-weight=\"600\">Risk Reversal</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Safe, effective, and completel...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Safe & Confidentia</text>\n            </g>\n            <g transform=\"translate(462, 0)\">\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"105\" fill=\"#111827\" rx=\"8\" stroke=\"#1F2937\" />\n                <rect x=\"0\" y=\"0\" width=\"146\" height=\"24\" fill=\"#3B82F633\" rx=\"8\" />\n                <text x=\"8\" y=\"16\" fill=\"#F8FAFC\" font-size=\"10\" font-weight=\"700\">SCENE 4</text>\n                <text x=\"138\" y=\"16\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"end\">22-30s</text>\n                <text x=\"8\" y=\"40\" fill=\"#3B82F6\" font-size=\"10\" font-weight=\"600\">CTA</text>\n                <text x=\"8\" y=\"60\" fill=\"#CBD5E1\" font-size=\"9\">Regain your confidence today. ...</text>\n                <rect x=\"8\" y=\"82\" width=\"130\" height=\"16\" fill=\"#0F172A\" rx=\"4\" />\n                <text x=\"73.0\" y=\"93\" fill=\"#38BDF8\" font-size=\"8\" text-anchor=\"middle\">Book Your Consulta</text>\n            </g></g></svg>"
+      }
+    ],
+    "winner_deconstruction": {
+      "hook_mechanism": "Direct declaration of regaining confidence and addressing hairline visibility, instantly targeting a universal insecurity.",
+      "retention_drivers": "Clear bulleted benefits (15 years specialization, 100% human hair) combined with rapid-fire reassurance on non-surgical safety.",
+      "emotional_core": "Loss of confidence due to hair thinning, restored through safe, natural, high-quality human hair replacement.",
+      "conversion_trigger": "Social proof (5000+ happy clients) combined with a low-friction consultation CTA.",
+      "double_down_opportunities": [
+        "Incorporate bolder visual pattern interrupts in the first 3 seconds to capture attention faster.",
+        "Amplify the day-to-day emotional agitation around hair loss to deepen empathy.",
+        "Leverage contrarian angles calling out the fake-looking hair systems in the market to position American Hairline as the gold standard."
+      ]
+    },
+    "success_metrics": {
+      "hook_strength_score": 93.5,
+      "visual_clarity_score": 95.2,
+      "framework_pacing_score": 95.2,
+      "policy_compliance_score": 97.5,
+      "overall_script_quality": 95.3,
+      "total_scripts": 5,
+      "status": "EXCELLENT"
+    },
+    "trace_id": "4e7ecf6a-5787-4505-bdb3-beef532283c5"
+  },
+  {
     "id": "batch_1792747868624",
     "timestamp": "23 Oct 2026, 03:01 PM",
     "strategy_type": "own_doubledown",
