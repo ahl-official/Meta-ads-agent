@@ -4221,8 +4221,8 @@ function initOwnAdDoubleDown() {
                 body: JSON.stringify({ url: normalizedUrl })
             });
 
-            if (data && data.extracted_text) {
-                if (data.status === 'SUCCESS') { window._adTranscriptCache[normalizedUrl] = data; }
+            if (data && data.status === 'SUCCESS' && data.extracted_text) {
+                window._adTranscriptCache[normalizedUrl] = data;
 
                 if (txtContent) {
                     txtContent.value = data.extracted_text;
@@ -4244,7 +4244,24 @@ function initOwnAdDoubleDown() {
                 }
                 return data.extracted_text;
             } else {
-                throw new Error("No script or transcript returned from this ad link");
+                // Platform bot wall or fallback detected - do not generate garbage ads
+                if (txtContent) {
+                    txtContent.value = "";
+                    txtContent.dataset.extractedFrom = "";
+                    txtContent.placeholder = "⚠️ Platform bot protection blocked automated scraping of this link. Please switch to 'Upload Media' tab to upload the video file directly, or paste your ad script here.";
+                    txtContent.style.border = "2px solid #F59E0B";
+                    txtContent.style.boxShadow = "0 0 15px rgba(245, 158, 11, 0.3)";
+                }
+                if (transcriptBadge) {
+                    transcriptBadge.style.display = "inline-block";
+                    transcriptBadge.style.background = "rgba(245, 158, 11, 0.2)";
+                    transcriptBadge.style.color = "#F59E0B";
+                    transcriptBadge.textContent = "⚠️ Bot Protected";
+                }
+                if (urlStatus) {
+                    urlStatus.innerHTML = '<div style="background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px; color:#F59E0B; font-size:12px;"><strong>⚠️ Meta Ad Library Bot-Wall Detected:</strong> Facebook requires interactive browser verification for this link.<br><br>👉 <strong>Instant 1-Step Solution:</strong> Click the <strong>Upload Media</strong> tab right next to this input and drop the video file directly. Gemini AI will analyze the video, transcribe dialogue, and generate all 5 variations in 1 step!</div>';
+                }
+                return null;
             }
         } catch (err) {
             console.error('URL extraction error:', err);
@@ -4467,8 +4484,8 @@ function initCompetitorAdRemixer() {
                 body: JSON.stringify({ url: normalizedUrl })
             });
 
-            if (data && data.extracted_text) {
-                if (data.status === 'SUCCESS') { window._adTranscriptCache[normalizedUrl] = data; }
+            if (data && data.status === 'SUCCESS' && data.extracted_text) {
+                window._adTranscriptCache[normalizedUrl] = data;
 
                 if (txtContent) {
                     txtContent.value = data.extracted_text;
@@ -4495,7 +4512,23 @@ function initCompetitorAdRemixer() {
                 }
                 return data.extracted_text;
             } else {
-                throw new Error("No script or transcript returned from this ad link");
+                if (txtContent) {
+                    txtContent.value = "";
+                    txtContent.dataset.extractedFrom = "";
+                    txtContent.placeholder = "⚠️ Platform bot protection blocked automated scraping of this link. Please switch to 'Upload Media' tab to upload the video file directly, or paste the competitor ad script here.";
+                    txtContent.style.border = "2px solid #F59E0B";
+                    txtContent.style.boxShadow = "0 0 15px rgba(245, 158, 11, 0.3)";
+                }
+                if (transcriptBadge) {
+                    transcriptBadge.style.display = "inline-block";
+                    transcriptBadge.style.background = "rgba(245, 158, 11, 0.2)";
+                    transcriptBadge.style.color = "#F59E0B";
+                    transcriptBadge.textContent = "⚠️ Bot Protected";
+                }
+                if (urlStatus) {
+                    urlStatus.innerHTML = '<div style="background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px; color:#F59E0B; font-size:12px;"><strong>⚠️ Meta Ad Library Bot-Wall Detected:</strong> Facebook requires interactive browser verification for this link.<br><br>👉 <strong>Instant 1-Step Solution:</strong> Click the <strong>Upload Media</strong> tab right next to this input and drop the competitor video file directly. Gemini AI will analyze the video, transcribe dialogue, and generate all 5 remixes in 1 step!</div>';
+                }
+                return null;
             }
         } catch (err) {
             console.error('URL extraction error:', err);

@@ -342,7 +342,10 @@ def _extract_meta_ad_library_fast(url: str, timeout: int = 5) -> Optional[Dict[s
                 ad_copy = bodies[0]
 
         # Filter out generic bot-wall titles
-        generic_placeholders = ["ad library", "meta ad library", "facebook", "log in", "see ad details"]
+        generic_placeholders = [
+            "ad library", "meta ad library", "facebook", "log in", "see ad details",
+            "विज्ञापन लाइब्रेरी", "विज्ञापन", "library", "facebook ad library"
+        ]
         if brand and brand.lower().strip() in generic_placeholders:
             brand = ""
 
@@ -627,21 +630,29 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
             clean_text = " ".join(clean_text.split())
 
             body_snippet = clean_text[:1500] if clean_text else ""
-            # Check for dummy Facebook Ad Library placeholders
+            # Check for dummy Facebook Ad Library placeholders and anti-bot challenge pages
             t_clean = (result["title"] or "").strip().lower()
             b_clean = (body_snippet or "").strip().lower()
-            if t_clean in ["ad library", "meta ad library", "facebook"] and (not b_clean or b_clean in ["ad library", "meta ad library"]):
-                # This is Facebook's bot wall, NOT the real ad!
+            bot_keywords = [
+                "ad library", "meta ad library", "facebook", "log in", "see ad details",
+                "विज्ञापन लाइब्रेरी", "विज्ञापन", "library"
+            ]
+            is_bot_title = any(kw in t_clean for kw in bot_keywords)
+            is_bot_body = (not b_clean) or any(b_clean == kw for kw in bot_keywords) or len(b_clean) < 30
+            has_challenge_js = "executechallenge" in html.lower() or "__rd_verify" in html.lower()
+
+            if is_bot_title or is_bot_body or has_challenge_js:
                 result["status"] = "FALLBACK"
-                result["extracted_text"] = f"Reference Ad Link: {url}\n\n[Note: This Facebook Ad Library link is protected by Facebook's login bot-wall. Please paste the ad script text or upload the video directly.]"
+                result["extracted_text"] = f"Reference Ad Link: {url}\n\n[Note: This Facebook Ad Library link is protected by Facebook's login bot-wall. Please switch to the 'Upload Media' tab to upload the video file directly, or paste the ad script text.]"
                 return result
 
             summary_parts = []
-            if result["title"] and result["title"].lower() not in ["ad library", "meta ad library", "facebook", "log in"]:
+            bot_list = ["ad library", "meta ad library", "facebook", "log in", "विज्ञापन लाइब्रेरी", "विज्ञापन"]
+            if result["title"] and not any(kw in result["title"].lower() for kw in bot_list):
                 summary_parts.append(f"Title: {result['title']}")
             if result["description"]:
                 summary_parts.append(f"Description: {result['description']}")
-            if body_snippet and body_snippet.lower() not in ["ad library", "meta ad library"]:
+            if body_snippet and not any(body_snippet.lower().strip() == kw for kw in bot_list) and len(body_snippet) > 30:
                 summary_parts.append(f"Content Snippet: {body_snippet}")
 
             result["extracted_text"] = "\n\n".join(summary_parts) if summary_parts else f"URL Source: {url}"
