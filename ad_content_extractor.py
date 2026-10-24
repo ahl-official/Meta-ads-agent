@@ -313,6 +313,145 @@ def transcribe_audio_file(file_path: str) -> str:
 
 
 
+
+def _extract_meta_ad_via_playwright(url: str, timeout: int = 25) -> Optional[Dict[str, Any]]:
+    """
+    Method A: Headless Chromium with Network Interception (Runs on VPS).
+    Opens the Facebook Ad Library URL, intercepts the actual .mp4 video stream URL from fbcdn.net,
+    scrapes the ad primary text, headline, and advertiser name, and feeds the video directly
+    into Gemini Multimodal AI for verbatim dialogue transcription & visual hook breakdown.
+    """
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        _safe_print("[Extractor] Playwright not installed in environment, skipping Method A")
+        return None
+
+    try:
+        captured_videos = []
+        ad_copy = ""
+        brand = ""
+
+        _safe_print(f"[Extractor] Launching Playwright Chromium headless for: {url}")
+        with sync_playwright() as p:
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu'
+                ]
+            )
+            context = browser.new_context(
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                viewport={'width': 1280, 'height': 900},
+                locale='en-US'
+            )
+            page = context.new_page()
+
+            def on_response(res):
+                u = res.url
+                ct = res.headers.get("content-type", "")
+                if (".mp4" in u or "video" in ct or "bytestart" in u) and "fbcdn.net" in u:
+                    if u not in captured_videos:
+                        captured_videos.append(u)
+
+            page.on("response", on_response)
+
+            try:
+                page.goto(url, wait_until="networkidle", timeout=timeout * 1000)
+            except Exception as e:
+                _safe_print(f"[Extractor] Playwright goto notice: {e}")
+                try:
+                    page.wait_for_timeout(3000)
+                except Exception:
+                    pass
+
+            # Extract advertiser brand name
+            try:
+                page_links = page.query_selector_all("a[role='link'][href*='facebook.com/']")
+                for pl in page_links:
+                    txt = (pl.inner_text() or "").strip()
+                    if len(txt) > 2 and not any(ign in txt.lower() for ign in ["ad library", "cookie", "privacy", "meta", "report", "log in", "sign up"]):
+                        brand = txt
+                        break
+            except Exception:
+                pass
+
+            # Extract primary ad copy from DOM
+            try:
+                body_divs = page.query_selector_all("div[style*='white-space: pre-wrap'], div[dir='auto']")
+                ad_copies = []
+                for bd in body_divs:
+                    txt = (bd.inner_text() or "").strip()
+                    if len(txt) > 25 and not any(ign in txt.lower() for ign in ["ad library", "लाइब्रेरी", "cookie", "privacy", "facebook", "log in"]):
+                        if txt not in ad_copies:
+                            ad_copies.append(txt)
+                if ad_copies:
+                    ad_copy = "\n\n".join(ad_copies[:2])
+            except Exception:
+                pass
+
+            browser.close()
+
+        # If a video was intercepted, download audio track and transcribe with Gemini Multimodal AI
+        audio_transcript = ""
+        video_url = captured_videos[0] if captured_videos else ""
+        if video_url:
+            _safe_print(f"[Extractor] Intercepted video stream URL: {video_url[:90]}... downloading for Gemini analysis")
+            try:
+                with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tf:
+                    temp_video_path = tf.name
+
+                req = urllib.request.Request(
+                    video_url,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    }
+                )
+                with urllib.request.urlopen(req, timeout=30) as resp, open(temp_video_path, "wb") as out_f:
+                    shutil.copyfileobj(resp, out_f)
+
+                if os.path.exists(temp_video_path) and os.path.getsize(temp_video_path) > 1000:
+                    _safe_print("[Extractor] Video downloaded successfully, analyzing with Gemini AI...")
+                    audio_transcript = transcribe_audio_file(temp_video_path)
+                
+                try:
+                    os.remove(temp_video_path)
+                except Exception:
+                    pass
+            except Exception as dl_err:
+                _safe_print(f"[Extractor] Video download/transcription notice: {dl_err}")
+
+        # Assemble structured result
+        parts = []
+        if brand:
+            parts.append(f"ADVERTISER / BRAND:\n{brand}")
+        if ad_copy:
+            parts.append(f"PRIMARY AD COPY & CAPTION:\n{ad_copy}")
+        if audio_transcript:
+            parts.append(audio_transcript)
+
+        if parts or video_url:
+            result_text = "\n\n".join(parts) if parts else f"Meta Ad Link: {url}"
+            _safe_print(f"[Extractor] Method A successfully extracted ad content (video={bool(video_url)}, copy={len(ad_copy)} chars)")
+            return {
+                "url": url,
+                "title": brand or "Meta Library Ad",
+                "uploader": brand,
+                "description": ad_copy,
+                "extracted_text": result_text,
+                "video_stream_url": video_url,
+                "audio_transcript": audio_transcript,
+                "source_type": "meta_ad_library_playwright",
+                "status": "SUCCESS"
+            }
+    except Exception as pw_err:
+        _safe_print(f"[Extractor] Playwright Method A execution error: {pw_err}")
+    return None
+
+
 def _extract_meta_ad_library_fast(url: str, timeout: int = 5) -> Optional[Dict[str, Any]]:
     """
     Ultra-fast scraper for Meta Ad Library links (under 0.5s).
@@ -455,6 +594,16 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
     if cached and cached.get("status") == "SUCCESS" and len(cached.get("extracted_text", "")) > 100:
         _safe_print(f"[Extractor] Cache HIT for {url} (returning from local cache)")
         return dict(cached)
+
+    # -------------------------------------------------------------
+    # Method A: Meta Ad Library Headless Browser with Network Interception (VPS)
+    # -------------------------------------------------------------
+    if "facebook.com/ads" in url.lower() or "meta.com/ads" in url.lower():
+        _safe_print(f"[Extractor] Method A: Meta Ad Library link detected. Running headless Playwright for {url}")
+        pw_res = _extract_meta_ad_via_playwright(url, timeout=25)
+        if pw_res and pw_res.get("status") == "SUCCESS" and pw_res.get("extracted_text"):
+            _save_cache_entry(url, pw_res)
+            return pw_res
 
     # (Fast and Jina scrapers are available as fallback if yt-dlp is unavailable or challenged)
 
@@ -666,3 +815,5 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
     result["extracted_text"] = f"Reference Link: {url}\n(Please paste the ad script or hook details directly if this link requires authentication or is restricted.)"
     # Never save failed fallback to cache, allowing subsequent retries
     return result
+
+
