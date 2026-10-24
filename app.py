@@ -61,6 +61,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Export handler alias for Vercel Serverless Function compatibility
+handler = app
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
