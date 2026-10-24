@@ -5,17 +5,18 @@ try:
 except ImportError:
     requests = None
     _REQUESTS_AVAILABLE = False
+import urllib
 import urllib.request
 import urllib.parse
 import sys
 if hasattr(sys.stdout, "reconfigure"):
     try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        getattr(sys.stdout, "reconfigure")(encoding="utf-8", errors="replace")
     except Exception:
         pass
 if hasattr(sys.stderr, "reconfigure"):
     try:
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+        getattr(sys.stderr, "reconfigure")(encoding="utf-8", errors="replace")
     except Exception:
         pass
 """
@@ -34,7 +35,7 @@ import tempfile
 import shutil
 import re
 import uuid
-from typing import Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -102,8 +103,6 @@ async def health_check():
         "timestamp": datetime.datetime.utcnow().isoformat()
     })
 
-import openai
-from openai import OpenAI
 try:
     import assemblyai as aai
     _ASSEMBLYAI_AVAILABLE = True
@@ -111,47 +110,43 @@ except ImportError:
     aai = None
     _ASSEMBLYAI_AVAILABLE = False
 
-try:
-    from rag_pipeline import SemanticChunker, EmbeddingManager, VectorStoreManager
-    from ad_generator import AdGeneratorEngine
-    from persona_generator import PersonaGeneratorEngine
-    from benefits_extractor import BenefitsExtractorEngine
-    from benefits_angle_agent import BenefitsAngleEngine
-    from video_script_agent import VideoScriptEngine
-    from creative_director_agent import CreativeDirectorEngine
-    from thumbnail_strategist_agent import ThumbnailStrategistEngine
-    from thumbnail_designer_agent import ThumbnailDesignerEngine
-    from title_strategist_agent import TitleStrategistEngine
-    from content_brief_agent import ContentBriefEngine
-    from metadata_publisher_agent import MetadataPublisherEngine
-    from own_ad_double_down_agent import OwnAdDoubleDownEngine
-    from competitor_ad_remixer_agent import CompetitorAdRemixerEngine
-    from ad_content_extractor import extract_content_from_url, transcribe_audio_file as transcribe_media_via_gemini
-    from cost_tracker import CostTracker, TokenUsageReport
-    from tracer import global_tracer, ExecutionSpan
+from rag_pipeline import SemanticChunker, EmbeddingManager, VectorStoreManager
+from ad_generator import AdGeneratorEngine
+from persona_generator import PersonaGeneratorEngine
+from benefits_extractor import BenefitsExtractorEngine
+from benefits_angle_agent import BenefitsAngleEngine
+from video_script_agent import VideoScriptEngine
+from creative_director_agent import CreativeDirectorEngine
+from thumbnail_strategist_agent import ThumbnailStrategistEngine
+from thumbnail_designer_agent import ThumbnailDesignerEngine
+from title_strategist_agent import TitleStrategistEngine
+from content_brief_agent import ContentBriefEngine
+from metadata_publisher_agent import MetadataPublisherEngine
+from own_ad_double_down_agent import OwnAdDoubleDownEngine
+from competitor_ad_remixer_agent import CompetitorAdRemixerEngine
+from ad_content_extractor import extract_content_from_url, transcribe_audio_file as transcribe_media_via_gemini
+from cost_tracker import CostTracker, TokenUsageReport
+from tracer import global_tracer, ExecutionSpan
+from feedback_manager import feedback_mgr
 
-    # Global Engine Singletons
-    chunker = SemanticChunker(target_min_tokens=500, target_max_tokens=800, overlap_tokens=100)
-    embedding_manager = EmbeddingManager(model_name="openai/text-embedding-3-small", vector_dim=1536)
-    vector_store = VectorStoreManager()
-    cost_tracker = CostTracker(default_model="openai/gpt-4o-mini", default_embedding_model="openai/text-embedding-3-small")
-    ad_engine = AdGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    persona_engine = PersonaGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    benefits_engine = BenefitsExtractorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    angle_engine = BenefitsAngleEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    video_engine = VideoScriptEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    creative_engine = CreativeDirectorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    thumbnail_engine = ThumbnailStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    designer_engine = ThumbnailDesignerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    title_engine = TitleStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    brief_engine = ContentBriefEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    metadata_engine = MetadataPublisherEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    own_ad_engine = OwnAdDoubleDownEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-    competitor_engine = CompetitorAdRemixerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
-except Exception as _e:
-    import traceback
-    _STARTUP_ERROR = traceback.format_exc()
-    print(f'[FATAL AGENT INIT ERROR] {_e}: {_STARTUP_ERROR}')
+# Global Engine Singletons
+chunker = SemanticChunker(target_min_tokens=500, target_max_tokens=800, overlap_tokens=100)
+embedding_manager = EmbeddingManager(model_name="openai/text-embedding-3-small", vector_dim=1536)
+vector_store = VectorStoreManager()
+cost_tracker = CostTracker(default_model="openai/gpt-4o-mini", default_embedding_model="openai/text-embedding-3-small")
+ad_engine = AdGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+persona_engine = PersonaGeneratorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+benefits_engine = BenefitsExtractorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+angle_engine = BenefitsAngleEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+video_engine = VideoScriptEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+creative_engine = CreativeDirectorEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+thumbnail_engine = ThumbnailStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+designer_engine = ThumbnailDesignerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+title_engine = TitleStrategistEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+brief_engine = ContentBriefEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+metadata_engine = MetadataPublisherEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+own_ad_engine = OwnAdDoubleDownEngine(vector_store=vector_store, embedding_manager=embedding_manager)
+competitor_engine = CompetitorAdRemixerEngine(vector_store=vector_store, embedding_manager=embedding_manager)
 
 # Populate initial vector store with masterclass transcript
 INITIAL_SAMPLE_TRANSCRIPT = """
@@ -425,7 +420,7 @@ async def generate_benefits(request: BenefitsExtractionRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         benefits_engine.build_system_prompt,
-        product_name=product_name,
+        product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries or [],
         retrieved_context=context_text
@@ -446,7 +441,7 @@ async def generate_benefits(request: BenefitsExtractionRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         benefits_engine.generate_10_benefits,
-        product_name=product_name,
+        product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries,
         topic_filter=request.topic_filter
@@ -558,7 +553,7 @@ async def generate_angles(request: BenefitsAngleRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         angle_engine.build_system_prompt,
-        product_name=product_name,
+        product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries or [],
         angles_per_benefit=request.angles_per_benefit,
@@ -580,7 +575,7 @@ async def generate_angles(request: BenefitsAngleRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         angle_engine.generate_benefits_and_angles,
-        product_name=product_name,
+        product_name=request.product_name,
         product_details=request.product_details,
         persona_summaries=request.persona_summaries,
         angles_per_benefit=request.angles_per_benefit,
@@ -696,7 +691,7 @@ async def generate_video_scripts(request: VideoScriptRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         video_engine.build_system_prompt,
-        product_name=product_name,
+        product_name=request.product_name,
         chosen_angle=request.chosen_angle,
         chosen_hook=request.chosen_hook,
         target_persona=request.target_persona,
@@ -720,7 +715,7 @@ async def generate_video_scripts(request: VideoScriptRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         video_engine.generate_video_scripts,
-        product_name=product_name,
+        product_name=request.product_name,
         chosen_angle=request.chosen_angle,
         chosen_hook=request.chosen_hook,
         target_persona=request.target_persona,
@@ -932,7 +927,6 @@ async def get_trace_details(trace_id: str):
     return JSONResponse(content=trace)
 
 
-from feedback_manager import feedback_mgr
 
 class FeedbackRequest(BaseModel):
     variation_id: int = 1
@@ -992,7 +986,7 @@ async def pinecone_keepalive(request: Request):
 
 @app.post("/api/upload-transcript")
 async def upload_transcript(file: UploadFile = File(...)):
-    filename = file.filename
+    filename = file.filename or "uploaded_transcript.txt"
     content_bytes = await file.read()
     
     text = ""
@@ -1035,17 +1029,21 @@ async def upload_transcript(file: UploadFile = File(...)):
 def _submit_to_assemblyai(file_path: str) -> str:
     """Uploads the audio and queues the transcription job. Returns immediately
     (does not wait for transcription to finish) so the request can't time out
-    on long recordings — the client polls /api/transcribe-audio/{id} instead."""
+    on long recordings – the client polls /api/transcribe-audio/{id} instead."""
+    if not _ASSEMBLYAI_AVAILABLE or aai is None:
+        raise RuntimeError("AssemblyAI package is not installed.")
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
     transcript = aai.Transcriber().submit(file_path)
-    return transcript.id
+    return str(transcript.id or "")
 
 def _get_assemblyai_status(transcript_id: str) -> dict:
+    if not _ASSEMBLYAI_AVAILABLE or aai is None:
+        raise RuntimeError("AssemblyAI package is not installed.")
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
     transcript = aai.Transcript.get_by_id(transcript_id)
     if transcript.status == aai.TranscriptStatus.error:
-        raise RuntimeError(transcript.error)
-    return {"state": transcript.status, "text": transcript.text if transcript.status == aai.TranscriptStatus.completed else None}
+        raise RuntimeError(str(transcript.error))
+    return {"state": str(transcript.status), "text": transcript.text if transcript.status == aai.TranscriptStatus.completed else None}
 
 SUPPORTED_MEDIA_EXTS = ('.mp4', '.mov', '.mkv', '.webm', '.avi', '.mp3', '.m4a', '.wav', '.aac', '.flac', '.ogg')
 
@@ -1386,7 +1384,7 @@ async def generate_creative_direction(request: CreativeDirectionRequest):
     gen_start = time.time()
     creative_data, metrics, token_usage = await asyncio.to_thread(
         creative_engine.generate_creative_direction,
-        product_name=product_name,
+        product_name=request.product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
         global_feedback=request.global_feedback,
@@ -1456,7 +1454,7 @@ async def generate_thumbnail_strategy(request: ThumbnailStrategyRequest):
     gen_start = time.time()
     thumbnail_data, metrics, token_usage = await asyncio.to_thread(
         thumbnail_engine.generate_thumbnail_strategy,
-        product_name=product_name,
+        product_name=request.product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
         target_persona=request.target_persona,
@@ -1527,7 +1525,7 @@ async def generate_thumbnail_design(request: ThumbnailDesignRequest):
     gen_start = time.time()
     design_data, metrics, token_usage = await asyncio.to_thread(
         designer_engine.generate_thumbnail_design,
-        product_name=product_name,
+        product_name=request.product_name,
         script_title=request.script_title,
         concept_title=request.concept_title,
         main_visual=request.main_visual,
@@ -1599,7 +1597,7 @@ async def generate_title_strategy(request: TitleStrategyRequest):
     gen_start = time.time()
     title_data, metrics, token_usage = await asyncio.to_thread(
         title_engine.generate_title_strategy,
-        product_name=product_name,
+        product_name=request.product_name,
         script_title=request.script_title,
         script_hook=request.script_hook,
         target_persona=request.target_persona,
@@ -1671,7 +1669,7 @@ async def generate_content_brief(request: ContentBriefRequest):
     gen_start = time.time()
     brief_data, metrics, token_usage = await asyncio.to_thread(
         brief_engine.generate_content_brief,
-        product_name=product_name,
+        product_name=request.product_name,
         target_persona=request.target_persona,
         campaign_objective=request.campaign_objective,
         ad_format=request.ad_format,
@@ -1743,7 +1741,7 @@ async def generate_campaign_metadata(request: CampaignMetadataRequest):
     gen_start = time.time()
     meta_data, metrics, token_usage = await asyncio.to_thread(
         metadata_engine.generate_campaign_metadata,
-        product_name=product_name,
+        product_name=request.product_name,
         script_title=request.script_title,
         target_persona=request.target_persona,
         campaign_objective=request.campaign_objective,
@@ -1860,7 +1858,6 @@ async def extract_ad_content(request: ExtractAdContentRequest):
 # ============================================================================
 # Variations Bucket (Persistent Creative Vault)
 # ============================================================================
-import tempfile, shutil
 
 def _get_bucket_file_path() -> str:
     primary = os.path.join(os.path.dirname(os.path.abspath(__file__)), "variations_bucket.json")
@@ -1946,7 +1943,7 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     # Only extract if winner_content is strictly a single raw URL token
     if winner_content and (winner_content.strip().startswith("http://") or winner_content.strip().startswith("https://")) and len(winner_content.strip().split()) == 1:
         try:
-            print(f"[Auto-Extractor] Detected URL in winner_content, extracting & transcribing audio...")
+            print("[Auto-Extractor] Detected URL in winner_content, extracting & transcribing audio...")
             extracted = await asyncio.to_thread(extract_content_from_url, winner_content.strip())
             if extracted.get("extracted_text"):
                 winner_content = extracted["extracted_text"]
@@ -1982,7 +1979,7 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     t0 = time.time()
     system_prompt = await asyncio.to_thread(
         own_ad_engine.build_system_prompt,
-        product_name=product_name,
+        product_name=request.product_name,
         winner_content=winner_content,
         winning_notes=winning_notes,
         target_persona=request.target_persona,
@@ -2005,7 +2002,7 @@ async def generate_own_ad_variations(request: OwnAdDoubleDownRequest):
     t0 = time.time()
     results = await asyncio.to_thread(
         own_ad_engine.generate_variations,
-        product_name=product_name,
+        product_name=request.product_name,
         winner_content=winner_content,
         winning_notes=winning_notes,
         target_persona=request.target_persona,
@@ -2114,7 +2111,7 @@ async def generate_competitor_remix(request: CompetitorAdRemixRequest):
     # Only extract if competitor_content is strictly a single raw URL token
     if competitor_content and (competitor_content.strip().startswith("http://") or competitor_content.strip().startswith("https://")) and len(competitor_content.strip().split()) == 1:
         try:
-            print(f"[Auto-Extractor] Detected URL in competitor_content, extracting & transcribing audio...")
+            print("[Auto-Extractor] Detected URL in competitor_content, extracting & transcribing audio...")
             extracted = await asyncio.to_thread(extract_content_from_url, competitor_content.strip())
             if extracted.get("extracted_text"):
                 competitor_content = extracted["extracted_text"]
