@@ -67,7 +67,6 @@ def _load_cache():
 
 
 def _save_cache_entry(url_key: str, data: Dict[str, Any]):
-    global _MEMORY_CACHE
     if not url_key:
         return
     _MEMORY_CACHE[url_key] = data
@@ -84,7 +83,6 @@ def _save_cache_entry(url_key: str, data: Dict[str, Any]):
 
 
 def _get_cache_entry(url_key: str) -> Optional[Dict[str, Any]]:
-    global _MEMORY_CACHE
     if not _MEMORY_CACHE:
         _load_cache()
     if url_key in _MEMORY_CACHE:
@@ -343,13 +341,20 @@ def _extract_meta_ad_library_fast(url: str, timeout: int = 5) -> Optional[Dict[s
             except Exception:
                 ad_copy = bodies[0]
 
+        # Filter out generic bot-wall titles
+        generic_placeholders = ["ad library", "meta ad library", "facebook", "log in", "see ad details"]
+        if brand and brand.lower().strip() in generic_placeholders:
+            brand = ""
+
         if not brand and not ad_copy:
-            # Try alternate title tag
             t_match = re.search(r"<title[^>]*>(.*?)</title>", html, re.I)
             if t_match:
-                brand = t_match.group(1).strip()
+                cand = t_match.group(1).strip()
+                if cand.lower() not in generic_placeholders:
+                    brand = cand
 
-        if brand or ad_copy:
+        # Only return SUCCESS if we extracted substantive ad copy or a verified real brand
+        if (ad_copy and len(ad_copy.strip()) > 15) or (brand and brand.lower() not in generic_placeholders and len(brand) > 2):
             parts = []
             if brand:
                 parts.append(f"ADVERTISER / BRAND:\n{brand}")
@@ -622,16 +627,25 @@ def extract_content_from_url(url: str, timeout: int = 20) -> Dict[str, Any]:
             clean_text = " ".join(clean_text.split())
 
             body_snippet = clean_text[:1500] if clean_text else ""
+            # Check for dummy Facebook Ad Library placeholders
+            t_clean = (result["title"] or "").strip().lower()
+            b_clean = (body_snippet or "").strip().lower()
+            if t_clean in ["ad library", "meta ad library", "facebook"] and (not b_clean or b_clean in ["ad library", "meta ad library"]):
+                # This is Facebook's bot wall, NOT the real ad!
+                result["status"] = "FALLBACK"
+                result["extracted_text"] = f"Reference Ad Link: {url}\n\n[Note: This Facebook Ad Library link is protected by Facebook's login bot-wall. Please paste the ad script text or upload the video directly.]"
+                return result
+
             summary_parts = []
-            if result["title"]:
+            if result["title"] and result["title"].lower() not in ["ad library", "meta ad library", "facebook", "log in"]:
                 summary_parts.append(f"Title: {result['title']}")
             if result["description"]:
                 summary_parts.append(f"Description: {result['description']}")
-            if body_snippet:
+            if body_snippet and body_snippet.lower() not in ["ad library", "meta ad library"]:
                 summary_parts.append(f"Content Snippet: {body_snippet}")
 
             result["extracted_text"] = "\n\n".join(summary_parts) if summary_parts else f"URL Source: {url}"
-            result["status"] = "SUCCESS"
+            result["status"] = "SUCCESS" if summary_parts else "FALLBACK"
             _save_cache_entry(url, result)
             return result
         except Exception as parse_err:

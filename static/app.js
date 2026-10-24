@@ -38,113 +38,34 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
 
     if (progressEl) {
         progressEl.classList.remove('hidden');
-        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Preparing direct cloud upload (${sizeMb} MB)...`;
+        progressEl.innerHTML = `
+            <div style="margin-bottom:6px; font-size:12px; color:#E2E8F0;">
+                <span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span>
+                Preparing video for AI analysis (${sizeMb} MB)...
+            </div>
+            <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                <div style="width:15%; height:100%; background:linear-gradient(90deg, #EC4899, #8B5CF6); transition:width 0.2s;"></div>
+            </div>
+        `;
     }
 
     try {
         let finalData = null;
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        let directUploadSucceeded = false;
+        const isVercel = window.location.hostname.endsWith('vercel.app');
 
-        // Step 1: Direct Cloud Resumable Upload to Google Gemini File API (Handles 100MB+ videos safely)
-        try {
-            const initData = await safeFetchJson('/api/gemini-upload-init', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    filename: file.name,
-                    mime_type: file.type || 'video/mp4',
-                    file_size: file.size
-                })
-            });
-
-            if (initData && initData.upload_url) {
-                const uploadUrl = initData.upload_url;
-                const googleFile = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('POST', uploadUrl, true);
-                    // Google Gemini Resumable Upload protocol headers (CORS permitted by Google)
-                    // Note: Do NOT set Content-Length; browser sets it automatically to avoid CORS preflight rejection.
-                    xhr.setRequestHeader('X-Goog-Upload-Offset', '0');
-                    xhr.setRequestHeader('X-Goog-Upload-Command', 'upload, finalize');
-
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable && progressEl) {
-                            const percent = Math.round((e.loaded / e.total) * 100);
-                            progressEl.innerHTML = `
-                                <div style="margin-bottom:6px; font-size:12px; color:#E2E8F0;">
-                                    <span class="spinner-small" style="display:inline-block; margin-right:6px; vertical-align:middle;"></span>
-                                    Uploading video directly to Gemini AI (${sizeMb} MB) &mdash; ${percent}%
-                                </div>
-                                <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
-                                    <div style="width:${percent}%; height:100%; background:linear-gradient(90deg, #EC4899, #8B5CF6); transition:width 0.2s;"></div>
-                                </div>
-                            `;
-                        }
-                    };
-
-                    xhr.onload = () => {
-                        if (xhr.status >= 200 && xhr.status < 300) {
-                            try {
-                                const resObj = JSON.parse(xhr.responseText);
-                                resolve(resObj.file);
-                            } catch (pErr) {
-                                reject(new Error("Failed to parse Google upload response"));
-                            }
-                        } else {
-                            reject(new Error(`Google upload error (${xhr.status}): ${xhr.responseText.substring(0, 150)}`));
-                        }
-                    };
-
-                    xhr.onerror = () => reject(new Error("Network connection error during video upload"));
-                    xhr.ontimeout = () => reject(new Error("Video upload timed out"));
-                    xhr.send(file);
-                });
-
-                // Async status polling from browser (each poll takes 0.2s, 0% Vercel timeout risk)
-                if (progressEl) {
-                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Preparing video frames for AI analysis... (takes ~5s)`;
-                }
-
-                for (let poll = 0; poll < 15; poll++) {
-                    await new Promise(r => setTimeout(r, 2000));
-                    try {
-                        const stData = await safeFetchJson(`/api/gemini-file-status?file_name=${encodeURIComponent(googleFile.name)}`);
-                        if (stData && stData.state === 'ACTIVE') {
-                            break;
-                        }
-                    } catch (_) {}
-                    if (progressEl) {
-                        progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Processing video frames with Gemini AI... (${(poll + 1) * 2}s)`;
-                    }
-                }
-
-                if (progressEl) {
-                    progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Gemini AI analyzing ad video & transcribing dialogue verbatim... (takes ~3s)`;
-                }
-
-                finalData = await safeFetchJson('/api/gemini-analyze-file', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        file_uri: googleFile.uri,
-                        file_name: googleFile.name,
-                        mime_type: file.type || 'video/mp4'
-                    })
-                });
-                directUploadSucceeded = true;
-            }
-        } catch (cloudErr) {
-            console.warn('Direct cloud upload notice:', cloudErr);
-        }
-
-        // Step 2: Fallback to local server or small file direct upload
-        if (!directUploadSucceeded) {
-            if (!isLocal && file.size > 4.2 * 1024 * 1024) {
-                throw new Error("Direct cloud upload was interrupted. Please check your internet connection or paste the ad script directly.");
-            }
+        // Flow A: Files <= 4MB, OR running on VPS/local (no Vercel 4.5MB ceiling)
+        // Single direct upload straight to /api/transcribe-audio (0 CORS issues!)
+        if (!isVercel || file.size <= 4.2 * 1024 * 1024) {
             if (progressEl) {
-                progressEl.innerHTML = `<span class="spinner-small" style="display:inline-block; margin-right:8px; vertical-align:middle;"></span> Processing media on server (${sizeMb} MB)...`;
+                progressEl.innerHTML = `
+                    <div style="margin-bottom:6px; font-size:12px; color:#E2E8F0;">
+                        <span class="spinner-small" style="display:inline-block; margin-right:6px; vertical-align:middle;"></span>
+                        Uploading & analyzing video directly with Gemini AI (${sizeMb} MB)...
+                    </div>
+                    <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                        <div style="width:65%; height:100%; background:linear-gradient(90deg, #EC4899, #8B5CF6); transition:width 0.2s;"></div>
+                    </div>
+                `;
             }
             const formData = new FormData();
             formData.append('file', file);
@@ -152,6 +73,46 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
                 method: 'POST',
                 body: formData
             });
+        } else {
+            // Flow B: Large files on Vercel: stream in safe 2 MB chunks to /api/upload-media-chunk
+            const CHUNK_SIZE = 2 * 1024 * 1024;
+            const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+            const uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+
+            for (let idx = 0; idx < totalChunks; idx++) {
+                const start = idx * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, file.size);
+                const chunkBlob = file.slice(start, end);
+
+                const percent = Math.round(((idx + 1) / totalChunks) * 100);
+                if (progressEl) {
+                    progressEl.innerHTML = `
+                        <div style="margin-bottom:6px; font-size:12px; color:#E2E8F0;">
+                            <span class="spinner-small" style="display:inline-block; margin-right:6px; vertical-align:middle;"></span>
+                            Streaming chunk ${idx + 1}/${totalChunks} (${percent}%) &mdash; AI processing...
+                        </div>
+                        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                            <div style="width:${percent}%; height:100%; background:linear-gradient(90deg, #EC4899, #8B5CF6); transition:width 0.2s;"></div>
+                        </div>
+                    `;
+                }
+
+                const chunkData = new FormData();
+                chunkData.append('chunk', chunkBlob, file.name);
+                chunkData.append('upload_id', uploadId);
+                chunkData.append('chunk_index', idx);
+                chunkData.append('total_chunks', totalChunks);
+                chunkData.append('filename', file.name);
+
+                const res = await safeFetchJson('/api/upload-media-chunk', {
+                    method: 'POST',
+                    body: chunkData
+                });
+
+                if (idx + 1 === totalChunks) {
+                    finalData = res;
+                }
+            }
         }
 
         if (finalData && finalData.transcript_id) {
@@ -174,16 +135,23 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
             if (progressEl) {
                 progressEl.innerHTML = `
                     <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
-                        <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✓ Video Analyzed & Pattern Learned (${words} words)!</div>
-                        <div style="color:#94A3B8; font-size:12px; margin-bottom:8px;">Dialogue and winning ad breakdown loaded into the script box below.</div>
-                        <button type="button" class="btn btn-primary" style="width:100%; font-size:13px; padding:8px 12px; justify-content:center; background:${accentGradient}; border:none; cursor:pointer;" onclick="document.getElementById('${formId}').requestSubmit();">
-                            ⚡ Generate 5 Variations from This Video Now
-                        </button>
+                        <div style="color:#10B981; font-weight:600; font-size:13px; margin-bottom:4px;">✓ Video Analyzed (${words} words)!</div>
+                        <div style="color:#CBD5E1; font-size:12px;">⚡ Automatically generating 5 Double Down variations now...</div>
                     </div>
                 `;
             }
+
+            // TRUE 1-STEP: Automatically submit the form to generate the 5 variations!
+            if (formId) {
+                const targetForm = document.getElementById(formId);
+                if (targetForm) {
+                    setTimeout(() => {
+                        targetForm.requestSubmit();
+                    }, 400);
+                }
+            }
         } else {
-            throw new Error((finalData && (finalData.detail || finalData.message)) || "Could not extract transcription from video.");
+            throw new Error((finalData && (finalData.detail || finalData.message)) || "Could not analyze speech or video content from this file.");
         }
     } catch (err) {
         console.error('Media upload error:', err);
@@ -191,8 +159,8 @@ async function uploadMediaWithChunking(file, progressEl, txtContent, transcriptB
             progressEl.innerHTML = `
                 <div style="background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; padding:10px 12px; margin-top:8px;">
                     <div style="color:#EF4444; font-weight:600; font-size:13px; margin-bottom:4px;">⚠️ Upload Notice</div>
-                    <div style="color:#94A3B8; font-size:12px; margin-bottom:6px;">${err.message || 'Server error occurred during processing.'}</div>
-                    <div style="color:#64748B; font-size:11px;">You can also paste the transcript or ad script directly in the text area below.</div>
+                    <div style="color:#CBD5E1; font-size:12px;">${err.message || 'Server error occurred during processing.'}</div>
+                    <div style="color:#94A3B8; font-size:11px; margin-top:4px;">You can also paste the transcript or ad script directly in the text area below.</div>
                 </div>
             `;
         }
