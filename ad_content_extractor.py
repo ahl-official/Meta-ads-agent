@@ -27,6 +27,7 @@ import os
 import re
 import base64
 import tempfile
+import shutil
 import urllib.request
 import urllib.parse
 from typing import Dict, Any, Optional
